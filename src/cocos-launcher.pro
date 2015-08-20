@@ -12,9 +12,15 @@ TARGET = cocos-launcher
 TEMPLATE = app
 
 
-SOURCES += src/main.cpp\
-        src/mainwindow.cpp
+SOURCES += main.cpp\
+        mainwindow.cpp \
+    dialognewgame.cpp
 
-HEADERS  += src/mainwindow.h
+HEADERS  += mainwindow.h \
+    dialognewgame.h
 
-FORMS    += res/mainwindow.ui
+FORMS    += mainwindow.ui \
+    dialognewgame.ui
+
+RESOURCES += \
+    resources.qrc
