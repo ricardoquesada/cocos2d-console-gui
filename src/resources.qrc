@@ -1,5 +1,11 @@
 <RCC>
     <qresource prefix="/">
         <file>res/logo.png</file>
+        <file>res/empty-doc.html</file>
+        <file>res/empty-screenshot.jpg</file>
+        <file>res/endless-doc.html</file>
+        <file>res/endless-screenshot.jpg</file>
+        <file>res/physics-doc.html</file>
+        <file>res/physics-screenshot.jpg</file>
     </qresource>
 </RCC>

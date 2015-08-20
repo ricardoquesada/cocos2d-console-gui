@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>557</width>
+    <width>724</width>
     <height>425</height>
    </rect>
   </property>
@@ -16,13 +16,13 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>536</width>
-     <height>401</height>
+     <width>711</width>
+     <height>411</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -35,7 +35,7 @@
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
+      <item alignment="Qt::AlignLeft">
        <widget class="QListWidget" name="listWidget"/>
       </item>
       <item>
@@ -55,10 +55,6 @@
     </item>
    </layout>
   </widget>
-  <zorder>buttonBox</zorder>
-  <zorder>label</zorder>
-  <zorder>horizontalLayoutWidget</zorder>
-  <zorder>label</zorder>
  </widget>
  <resources/>
  <connections>
