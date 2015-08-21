@@ -15,10 +15,12 @@ CONFIG += c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    dialognewgame.cpp
+    dialognewgame.cpp \
+    templatewizard.cpp
 
 HEADERS  += mainwindow.h \
-    dialognewgame.h
+    dialognewgame.h \
+    templatewizard.h
 
 FORMS    += mainwindow.ui \
     dialognewgame.ui

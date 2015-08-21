@@ -3,6 +3,7 @@
 
 #include "dialognewgame.h"
 #include "ui_dialognewgame.h"
+#include "templatewizard.h"
 
 DialogNewGame::DialogNewGame(QWidget *parent) :
     QDialog(parent),
@@ -45,3 +46,12 @@ void DialogNewGame::on_listWidget_currentItemChanged(QListWidgetItem *current, Q
 
 }
 
+
+void DialogNewGame::on_buttonBox_accepted()
+{
+    TemplateWizard wizard(this);
+
+    wizard.resize(this->width(), this->height());
+
+    wizard.exec();
+}

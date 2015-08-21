@@ -19,6 +19,8 @@ private slots:
 
     void on_pushButtonNewGame_clicked();
 
+    void on_pushButtonEditGame_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

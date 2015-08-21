@@ -22,3 +22,7 @@ void MainWindow::on_pushButtonNewGame_clicked()
     DialogNewGame dialog(this);
     dialog.exec();
 }
+
+void MainWindow::on_pushButtonEditGame_clicked()
+{
+}
