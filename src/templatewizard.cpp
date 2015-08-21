@@ -71,17 +71,16 @@ LocationPage::LocationPage(QWidget *parent)
     auto groupBox = new QGroupBox();
 
     auto nameLabel = new QLabel(tr("Game &Name:"));
-    auto nameEdit = new QLineEdit;
+    auto nameEdit = new QLineEdit(tr("untitled"), this);
     nameLabel->setBuddy(nameEdit);
 
     auto createLabel = new QLabel(tr("&Create in:"));
-    auto createEdit = new QLineEdit;
+    auto createEdit = new QLineEdit(tr("~/MyGames"), this);
     createLabel->setBuddy(createEdit);
 
     auto createChooseButton = new QPushButton("Choose...");
 
     auto locationCheckBox = new QCheckBox(tr("&Use as default project location"));
-
 
     registerField("nameEdit*", nameEdit);
     registerField("createEdit*", createEdit);
@@ -103,6 +102,14 @@ LocationPage::LocationPage(QWidget *parent)
     setLayout(vLayout);
 }
 
+bool LocationPage::isComplete() const
+{
+    auto name = field("nameEdit").toString();
+    auto create = field("createEdit").toString();
+
+    return (name.length() && create.length());
+}
+
 SDKPage::SDKPage(QWidget *parent)
     : QWizardPage(parent)
 {
@@ -110,27 +117,64 @@ SDKPage::SDKPage(QWidget *parent)
     setSubTitle(tr("Select the SDKs that you want to have installed in your game"));
 //    setPixmap(QWizard::LogoPixmap, QPixmap(":/images/logo2.png"));
 
-    auto listWidget = new QListWidget;
+    // --
+    _listWidget = new QListWidget;
 
     QListWidgetItem *item;
-    item = new QListWidgetItem(tr("Cocos2d-x v3.8"), listWidget);
+    item = new QListWidgetItem(tr("Cocos2d-x v3.8"), _listWidget);
     item->setCheckState(Qt::CheckState::Checked);
     item->setFlags(Qt::NoItemFlags);
 
-    item = new QListWidgetItem(tr("SDKBOX AdMob"), listWidget);
+    item = new QListWidgetItem(tr("SDKBOX core"), _listWidget);
+    item->setCheckState(Qt::CheckState::Checked);
+    item->setFlags(Qt::NoItemFlags);
+
+    item = new QListWidgetItem(tr("SDKBOX AdMob"), _listWidget);
     item->setCheckState(Qt::CheckState::Checked);
 
-    item = new QListWidgetItem(tr("SDKBOX Facebook"), listWidget);
+    item = new QListWidgetItem(tr("SDKBOX Facebook"), _listWidget);
     item->setCheckState(Qt::CheckState::Checked);
 
-    item = new QListWidgetItem(tr("SDKBOX Kochava"), listWidget);
+    item = new QListWidgetItem(tr("SDKBOX Kochava"), _listWidget);
     item->setCheckState(Qt::CheckState::Checked);
 
-    item = new QListWidgetItem(tr("SDKBOX Vungle"), listWidget);
+    item = new QListWidgetItem(tr("SDKBOX Vungle"), _listWidget);
     item->setCheckState(Qt::CheckState::Unchecked);
 
+
+    // ---
+    auto sdkCheckBox = new QCheckBox(tr("&Select all SDKs"));
+    sdkCheckBox->setChecked(true);
+
+    connect(sdkCheckBox, &QCheckBox::toggled, [&](bool enabled)
+        {
+            // skip cocos2d
+            for(int row = 1; row < _listWidget->count(); row++)
+            {
+                QListWidgetItem *w = _listWidget->item(row);
+                w->setCheckState(enabled?Qt::CheckState::Checked: Qt::CheckState::Unchecked);
+            }
+    }
+    );
+
+
+    // ----
+
+    auto cocosSDK = new QLabel(tr("&Cocos2D-x SDK library type:"));
+    QComboBox *comboBox = new QComboBox;
+    comboBox->addItem(tr("binary"));
+    comboBox->addItem(tr("source code"));
+    cocosSDK->setBuddy(comboBox);
+    auto hbox = new QHBoxLayout;
+    hbox->addWidget(cocosSDK);
+    hbox->addWidget(comboBox);
+
+    // ----
+
     auto vblayout = new QVBoxLayout;
-    vblayout->addWidget(listWidget);
+    vblayout->addWidget(sdkCheckBox);
+    vblayout->addWidget(_listWidget);
+    vblayout->addLayout(hbox);
 
     setLayout(vblayout);
 }
@@ -140,18 +184,55 @@ void SDKPage::initializePage()
     QString className = field("nameEdit").toString();
 }
 
+
+// ----
+
 ConclusionPage::ConclusionPage(QWidget *parent)
     : QWizardPage(parent)
 {
     setTitle(tr("Project Management"));
     setSubTitle(tr("Specify where you want the wizard to put the generated "
                    "skeleton code."));
-    setPixmap(QWizard::LogoPixmap, QPixmap(":/images/logo3.png"));
+//    setPixmap(QWizard::LogoPixmap, QPixmap(":/images/logo3.png"));
+
+
+    // --
+
+    auto grid = new QGridLayout;
+
+    auto versionLabel = new QLabel(tr("&Add to version control:"));
+    QComboBox *comboBox = new QComboBox;
+    comboBox->addItem(tr("<None>"));
+    comboBox->addItem(tr("Git"));
+    versionLabel->setBuddy(comboBox);
+
+    grid->addWidget(versionLabel, 0, 0);
+    grid->addWidget(comboBox, 0, 1);
+
+    // --
+    auto textBrowser = new QTextBrowser();
+
+    textBrowser->append("<html>");
+    textBrowser->append("<span>Here goes some description of your project. Files to be created are:</span>");
+    textBrowser->append("<p>");
+    textBrowser->append("<code>/usr/local/bin/game.xxx</code>");
+    textBrowser->append("<code>/usr/local/bin/game.xxx</code>");
+    textBrowser->append("<code>/usr/local/bin/game.xxx</code>");
+    textBrowser->append("<code>/usr/local/bin/game.xxx</code>");
+    textBrowser->append("");
+    textBrowser->append("<span>Press 'Done'.</span>");
+    textBrowser->setReadOnly(true);
+
+    grid->addWidget(textBrowser, 1, 0, 2, 2);
+
+    // --
+    setLayout(grid);
 
 }
 
 void ConclusionPage::initializePage()
 {
+
 
 }
 

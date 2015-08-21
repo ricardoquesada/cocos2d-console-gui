@@ -48,6 +48,7 @@ class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QRadioButton;
+class QListWidget;
 QT_END_NAMESPACE
 
 class TemplateWizard: public QWizard
@@ -67,6 +68,8 @@ class LocationPage: public QWizardPage
 public:
     LocationPage(QWidget *parent = 0);
 
+    bool isComplete() const Q_DECL_OVERRIDE;
+
 private:
 };
 
@@ -81,6 +84,7 @@ protected:
     void initializePage() Q_DECL_OVERRIDE;
 
 private:
+    QListWidget* _listWidget;
 };
 
 
