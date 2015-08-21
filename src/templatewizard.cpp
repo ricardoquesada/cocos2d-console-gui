@@ -75,22 +75,33 @@ LocationPage::LocationPage(QWidget *parent)
     nameLabel->setBuddy(nameEdit);
 
     auto createLabel = new QLabel(tr("&Create in:"));
-    auto createEdit = new QLineEdit(tr("~/MyGames"), this);
-    createLabel->setBuddy(createEdit);
+    _createEdit = new QLineEdit(tr("~/MyGames"), this);
+    createLabel->setBuddy(_createEdit);
 
     auto createChooseButton = new QPushButton("Choose...");
+
+    connect(createChooseButton, &QPushButton::pressed, [&]()
+    {
+        auto fn = QFileDialog::getExistingDirectory(this, _createEdit->text());
+        if (fn.length()>0)
+        {
+            _createEdit->setText(fn);
+        }
+    }
+            );
+
 
     auto locationCheckBox = new QCheckBox(tr("&Use as default project location"));
 
     registerField("nameEdit*", nameEdit);
-    registerField("createEdit*", createEdit);
+    registerField("createEdit*", _createEdit);
     registerField("locationCheckBox", locationCheckBox);
 
     QGridLayout *gridLayout = new QGridLayout;
     gridLayout->addWidget(nameLabel, 0, 0);
     gridLayout->addWidget(nameEdit, 0, 1, 1, 2);
     gridLayout->addWidget(createLabel, 1, 0);
-    gridLayout->addWidget(createEdit, 1, 1);
+    gridLayout->addWidget(_createEdit, 1, 1);
     gridLayout->addWidget(createChooseButton, 1, 2);
     gridLayout->addWidget(locationCheckBox, 2, 0, 2, -1);
 

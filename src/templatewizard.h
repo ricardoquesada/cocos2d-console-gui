@@ -49,6 +49,7 @@ class QLabel;
 class QLineEdit;
 class QRadioButton;
 class QListWidget;
+class QLineEdit;
 QT_END_NAMESPACE
 
 class TemplateWizard: public QWizard
@@ -71,6 +72,7 @@ public:
     bool isComplete() const Q_DECL_OVERRIDE;
 
 private:
+    QLineEdit* _createEdit;
 };
 
 class SDKPage: public QWizardPage

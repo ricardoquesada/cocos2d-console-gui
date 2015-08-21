@@ -14,11 +14,47 @@ DialogNewGame::DialogNewGame(QWidget *parent) :
     // populate items
     auto listWidget = ui->listWidget;
 
+    QListWidgetItem* separator;
+
+    // C++
+
+    separator = new QListWidgetItem(tr("C++ Templates"), listWidget);
+    separator->setFlags(Qt::NoItemFlags);
+    separator->setBackground(QBrush(QColor(224,224,224)));
+    separator->setForeground(QBrush(Qt::black));
+    separator->setSizeHint(QSize(0,30));
+
     new QListWidgetItem(tr("Physics Game"), listWidget);
     new QListWidgetItem(tr("Endless Runner Game"), listWidget);
     new QListWidgetItem(tr("Empty Game"), listWidget);
 
-    listWidget->item(0)->setSelected(true);
+    // Lua
+
+    separator = new QListWidgetItem(tr("Lua Templates"), listWidget);
+    separator->setFlags(Qt::NoItemFlags);
+    separator->setBackground(QBrush(QColor(237,237,237)));
+    separator->setForeground(QBrush(Qt::black));
+    separator->setSizeHint(QSize(0,30));
+
+    new QListWidgetItem(tr("Physics Game"), listWidget);
+    new QListWidgetItem(tr("Endless Runner Game"), listWidget);
+    new QListWidgetItem(tr("Empty Game"), listWidget);
+
+    // JavaScript
+
+    separator = new QListWidgetItem(tr("JavaScript Templates"), listWidget);
+    separator->setFlags(Qt::NoItemFlags);
+    separator->setBackground(QBrush(QColor(224,224,224)));
+    separator->setForeground(QBrush(Qt::black));
+    separator->setSizeHint(QSize(0,30));
+
+    new QListWidgetItem(tr("Physics Game"), listWidget);
+    new QListWidgetItem(tr("Endless Runner Game"), listWidget);
+    new QListWidgetItem(tr("Empty Game"), listWidget);
+
+
+    //
+    listWidget->item(1)->setSelected(true);
 
     // populate text browser
     ui->textBrowser->setDocumentTitle("hello");
