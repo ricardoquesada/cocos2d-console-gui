@@ -50,8 +50,7 @@ class QLineEdit;
 class QRadioButton;
 QT_END_NAMESPACE
 
-//! [0]
-class TemplateWizard : public QWizard
+class TemplateWizard: public QWizard
 {
     Q_OBJECT
 
@@ -60,85 +59,32 @@ public:
 
     void accept() Q_DECL_OVERRIDE;
 };
-//! [0]
 
-//! [1]
-class IntroPage : public QWizardPage
+class LocationPage: public QWizardPage
 {
     Q_OBJECT
 
 public:
-    IntroPage(QWidget *parent = 0);
+    LocationPage(QWidget *parent = 0);
 
 private:
-    QLabel *label;
 };
-//! [1]
 
-//! [2]
-class ClassInfoPage : public QWizardPage
+class SDKPage: public QWizardPage
 {
     Q_OBJECT
 
 public:
-    ClassInfoPage(QWidget *parent = 0);
-
-private:
-    QLabel *classNameLabel;
-    QLabel *baseClassLabel;
-    QLineEdit *classNameLineEdit;
-    QLineEdit *baseClassLineEdit;
-    QCheckBox *qobjectMacroCheckBox;
-    QGroupBox *groupBox;
-    QRadioButton *qobjectCtorRadioButton;
-    QRadioButton *qwidgetCtorRadioButton;
-    QRadioButton *defaultCtorRadioButton;
-    QCheckBox *copyCtorCheckBox;
-};
-//! [2]
-
-//! [3]
-class CodeStylePage : public QWizardPage
-{
-    Q_OBJECT
-
-public:
-    CodeStylePage(QWidget *parent = 0);
+       SDKPage(QWidget *parent = 0);
 
 protected:
     void initializePage() Q_DECL_OVERRIDE;
 
 private:
-    QCheckBox *commentCheckBox;
-    QCheckBox *protectCheckBox;
-    QCheckBox *includeBaseCheckBox;
-    QLabel *macroNameLabel;
-    QLabel *baseIncludeLabel;
-    QLineEdit *macroNameLineEdit;
-    QLineEdit *baseIncludeLineEdit;
-};
-//! [3]
-
-class OutputFilesPage : public QWizardPage
-{
-    Q_OBJECT
-
-public:
-    OutputFilesPage(QWidget *parent = 0);
-
-protected:
-    void initializePage() Q_DECL_OVERRIDE;
-
-private:
-    QLabel *outputDirLabel;
-    QLabel *headerLabel;
-    QLabel *implementationLabel;
-    QLineEdit *outputDirLineEdit;
-    QLineEdit *headerLineEdit;
-    QLineEdit *implementationLineEdit;
 };
 
-class ConclusionPage : public QWizardPage
+
+class ConclusionPage: public QWizardPage
 {
     Q_OBJECT
 
