@@ -1,0 +1,8 @@
+{
+	"name": "Physics Game",
+	"language": "c++",
+	"platforms": ["ios", "android"],
+	"files": [],
+	"description": "physics-doc.html"
+}
+

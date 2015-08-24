@@ -7,5 +7,8 @@
         <file>res/endless-screenshot.jpg</file>
         <file>res/physics-doc.html</file>
         <file>res/physics-screenshot.jpg</file>
+        <file>templates/physics_cpp/config.json</file>
+        <file>templates/physics_cpp/physics-doc.html</file>
+        <file>templates/physics_cpp/physics-screenshot.jpg</file>
     </qresource>
 </RCC>

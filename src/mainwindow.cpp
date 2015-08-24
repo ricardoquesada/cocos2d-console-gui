@@ -42,8 +42,7 @@ void MainWindow::on_pushButtonEditGame_clicked()
 
 void MainWindow::parseTemplates()
 {
-    // iterate the :/res/templates directory
-    QDirIterator it(":/res/templates", QDirIterator::Subdirectories);
+    QDirIterator it(":/templates", QDirIterator::Subdirectories);
     while (it.hasNext()) {
         it.next();
         auto fileInfo = it.fileInfo();
