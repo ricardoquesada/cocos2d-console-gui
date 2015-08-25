@@ -31,7 +31,7 @@ TemplateEntry TemplateEntry::createFromJsonFile(QFile* file)
     {
         {"ios", Platform::IOS},
         {"android", Platform::ANDROID},
-        {"winphone", Platform::WINDOWSPHONE},
+        {"windows phone", Platform::WINDOWSPHONE},
         {"mac", Platform::MAC},
         {"windows", Platform::WINDOWS},
         {"linux", Platform::LINUX}
@@ -59,29 +59,38 @@ TemplateEntry TemplateEntry::createFromJsonFile(QFile* file)
     // description: append path
     QFileInfo fileinfo(file->fileName());
     entry.description = fileinfo.absolutePath() + "/" + object["description_file"].toString();
-    qDebug() << entry.description;
 
+    // platform
     entry.platforms = Platform::NONE;
-
-
     for (int i=0; i<array_platforms.count(); i++)
     {
-        QString plat = array_platforms[0].toString();
+        QString plat = array_platforms[i].toString();
 
+        bool found = false;
         for (int j=0; j<TOTAL_PLATFORMS; j++)
         {
-            if (platforms[j].name == plat)
+            if (platforms[j].name == plat) {
                 entry.platforms |= platforms[j].value;
+                found = true;
+                break;
+            }
         }
+        if (!found)
+            qDebug() << "Invalid platform: " << plat;
     }
 
+    // language
+    bool found = false;
     for (int i=0; i<TOTAL_LANGUAGES; i++)
     {
         if (language == languages[i].name) {
             entry.language = languages[i].value;
+            found = true;
             break;
         }
     }
+    if (!found)
+        qDebug() << "Invalid language: " << language;
 
     return entry;
 }
