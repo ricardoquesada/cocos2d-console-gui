@@ -13,5 +13,8 @@
         <file>templates/scroller_cpp/config.json</file>
         <file>templates/scroller_cpp/scroller-doc.html</file>
         <file>templates/scroller_cpp/scroller-screenshot.jpg</file>
+        <file>templates/empty_cpp/config.json</file>
+        <file>templates/empty_cpp/empty-doc.html</file>
+        <file>templates/empty_cpp/empty-screenshot.jpg</file>
     </qresource>
 </RCC>
