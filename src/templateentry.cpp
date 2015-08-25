@@ -58,7 +58,7 @@ TemplateEntry TemplateEntry::createFromJsonFile(QFile* file)
 
     // description: append path
     QFileInfo fileinfo(file->fileName());
-    entry.description = fileinfo.absolutePath() + "/" + object["description"].toString();
+    entry.description = fileinfo.absolutePath() + "/" + object["description_file"].toString();
     qDebug() << entry.description;
 
     entry.platforms = Platform::NONE;

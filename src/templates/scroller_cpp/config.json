@@ -3,6 +3,6 @@
 	"language": "c++",
 	"platforms": ["ios", "android"],
 	"files": [],
-	"description": "scroller-doc.html"
+    "description_file": "scroller-doc.html"
 }
 

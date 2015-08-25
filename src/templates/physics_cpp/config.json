@@ -3,6 +3,6 @@
 	"language": "c++",
 	"platforms": ["ios", "android"],
 	"files": [],
-	"description": "physics-doc.html"
+    "description_file": "physics-doc.html"
 }
 
