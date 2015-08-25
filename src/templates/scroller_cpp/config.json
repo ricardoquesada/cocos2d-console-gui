@@ -1,0 +1,8 @@
+{
+	"name": "Scroller Game",
+	"language": "c++",
+	"platforms": ["ios", "android"],
+	"files": [],
+	"description": "scroller-doc.html"
+}
+

@@ -10,5 +10,8 @@
         <file>templates/physics_cpp/config.json</file>
         <file>templates/physics_cpp/physics-doc.html</file>
         <file>templates/physics_cpp/physics-screenshot.jpg</file>
+        <file>templates/scroller_cpp/config.json</file>
+        <file>templates/scroller_cpp/scroller-doc.html</file>
+        <file>templates/scroller_cpp/scroller-screenshot.jpg</file>
     </qresource>
 </RCC>
