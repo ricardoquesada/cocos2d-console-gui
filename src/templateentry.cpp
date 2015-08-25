@@ -1,6 +1,7 @@
 #include "templateentry.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -54,9 +55,14 @@ TemplateEntry TemplateEntry::createFromJsonFile(QFile* file)
 
 
     entry.name = object["name"].toString();
-    entry.description = object["description"].toString();
-    entry.screenshot = object["screnshot"].toString();
+
+    // description: append path
+    QFileInfo fileinfo(file->fileName());
+    entry.description = fileinfo.absolutePath() + "/" + object["description"].toString();
+    qDebug() << entry.description;
+
     entry.platforms = Platform::NONE;
+
 
     for (int i=0; i<array_platforms.count(); i++)
     {

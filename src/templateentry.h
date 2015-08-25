@@ -30,7 +30,9 @@ public:
 
     QString name;
     QString description;
-    QString screenshot;
     int platforms;
     Language language;
 };
+
+// needed to use it in a qvariant
+Q_DECLARE_METATYPE(const TemplateEntry*)

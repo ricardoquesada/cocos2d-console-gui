@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QFileInfo>
 
 namespace Ui {
 class MainWindow;
@@ -17,7 +16,6 @@ public:
     ~MainWindow();
 
 protected:
-    void parseTemplates();
 
 private slots:
 
