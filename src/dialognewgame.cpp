@@ -5,6 +5,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QProcess>
 
 #include "dialognewgame.h"
 #include "ui_dialognewgame.h"
@@ -83,14 +84,18 @@ void DialogNewGame::on_buttonBox_accepted()
 
 void DialogNewGame::parseTemplates()
 {
-    QDirIterator it(":/templates", QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-        it.next();
-        auto fileInfo = it.fileInfo();
+    QProcess process(this);
+    process.start("/Users/riq/progs/cocos2d-x/tools/cocos2d-console/bin/cocos", QStringList() << "new" << "--list-templates");
 
-        if (fileInfo.fileName() == "config.json") {
-            QFile file(fileInfo.filePath());
-            TemplateEntry entry = TemplateEntry::createFromJsonFile(&file);
+    // wait for error or five seconds
+    if (process.waitForFinished(5000))
+    {
+        const auto json(process.readAll());
+
+        QJsonDocument loadDoc(QJsonDocument::fromJson(json));
+        auto objects = loadDoc.object();
+        foreach (const auto& jsonObject, objects) {
+            TemplateEntry entry = TemplateEntry::createFromJson(jsonObject.toObject());
 
             switch(entry.language){
                 case TemplateEntry::Language::CPP:
@@ -106,5 +111,35 @@ void DialogNewGame::parseTemplates()
                     break;
             }
         }
+
     }
+    else
+    {
+        qDebug() << "Error running cocos";
+    }
+
+//    QDirIterator it(":/templates", QDirIterator::Subdirectories);
+//    while (it.hasNext()) {
+//        it.next();
+//        auto fileInfo = it.fileInfo();
+
+//        if (fileInfo.fileName() == "config.json") {
+//            QFile file(fileInfo.filePath());
+//            TemplateEntry entry = TemplateEntry::createFromJsonFile(&file);
+
+//            switch(entry.language){
+//                case TemplateEntry::Language::CPP:
+//                    _entriesCpp.push_back(entry);
+//                    break;
+
+//                case TemplateEntry::Language::LUA:
+//                    _entriesLua.push_back(entry);
+//                    break;
+
+//                case TemplateEntry::Language::JAVASCRIPT:
+//                    _entriesJavaScript.push_back(entry);
+//                    break;
+//            }
+//        }
+//    }
 }

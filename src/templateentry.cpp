@@ -8,35 +8,10 @@
 #include <QJsonArray>
 
 
-TemplateEntry TemplateEntry::createFromJsonFile(QFile* file)
+TemplateEntry TemplateEntry::createFromJson(const QJsonObject& jsonObject)
 {
     TemplateEntry entry;
     entry.name = "invalid";
-
-    if (!file->open(QIODevice::ReadOnly)) {
-        qWarning("Couldn't open open file.");
-        return entry;
-    }
-
-    QByteArray data = file->readAll();
-    QJsonDocument loadDoc(QJsonDocument::fromJson(data));
-
-
-    auto object = loadDoc.object();
-
-    struct {
-        const char* name;
-        int value;
-    } platforms[] =
-    {
-        {"ios", Platform::IOS},
-        {"android", Platform::ANDROID},
-        {"windows phone", Platform::WINDOWSPHONE},
-        {"mac", Platform::MAC},
-        {"windows", Platform::WINDOWS},
-        {"linux", Platform::LINUX}
-    };
-    static const int TOTAL_PLATFORMS = sizeof(platforms)/sizeof(platforms[0]);
 
     struct {
         const char* name;
@@ -50,34 +25,12 @@ TemplateEntry TemplateEntry::createFromJsonFile(QFile* file)
     static const int TOTAL_LANGUAGES = sizeof(languages)/sizeof(languages[0]);
 
 
-    auto language = object["language"].toString();
-    auto array_platforms = object["platforms"].toArray();
-
-
-    entry.name = object["name"].toString();
+    auto language = jsonObject["language"].toString();
+    entry.name = jsonObject["name"].toString();
 
     // description: append path
-    QFileInfo fileinfo(file->fileName());
-    entry.description = fileinfo.absolutePath() + "/" + object["description_file"].toString();
-
-    // platform
-    entry.platforms = Platform::NONE;
-    for (int i=0; i<array_platforms.count(); i++)
-    {
-        QString plat = array_platforms[i].toString();
-
-        bool found = false;
-        for (int j=0; j<TOTAL_PLATFORMS; j++)
-        {
-            if (platforms[j].name == plat) {
-                entry.platforms |= platforms[j].value;
-                found = true;
-                break;
-            }
-        }
-        if (!found)
-            qDebug() << "Invalid platform: " << plat;
-    }
+    auto path = jsonObject["path"].toString();
+    entry.description = path + "/" + "template_metadata" + "/" + jsonObject["description_file"].toString();
 
     // language
     bool found = false;

@@ -35,20 +35,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QComboBox" name="comboBox">
-        <item>
-         <property name="text">
-          <string>Platforms: iOS / Android</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Platforms: All</string>
-         </property>
-        </item>
-       </widget>
-      </item>
      </layout>
     </item>
     <item>
