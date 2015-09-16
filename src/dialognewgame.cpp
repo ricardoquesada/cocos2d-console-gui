@@ -24,6 +24,7 @@ limitations under the License.
 #include <QJsonArray>
 #include <QProcess>
 
+#include "preferencesdialog.h"
 #include "dialognewgame.h"
 #include "ui_dialognewgame.h"
 #include "templatewizard.h"
@@ -103,14 +104,12 @@ bool DialogNewGame::parseTemplates()
     QProcess process(this);
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     process.setProcessEnvironment(env);
-    process.start("cocos", QStringList() << "new" << "--list-templates");
-
-    qDebug() << env.value("PATH");
+    process.start( PreferencesDialog::findCocosPath() + "/cocos", QStringList() << "new" << "--list-templates");
 
     // wait for error or five seconds
     if (process.waitForFinished(5000))
     {
-        const auto json(process.readAll());
+        const auto json(process.readAllStandardOutput());
 
         QJsonDocument loadDoc(QJsonDocument::fromJson(json));
         auto objects = loadDoc.object();

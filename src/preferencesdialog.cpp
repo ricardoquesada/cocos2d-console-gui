@@ -19,6 +19,64 @@ limitations under the License.
 
 #include <QFileDialog>
 #include <QSettings>
+#include <QDir>
+#include <QFileInfo>
+#include <QDebug>
+#include <QStandardPaths>
+
+
+// function taken from here:
+// http://stackoverflow.com/a/26991243/1119460
+static bool fileExists(const QString& path)
+{
+    QFileInfo checkFile(path);
+    // check if file exists and if yes: Is it really a file and no directory?
+    if (checkFile.exists() && checkFile.isFile()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+QString PreferencesDialog::findCocosPath()
+{
+    QString ret = "";
+
+    // current directory
+    QString cwd = QDir::currentPath();
+    QString settingsPath = QSettings().value("cocos_console_path").toString();
+
+    if (fileExists(settingsPath + "/cocos"))
+        return settingsPath;
+
+    else if (fileExists(cwd + "/cocos"))
+        ret = cwd;
+
+    else if (fileExists(cwd + "/../../cocos"))
+        ret = cwd + "/../../";
+
+   // Some wild guesses
+    else if (fileExists(QDir::homePath() + "/cocos2d-x/tools/cocos2d-console/bin/cocos"))
+        ret = QDir::homePath() + "/cocos2d-x/tools/cocos2d-console/bin";
+
+    else if (fileExists(QDir::homePath() + "/progs/cocos2d-x/tools/cocos2d-console/bin/cocos"))
+        ret = QDir::homePath() + "/progs/cocos2d-x/tools/cocos2d-console/bin";
+
+    else
+    {
+        auto list = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
+        foreach(const auto& element, list)
+        {
+            fileExists(element + "/Cocos/bin/cocos");
+            ret = element + "/Cocos/bin/cocos";
+            break;
+        }
+    }
+
+    if (!ret.isEmpty())
+        ret = QFileInfo(ret).canonicalFilePath();
+    return ret;
+}
 
 PreferencesDialog::PreferencesDialog(QWidget *parent) :
     QDialog(parent),
@@ -27,7 +85,11 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     ui->setupUi(this);
 
     QSettings settings;
-    auto defaultDir = settings.value("cocos2d_path", "/Applications/cocos").toString();
+    auto defaultDir = settings.value("cocos_console_path").toString();
+    if (defaultDir.isEmpty())
+    {
+        defaultDir = PreferencesDialog::findCocosPath();
+    }
     ui->lineEdit->setText(defaultDir);
 }
 
@@ -38,14 +100,22 @@ PreferencesDialog::~PreferencesDialog()
 
 void PreferencesDialog::on_directoryButton_clicked()
 {
-    QSettings settings;
     auto filename = QFileDialog::getExistingDirectory(this,
-                                                 "Cocos2d-x Path",
+                                                 "Cocos2D Console Path",
                                                  ui->lineEdit->text());
 
     if (!filename.isEmpty())
-    {
         ui->lineEdit->setText(filename);
-        settings.setValue("cocos2d_path", filename);
-    }
+}
+
+void PreferencesDialog::on_buttonBox_accepted()
+{
+    QSettings settings;
+    settings.setValue("cocos_console_path", ui->lineEdit->text());
+}
+
+void PreferencesDialog::on_lineEdit_editingFinished()
+{
+    // try to find "cocos". If not, report it as red
+    auto cocos_path = ui->lineEdit->text();
 }
