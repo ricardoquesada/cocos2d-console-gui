@@ -1,3 +1,20 @@
+/****************************************************************************
+Copyright 2015 Chukong Technologies
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+****************************************************************************/
+
+#pragma once
 #include <QDebug>
 #include <QString>
 #include <QDirIterator>
@@ -24,14 +41,15 @@ DialogNewGame::DialogNewGame(QWidget *parent)
     auto listWidget = ui->listWidget;
 
     // parse templates
-    parseTemplates();
+    if (parseTemplates())
+    {
+        populateTemplateList("C++ Templates", &_entriesCpp, listWidget);
+        populateTemplateList("JavaScript Templates", &_entriesJavaScript, listWidget);
+        populateTemplateList("Lua Templates", &_entriesLua, listWidget);
 
-    populateTemplateList("C++ Templates", &_entriesCpp, listWidget);
-    populateTemplateList("JavaScript Templates", &_entriesJavaScript, listWidget);
-    populateTemplateList("Lua Templates", &_entriesLua, listWidget);
-
-    //
-    listWidget->item(1)->setSelected(true);
+        //
+        listWidget->item(1)->setSelected(true);
+    }
 
     // populate text browser
     ui->textBrowser->setDocumentTitle("hello");
@@ -76,16 +94,18 @@ void DialogNewGame::on_listWidget_currentItemChanged(QListWidgetItem *current, Q
 void DialogNewGame::on_buttonBox_accepted()
 {
     TemplateWizard wizard(this);
-
     wizard.resize(this->width(), this->height());
-
     wizard.exec();
 }
 
-void DialogNewGame::parseTemplates()
+bool DialogNewGame::parseTemplates()
 {
     QProcess process(this);
-    process.start("/Users/riq/progs/cocos2d-x/tools/cocos2d-console/bin/cocos", QStringList() << "new" << "--list-templates");
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    process.setProcessEnvironment(env);
+    process.start("cocos", QStringList() << "new" << "--list-templates");
+
+    qDebug() << env.value("PATH");
 
     // wait for error or five seconds
     if (process.waitForFinished(5000))
@@ -112,34 +132,12 @@ void DialogNewGame::parseTemplates()
             }
         }
 
+        return true;
+
     }
     else
     {
         qDebug() << "Error running cocos";
+        return false;
     }
-
-//    QDirIterator it(":/templates", QDirIterator::Subdirectories);
-//    while (it.hasNext()) {
-//        it.next();
-//        auto fileInfo = it.fileInfo();
-
-//        if (fileInfo.fileName() == "config.json") {
-//            QFile file(fileInfo.filePath());
-//            TemplateEntry entry = TemplateEntry::createFromJsonFile(&file);
-
-//            switch(entry.language){
-//                case TemplateEntry::Language::CPP:
-//                    _entriesCpp.push_back(entry);
-//                    break;
-
-//                case TemplateEntry::Language::LUA:
-//                    _entriesLua.push_back(entry);
-//                    break;
-
-//                case TemplateEntry::Language::JAVASCRIPT:
-//                    _entriesJavaScript.push_back(entry);
-//                    break;
-//            }
-//        }
-//    }
 }

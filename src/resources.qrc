@@ -1,20 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>res/logo.png</file>
-        <file>res/empty-doc.html</file>
-        <file>res/empty-screenshot.jpg</file>
-        <file>res/endless-doc.html</file>
-        <file>res/endless-screenshot.jpg</file>
-        <file>res/physics-doc.html</file>
-        <file>res/physics-screenshot.jpg</file>
-        <file>templates/physics_cpp/config.json</file>
-        <file>templates/physics_cpp/physics-doc.html</file>
-        <file>templates/physics_cpp/physics-screenshot.jpg</file>
-        <file>templates/scroller_cpp/config.json</file>
-        <file>templates/scroller_cpp/scroller-doc.html</file>
-        <file>templates/scroller_cpp/scroller-screenshot.jpg</file>
-        <file>templates/empty_cpp/config.json</file>
-        <file>templates/empty_cpp/empty-doc.html</file>
-        <file>templates/empty_cpp/empty-screenshot.jpg</file>
+        <file>logo.png</file>
     </qresource>
 </RCC>

@@ -17,36 +17,21 @@ limitations under the License.
 #pragma once
 
 #include <QDialog>
-#include <QListWidgetItem>
-#include <QList>
-
-#include "templateentry.h"
 
 namespace Ui {
-class DialogNewGame;
+class AboutDialog;
 }
 
-class DialogNewGame : public QDialog
+class AboutDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit DialogNewGame(QWidget *parent = 0);
-    ~DialogNewGame();
-
-protected:
-    bool parseTemplates();
-    void populateTemplateList(const QString& title, QList<TemplateEntry>* list, QListWidget* parent);
+    explicit AboutDialog(QWidget *parent = 0);
+    ~AboutDialog();
 
 private slots:
-    void on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-
-    void on_buttonBox_accepted();
 
 private:
-    QList<TemplateEntry> _entriesCpp;
-    QList<TemplateEntry> _entriesLua;
-    QList<TemplateEntry> _entriesJavaScript;
-
-    Ui::DialogNewGame *ui;
+    Ui::AboutDialog *ui;
 };

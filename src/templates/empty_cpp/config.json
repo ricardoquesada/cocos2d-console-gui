@@ -1,8 +1,0 @@
-{
-	"name": "Empty Game",
-    "language": "c++",
-    "platforms": ["alberto", "ios", "android", "mac", "windows", "linux", "windows phone", "matias", "carlos"],
-	"files": [],
-	"description_file": "empty-doc.html"
-}
-
