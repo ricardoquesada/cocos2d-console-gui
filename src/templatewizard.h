@@ -28,14 +28,19 @@ class QListWidget;
 class QLineEdit;
 QT_END_NAMESPACE
 
+class TemplateEntry;
+
 class TemplateWizard: public QWizard
 {
     Q_OBJECT
 
 public:
-    TemplateWizard(QWidget *parent = 0);
+    TemplateWizard(const TemplateEntry& templateEntry, QWidget *parent = 0);
 
     void accept() Q_DECL_OVERRIDE;
+
+protected:
+    const TemplateEntry& _templateEntry;
 };
 
 class LocationPage: public QWizardPage
@@ -46,6 +51,7 @@ public:
     LocationPage(QWidget *parent = 0);
 
     bool isComplete() const Q_DECL_OVERRIDE;
+    virtual bool validatePage() Q_DECL_OVERRIDE;
 
 private:
     QLineEdit* _createEdit;
@@ -60,6 +66,7 @@ public:
 
 protected:
     void initializePage() Q_DECL_OVERRIDE;
+    virtual bool validatePage() Q_DECL_OVERRIDE;
 
 private:
     QListWidget* _listWidget;
@@ -75,6 +82,7 @@ public:
 
 protected:
     void initializePage() Q_DECL_OVERRIDE;
+    virtual bool validatePage() Q_DECL_OVERRIDE;
 
 private:
     QLabel *label;

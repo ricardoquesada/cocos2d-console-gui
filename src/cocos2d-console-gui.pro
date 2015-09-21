@@ -37,3 +37,5 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     resources.qrc
+
+QMAKE_CXXFLAGS += -Werror

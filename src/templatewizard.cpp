@@ -14,17 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ****************************************************************************/
 
-#pragma once
-
 #include <QtWidgets>
 
 #include "templatewizard.h"
+#include "templateentry.h"
 
-TemplateWizard::TemplateWizard(QWidget *parent)
+TemplateWizard::TemplateWizard(const TemplateEntry& templateEntry, QWidget *parent)
     : QWizard(parent)
+    , _templateEntry(templateEntry)
 {
+    auto options = _templateEntry.options();
+    qDebug() << options;
+
+    bool sdkboxPage = false;
+    if (options.contains("sdkbox"))
+    {
+        if (options["sdkbox"].toBool())
+            sdkboxPage = true;
+    }
+
     addPage(new LocationPage);
-    addPage(new SDKPage);
+    if (sdkboxPage)
+        addPage(new SDKPage);
     addPage(new ConclusionPage);
 
 //    setPixmap(QWizard::BannerPixmap, QPixmap(":/images/banner.png"));
@@ -38,6 +49,10 @@ void TemplateWizard::accept()
     //
     QDialog::accept();
 }
+
+//
+// ----
+//
 
 LocationPage::LocationPage(QWidget *parent)
     : QWizardPage(parent)
@@ -53,14 +68,17 @@ LocationPage::LocationPage(QWidget *parent)
     nameLabel->setBuddy(nameEdit);
 
     auto createLabel = new QLabel(tr("&Create in:"));
-    _createEdit = new QLineEdit(tr("~/MyGames"), this);
+    _createEdit = new QLineEdit(QDir::homePath()+"/MyGames", this);
     createLabel->setBuddy(_createEdit);
 
     auto createChooseButton = new QPushButton("Choose...");
 
     connect(createChooseButton, &QPushButton::pressed, [&]()
     {
-        auto fn = QFileDialog::getExistingDirectory(this, _createEdit->text());
+        auto fn = QFileDialog::getExistingDirectory(this,
+                                                    tr("Choose Directory"),
+                                                    _createEdit->text()
+                                                    );
         if (fn.length()>0)
         {
             _createEdit->setText(fn);
@@ -98,6 +116,14 @@ bool LocationPage::isComplete() const
 
     return (name.length() && create.length());
 }
+
+bool LocationPage::validatePage()
+{
+    return true;
+}
+
+// ----
+
 
 SDKPage::SDKPage(QWidget *parent)
     : QWizardPage(parent)
@@ -173,6 +199,11 @@ void SDKPage::initializePage()
     QString className = field("nameEdit").toString();
 }
 
+bool SDKPage::validatePage()
+{
+    return true;
+}
+
 
 // ----
 
@@ -221,7 +252,10 @@ ConclusionPage::ConclusionPage(QWidget *parent)
 
 void ConclusionPage::initializePage()
 {
+}
 
-
+bool ConclusionPage::validatePage()
+{
+    return true;
 }
 

@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ****************************************************************************/
 
-#pragma once
 #include <QDebug>
 #include <QString>
 #include <QDirIterator>
@@ -48,8 +47,8 @@ DialogNewGame::DialogNewGame(QWidget *parent)
         populateTemplateList("JavaScript Templates", &_entriesJavaScript, listWidget);
         populateTemplateList("Lua Templates", &_entriesLua, listWidget);
 
-        //
-        listWidget->item(1)->setSelected(true);
+        if (listWidget->count()>1)
+            listWidget->item(1)->setSelected(true);
     }
 
     // populate text browser
@@ -73,7 +72,7 @@ void DialogNewGame::populateTemplateList(const QString& title, QList<TemplateEnt
 
         for (int i=0; i<list->count(); i++)
         {
-            auto item = new QListWidgetItem(list->at(i).name, parent);
+            auto item = new QListWidgetItem(list->at(i).name(), parent);
             QVariant v;
             v.setValue(&list->at(i));
             item->setData(Qt::UserRole,v);
@@ -84,9 +83,12 @@ void DialogNewGame::populateTemplateList(const QString& title, QList<TemplateEnt
 
 void DialogNewGame::on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
+    // unused
+    (void)previous;
+
     auto variant = current->data(Qt::UserRole);
     auto entry = variant.value<const TemplateEntry*>();
-    auto qurl = QUrl::fromLocalFile(entry->description);
+    auto qurl = QUrl::fromLocalFile(entry->description());
 
     ui->textBrowser->setSource(qurl);
 }
@@ -94,7 +96,9 @@ void DialogNewGame::on_listWidget_currentItemChanged(QListWidgetItem *current, Q
 
 void DialogNewGame::on_buttonBox_accepted()
 {
-    TemplateWizard wizard(this);
+    auto variant = ui->listWidget->selectedItems().at(0)->data(Qt::UserRole);
+    auto entry = variant.value<const TemplateEntry*>();
+    TemplateWizard wizard(*entry, this);
     wizard.resize(this->width(), this->height());
     wizard.exec();
 }
@@ -111,12 +115,17 @@ bool DialogNewGame::parseTemplates()
     {
         const auto json(process.readAllStandardOutput());
 
-        QJsonDocument loadDoc(QJsonDocument::fromJson(json));
+        QJsonParseError error;
+        QJsonDocument loadDoc(QJsonDocument::fromJson(json, &error));
+        if (error.error != QJsonParseError::NoError) {
+            qDebug() << error.errorString();
+            return false;
+        }
         auto objects = loadDoc.object();
         foreach (const auto& jsonObject, objects) {
             TemplateEntry entry = TemplateEntry::createFromJson(jsonObject.toObject());
 
-            switch(entry.language){
+            switch(entry.language()){
                 case TemplateEntry::Language::CPP:
                     _entriesCpp.push_back(entry);
                     break;

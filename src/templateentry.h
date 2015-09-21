@@ -19,6 +19,7 @@ limitations under the License.
 #include <QObject>
 #include <QString>
 #include <QFile>
+#include <QJsonObject>
 
 class TemplateEntry
 {
@@ -32,9 +33,16 @@ public:
 
     static TemplateEntry createFromJson(const QJsonObject& jsonObject);
 
-    QString name;
-    QString description;
-    Language language;
+    const QString& name() const { return _name; }
+    const Language& language() const { return _language; }
+    const QJsonObject& options() const { return _options; }
+    const QString& description() const { return _description; }
+
+protected:
+    QString _name;
+    QString _description;
+    Language _language;
+    QJsonObject _options;
 };
 
 // needed to use it in a qvariant

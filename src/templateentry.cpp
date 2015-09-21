@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ****************************************************************************/
 
-#pragma once
 #include "templateentry.h"
 
 #include <QFile>
@@ -28,7 +27,7 @@ limitations under the License.
 TemplateEntry TemplateEntry::createFromJson(const QJsonObject& jsonObject)
 {
     TemplateEntry entry;
-    entry.name = "invalid";
+    entry._name = "invalid";
 
     struct {
         const char* name;
@@ -43,18 +42,19 @@ TemplateEntry TemplateEntry::createFromJson(const QJsonObject& jsonObject)
 
 
     auto language = jsonObject["language"].toString();
-    entry.name = jsonObject["name"].toString();
+    entry._name = jsonObject["name"].toString();
+    entry._options = jsonObject["options"].toObject();
 
     // description: append path
     auto path = jsonObject["path"].toString();
-    entry.description = path + "/" + "template_metadata" + "/" + jsonObject["description_file"].toString();
+    entry._description = path + "/" + "template_metadata" + "/" + jsonObject["description_file"].toString();
 
     // language
     bool found = false;
     for (int i=0; i<TOTAL_LANGUAGES; i++)
     {
         if (language == languages[i].name) {
-            entry.language = languages[i].value;
+            entry._language = languages[i].value;
             found = true;
             break;
         }
