@@ -13,7 +13,7 @@ ProgressDialog::~ProgressDialog()
     delete ui;
 }
 
-void ProgressDialog::appendData(const QByteArray &byteArray)
+void ProgressDialog::appendData(const QString& str)
 {
-    ui->textBrowser->append(byteArray);
+    ui->textBrowser->append(str);
 }

@@ -15,7 +15,7 @@ public:
     explicit ProgressDialog(QWidget *parent = 0);
     ~ProgressDialog();
 
-    void appendData(const QByteArray& byteArray);
+    void appendData(const QString& str);
 
 private:
     Ui::ProgressDialog *ui;

@@ -120,17 +120,24 @@ void DialogNewGame::copyFiles(const TemplateWizard& wizard)
     connect(_process,SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int,QProcess::ExitStatus)));
 
     _process->setProcessChannelMode(QProcess::MergedChannels);
-    _process->start( PreferencesDialog::findCocosPath() + "/cocos", QStringList() << "new"
-                   << wizard.field("gameName").toString()
-                   << "-lcpp"
-//                   << "--template-name" << _templateEntry.name()
-                   << "-p" << wizard.field("gamePath").toString());
+    QStringList commandLine = QStringList() << PreferencesDialog::findCocosPath() + "/cocos"
+                                            << "new"
+                                            << wizard.field("gameName").toString()
+                                            << "-lcpp"
+//                                            << "--template-name" << _templateEntry.name()
+                                            << "-p" << wizard.field("gamePath").toString();
 
     _progressDialog = new ProgressDialog(this);
     _progressDialog->setModal(true);
+    _progressDialog->appendData(tr("Running:"));
+    _progressDialog->appendData(commandLine.join(" "));
+
+    auto executable = commandLine.at(0);
+    commandLine.removeFirst();
+    _process->start(executable, commandLine);
+
     _progressDialog->show();
 
-//    _progressDialog->appendData(tr("Copying files..."));
 
     while(1){
         qApp->processEvents();
