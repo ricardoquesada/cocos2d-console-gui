@@ -17,6 +17,10 @@ public:
 
     void appendData(const QString& str);
 
+public slots:
+    void processFinished();
+
+
 private:
     Ui::ProgressDialog *ui;
 };

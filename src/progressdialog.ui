@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>396</width>
-    <height>303</height>
+    <width>501</width>
+    <height>329</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,6 +26,13 @@
          <width>360</width>
          <height>230</height>
         </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QProgressBar" name="progressBar">
+       <property name="maximum">
+        <number>0</number>
        </property>
       </widget>
      </item>

@@ -116,16 +116,13 @@ void DialogNewGame::copyFiles(const TemplateWizard& wizard)
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     _process->setProcessEnvironment(env);
 
-    connect(_process,SIGNAL(readyReadStandardOutput()), this, SLOT(processReadyReadStandardOutput()));
-    connect(_process,SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int,QProcess::ExitStatus)));
-
     _process->setProcessChannelMode(QProcess::MergedChannels);
     QStringList commandLine = QStringList() << PreferencesDialog::findCocosPath() + "/cocos"
                                             << "new"
                                             << wizard.field("gameName").toString()
                                             << "-lcpp"
 //                                            << "--template-name" << _templateEntry.name()
-                                            << "-p" << wizard.field("gamePath").toString();
+                                            << "-d" << wizard.field("gamePath").toString();
 
     _progressDialog = new ProgressDialog(this);
     _progressDialog->setModal(true);
@@ -136,12 +133,12 @@ void DialogNewGame::copyFiles(const TemplateWizard& wizard)
     commandLine.removeFirst();
     _process->start(executable, commandLine);
 
-    _progressDialog->show();
 
+    connect(_process,SIGNAL(readyReadStandardOutput()), this, SLOT(processReadyReadStandardOutput()));
+    connect(_process,SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int,QProcess::ExitStatus)));
+    connect(_process,SIGNAL(finished(int,QProcess::ExitStatus)), _progressDialog, SLOT(processFinished()));
 
-    while(1){
-        qApp->processEvents();
-    }
+    _progressDialog->exec();
 }
 
 void DialogNewGame::processReadyReadStandardOutput()
@@ -157,9 +154,6 @@ void DialogNewGame::processFinished(int exitCode, QProcess::ExitStatus exitStatu
 {
     (void)exitCode;
     (void)exitStatus;
-
-    _running = false;
-    qDebug() << "Exit code:" << exitCode << exitStatus;
 }
 
 
