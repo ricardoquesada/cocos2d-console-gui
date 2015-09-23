@@ -17,6 +17,7 @@ limitations under the License.
 #pragma once
 
 #include <QWizard>
+#include <QProcess>
 
 QT_BEGIN_NAMESPACE
 class QCheckBox;

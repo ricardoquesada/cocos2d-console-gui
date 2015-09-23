@@ -21,19 +21,22 @@ SOURCES += main.cpp\
     templatewizard.cpp \
     templateentry.cpp \
     aboutdialog.cpp \
-    preferencesdialog.cpp
+    preferencesdialog.cpp \
+    progressdialog.cpp
 
 HEADERS  += mainwindow.h \
     dialognewgame.h \
     templatewizard.h \
     templateentry.h \
     aboutdialog.h \
-    preferencesdialog.h
+    preferencesdialog.h \
+    progressdialog.h
 
 FORMS    += mainwindow.ui \
     dialognewgame.ui \
     aboutdialog.ui \
-    preferencesdialog.ui
+    preferencesdialog.ui \
+    progressdialog.ui
 
 RESOURCES += \
     resources.qrc

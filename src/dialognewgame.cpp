@@ -22,11 +22,13 @@ limitations under the License.
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QProcess>
+#include <QProgressDialog>
 
 #include "preferencesdialog.h"
 #include "dialognewgame.h"
 #include "ui_dialognewgame.h"
 #include "templatewizard.h"
+#include "progressdialog.h"
 
 DialogNewGame::DialogNewGame(QWidget *parent)
     : QDialog(parent)
@@ -34,6 +36,8 @@ DialogNewGame::DialogNewGame(QWidget *parent)
     , _entriesLua()
     , _entriesJavaScript()
     , ui(new Ui::DialogNewGame)
+    , _progressDialog(nullptr)
+    , _running(true)
 {
     ui->setupUi(this);
 
@@ -100,8 +104,59 @@ void DialogNewGame::on_buttonBox_accepted()
     auto entry = variant.value<const TemplateEntry*>();
     TemplateWizard wizard(*entry, this);
     wizard.resize(this->width(), this->height());
-    wizard.exec();
+
+    // 1: Done, 0: Cancel
+    if (wizard.exec())
+        copyFiles(wizard);
 }
+
+void DialogNewGame::copyFiles(const TemplateWizard& wizard)
+{
+    _process = new QProcess(this);
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    _process->setProcessEnvironment(env);
+
+    connect(_process,SIGNAL(readyReadStandardOutput()), this, SLOT(processReadyReadStandardOutput()));
+    connect(_process,SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int,QProcess::ExitStatus)));
+
+    _process->setProcessChannelMode(QProcess::MergedChannels);
+    _process->start( PreferencesDialog::findCocosPath() + "/cocos", QStringList() << "new"
+                   << wizard.field("gameName").toString()
+                   << "-lcpp"
+//                   << "--template-name" << _templateEntry.name()
+                   << "-p" << wizard.field("gamePath").toString());
+
+    _progressDialog = new ProgressDialog(this);
+    _progressDialog->setModal(true);
+    _progressDialog->show();
+
+//    _progressDialog->appendData(tr("Copying files..."));
+
+    while(1){
+        qApp->processEvents();
+    }
+}
+
+void DialogNewGame::processReadyReadStandardOutput()
+{
+    _progressDialog->appendData(_process->read(_process->bytesAvailable()));
+
+    // Output the data
+    qDebug() << "-- section --";
+    qDebug() << _data.data();
+}
+
+void DialogNewGame::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    (void)exitCode;
+    (void)exitStatus;
+
+    _running = false;
+    qDebug() << "Exit code:" << exitCode << exitStatus;
+}
+
+
+///
 
 bool DialogNewGame::parseTemplates()
 {

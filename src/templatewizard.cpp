@@ -18,13 +18,13 @@ limitations under the License.
 
 #include "templatewizard.h"
 #include "templateentry.h"
+#include "preferencesdialog.h"
 
 TemplateWizard::TemplateWizard(const TemplateEntry& templateEntry, QWidget *parent)
     : QWizard(parent)
     , _templateEntry(templateEntry)
 {
     auto options = _templateEntry.options();
-    qDebug() << options;
 
     bool sdkboxPage = false;
     if (options.contains("sdkbox"))
@@ -46,7 +46,6 @@ TemplateWizard::TemplateWizard(const TemplateEntry& templateEntry, QWidget *pare
 
 void TemplateWizard::accept()
 {
-    //
     QDialog::accept();
 }
 
@@ -89,8 +88,8 @@ LocationPage::LocationPage(QWidget *parent)
 
     auto locationCheckBox = new QCheckBox(tr("&Use as default project location"));
 
-    registerField("nameEdit*", nameEdit);
-    registerField("createEdit*", _createEdit);
+    registerField("gameName*", nameEdit);
+    registerField("gamePath*", _createEdit);
     registerField("locationCheckBox", locationCheckBox);
 
     QGridLayout *gridLayout = new QGridLayout;
@@ -111,8 +110,8 @@ LocationPage::LocationPage(QWidget *parent)
 
 bool LocationPage::isComplete() const
 {
-    auto name = field("nameEdit").toString();
-    auto create = field("createEdit").toString();
+    auto name = field("gameName").toString();
+    auto create = field("gamePath").toString();
 
     return (name.length() && create.length());
 }
@@ -196,7 +195,7 @@ SDKPage::SDKPage(QWidget *parent)
 
 void SDKPage::initializePage()
 {
-    QString className = field("nameEdit").toString();
+    QString className = field("gameName").toString();
 }
 
 bool SDKPage::validatePage()
@@ -247,7 +246,6 @@ ConclusionPage::ConclusionPage(QWidget *parent)
 
     // --
     setLayout(grid);
-
 }
 
 void ConclusionPage::initializePage()
@@ -258,4 +256,3 @@ bool ConclusionPage::validatePage()
 {
     return true;
 }
-

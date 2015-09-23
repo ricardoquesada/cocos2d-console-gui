@@ -19,12 +19,16 @@ limitations under the License.
 #include <QDialog>
 #include <QListWidgetItem>
 #include <QList>
+#include <QProcess>
 
 #include "templateentry.h"
+#include "templatewizard.h"
 
 namespace Ui {
 class DialogNewGame;
 }
+
+class ProgressDialog;
 
 class DialogNewGame : public QDialog
 {
@@ -37,11 +41,13 @@ public:
 protected:
     bool parseTemplates();
     void populateTemplateList(const QString& title, QList<TemplateEntry>* list, QListWidget* parent);
+    void copyFiles(const TemplateWizard& wizard);
 
 private slots:
     void on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-
     void on_buttonBox_accepted();
+    void processReadyReadStandardOutput();
+    void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
 private:
     QList<TemplateEntry> _entriesCpp;
@@ -49,4 +55,9 @@ private:
     QList<TemplateEntry> _entriesJavaScript;
 
     Ui::DialogNewGame *ui;
+
+    QByteArray _data;
+    QProcess* _process;
+    ProgressDialog* _progressDialog;
+    bool _running;
 };
