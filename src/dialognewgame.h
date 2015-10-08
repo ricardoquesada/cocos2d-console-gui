@@ -41,7 +41,7 @@ public:
 protected:
     bool parseTemplates();
     void populateTemplateList(const QString& title, QList<TemplateEntry>* list, QListWidget* parent);
-    void copyFiles(const TemplateWizard& wizard);
+    void copyFiles(const TemplateWizard& wizard, const TemplateEntry &templateEntry);
 
 private slots:
     void on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);

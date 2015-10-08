@@ -229,20 +229,8 @@ ConclusionPage::ConclusionPage(QWidget *parent)
     grid->addWidget(comboBox, 0, 1);
 
     // --
-    auto textBrowser = new QTextBrowser();
-
-    textBrowser->append("<html>");
-    textBrowser->append("<span>Here goes some description of your project. Files to be created are:</span>");
-    textBrowser->append("<p>");
-    textBrowser->append("<code>/usr/local/bin/game.xxx</code>");
-    textBrowser->append("<code>/usr/local/bin/game.xxx</code>");
-    textBrowser->append("<code>/usr/local/bin/game.xxx</code>");
-    textBrowser->append("<code>/usr/local/bin/game.xxx</code>");
-    textBrowser->append("");
-    textBrowser->append("<span>Press 'Done'.</span>");
-    textBrowser->setReadOnly(true);
-
-    grid->addWidget(textBrowser, 1, 0, 2, 2);
+    _textBrowser = new QTextBrowser();
+    grid->addWidget(_textBrowser, 1, 0, 2, 2);
 
     // --
     setLayout(grid);
@@ -250,6 +238,15 @@ ConclusionPage::ConclusionPage(QWidget *parent)
 
 void ConclusionPage::initializePage()
 {
+    _textBrowser->append("<html>");
+    _textBrowser->append(QString("<span>Game Name: %1</span>").arg(field("gameName").toString()));
+    _textBrowser->append("<p>");
+    _textBrowser->append("<span>Files to be created in:</span>");
+    _textBrowser->append("<p>");
+    _textBrowser->append(QString("<code>%1</code>").arg(field("gamePath").toString()));
+    _textBrowser->append("");
+    _textBrowser->append("<span>Press 'Done'.</span>");
+    _textBrowser->setReadOnly(true);
 }
 
 bool ConclusionPage::validatePage()

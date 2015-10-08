@@ -107,10 +107,10 @@ void DialogNewGame::on_buttonBox_accepted()
 
     // 1: Done, 0: Cancel
     if (wizard.exec())
-        copyFiles(wizard);
+        copyFiles(wizard, *entry);
 }
 
-void DialogNewGame::copyFiles(const TemplateWizard& wizard)
+void DialogNewGame::copyFiles(const TemplateWizard& wizard, const TemplateEntry& templateEntry)
 {
     _process = new QProcess(this);
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -120,8 +120,8 @@ void DialogNewGame::copyFiles(const TemplateWizard& wizard)
     QStringList commandLine = QStringList() << PreferencesDialog::findCocosPath() + "/cocos"
                                             << "new"
                                             << wizard.field("gameName").toString()
-                                            << "-lcpp"
-//                                            << "--template-name" << _templateEntry.name()
+//                                            << "-lcpp"
+                                            << "--template-name" << templateEntry.name()
                                             << "-d" << wizard.field("gamePath").toString();
 
     _progressDialog = new ProgressDialog(this);

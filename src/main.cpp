@@ -22,8 +22,9 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     app.setOrganizationDomain(QLatin1String("cocos2d-x.org"));
-    app.setApplicationName(QLatin1String("Cocos2d Console GUI"));
     app.setApplicationVersion(QLatin1String(APP_VERSION));
+    app.setApplicationName(QLatin1String("Cocos2d Console GUI"));
+    app.setApplicationDisplayName(QLatin1String("Cocos2d Console GUI"));
 
     QApplication::setWindowIcon(QIcon(":/logo.png"));
 

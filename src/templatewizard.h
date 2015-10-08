@@ -27,6 +27,7 @@ class QLineEdit;
 class QRadioButton;
 class QListWidget;
 class QLineEdit;
+class QTextBrowser;
 QT_END_NAMESPACE
 
 class TemplateEntry;
@@ -86,6 +87,6 @@ protected:
     virtual bool validatePage() Q_DECL_OVERRIDE;
 
 private:
-    QLabel *label;
+    QTextBrowser* _textBrowser;
 };
 
