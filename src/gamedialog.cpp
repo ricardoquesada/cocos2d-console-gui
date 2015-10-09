@@ -21,10 +21,12 @@ limitations under the License.
 
 GameDialog::GameDialog(const QString &path, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::GameDialog)
+    ui(new Ui::GameDialog),
+    _path(path)
 {
     ui->setupUi(this);
     ui->textBrowser->append(path);
+    setWindowTitle(path);
 }
 
 GameDialog::~GameDialog()
@@ -34,7 +36,7 @@ GameDialog::~GameDialog()
 
 void GameDialog::on_pushButton_close_clicked()
 {
-
+    close();
 }
 
 void GameDialog::on_pushButton_compile_clicked()
@@ -49,5 +51,5 @@ void GameDialog::on_pushButton_deploy_clicked()
 
 void GameDialog::on_pushButton_openFolder_clicked()
 {
-    QDesktopServices::openUrl(QUrl("file://Users/"));
+    QDesktopServices::openUrl(QUrl("file://" + _path));
 }

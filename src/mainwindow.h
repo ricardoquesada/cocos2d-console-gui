@@ -21,6 +21,10 @@ limitations under the License.
 #include <QString>
 #include <QSettings>
 
+QT_BEGIN_NAMESPACE
+class QListWidgetItem;
+QT_END_NAMESPACE
+
 namespace Ui {
 class MainWindow;
 }
@@ -40,6 +44,7 @@ protected:
 private slots:
 
     void openRecentFile_triggered();
+    void itemDoubleClicked(QListWidgetItem* item);
 
     void on_pushButtonNewGame_clicked();
     void on_actionPreferences_triggered();
@@ -47,6 +52,8 @@ private slots:
     void on_pushButtonOpenGame_clicked();
     void on_actionOpen_triggered();
     void on_actionClear_Recent_Games_triggered();
+
+
 
 private:
     void updateRecentFiles();
@@ -58,5 +65,6 @@ private:
 
     Ui::MainWindow *ui;
     QSettings _settings;
-    QAction* _recentFiles[MAX_RECENT_FILES];
+    QAction* _recentFilesAction[MAX_RECENT_FILES];
+    QListWidgetItem* _recentFilesWidget[MAX_RECENT_FILES];
 };

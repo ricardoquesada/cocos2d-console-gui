@@ -20,6 +20,7 @@ limitations under the License.
 #include <QFileDialog>
 #include <QDebug>
 #include <QSettings>
+#include <QListWidgetItem>
 
 #include "dialognewgame.h"
 #include "gamedialog.h"
@@ -47,9 +48,26 @@ MainWindow::~MainWindow()
 }
 
 //
-// Callback events
+// Manual Callback events
 //
+void MainWindow::openRecentFile_triggered()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action) {
+        auto path = action->data().toString();
+        GameDialog(path,this).exec();
+    }
+}
+void MainWindow::itemDoubleClicked(QListWidgetItem* item)
+{
+    auto path = item->data(Qt::UserRole).toString();
+    GameDialog dialog(path, this);
+    dialog.exec();
+}
 
+//
+// QtCreator Callback events
+//
 void MainWindow::on_pushButtonNewGame_clicked()
 {
     DialogNewGame dialog(this);
@@ -80,15 +98,6 @@ void MainWindow::on_pushButtonOpenGame_clicked()
     }
 }
 
-void MainWindow::openRecentFile_triggered()
-{
-    QAction *action = qobject_cast<QAction *>(sender());
-    if (action) {
-        auto path = action->data().toString();
-        GameDialog(path,this).exec();
-    }
-}
-
 void MainWindow::on_actionOpen_triggered()
 {
     on_pushButtonOpenGame_clicked();
@@ -100,22 +109,27 @@ void MainWindow::on_actionClear_Recent_Games_triggered()
     updateRecentFiles();
 }
 
-
 //
 // Helpers
 //
 void MainWindow::createActions()
 {
-    // Add recent file actions to the recent files menu
+    // Add recent file actions to the recent files menu and widgetList
     for (int i=0; i < MAX_RECENT_FILES; ++i)
     {
-         _recentFiles[i] = new QAction(this);
-         ui->menuRecentGames->insertAction(ui->actionClear_Recent_Games, _recentFiles[i]);
-         _recentFiles[i]->setVisible(false);
-         connect(_recentFiles[i], &QAction::triggered, this, &MainWindow::openRecentFile_triggered);
+        _recentFilesAction[i] = new QAction(this);
+        ui->menuRecentGames->insertAction(ui->actionClear_Recent_Games, _recentFilesAction[i]);
+        _recentFilesAction[i]->setVisible(false);
+        connect(_recentFilesAction[i], &QAction::triggered, this, &MainWindow::openRecentFile_triggered);
+
+        _recentFilesWidget[i] = new QListWidgetItem(ui->listWidget);
+        _recentFilesWidget[i]->setHidden(true);
     }
     ui->menuRecentGames->insertSeparator(ui->actionClear_Recent_Games);
     updateRecentFiles();
+
+    //
+    connect(ui->listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)) , this, SLOT(itemDoubleClicked(QListWidgetItem*)));
 }
 
 QStringList MainWindow::recentFiles() const
@@ -131,13 +145,18 @@ void MainWindow::updateRecentFiles()
 
     for (int i = 0; i < numRecentFiles; ++i)
     {
-        _recentFiles[i]->setText(QFileInfo(files[i]).fileName());
-        _recentFiles[i]->setData(files[i]);
-        _recentFiles[i]->setVisible(true);
+        _recentFilesAction[i]->setText(QFileInfo(files[i]).fileName());
+        _recentFilesAction[i]->setData(files[i]);
+        _recentFilesAction[i]->setVisible(true);
+
+        _recentFilesWidget[i]->setText(QFileInfo(files[i]).fileName());
+        _recentFilesWidget[i]->setHidden(false);
+        _recentFilesWidget[i]->setData(Qt::UserRole, files[i]);
     }
     for (int j=numRecentFiles; j<MAX_RECENT_FILES; ++j)
     {
-        _recentFiles[j]->setVisible(false);
+        _recentFilesAction[j]->setVisible(false);
+        _recentFilesWidget[j]->setHidden(true);
     }
     ui->menuRecentGames->setEnabled(numRecentFiles > 0);
 }

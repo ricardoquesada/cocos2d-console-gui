@@ -17,6 +17,7 @@ limitations under the License.
 #pragma once
 
 #include <QDialog>
+#include <QString>
 
 namespace Ui {
 class GameDialog;
@@ -41,4 +42,5 @@ private slots:
 
 private:
     Ui::GameDialog *ui;
+    QString _path;
 };
