@@ -34,6 +34,7 @@ public:
     static TemplateEntry createFromJson(const QJsonObject& jsonObject);
 
     const QString& name() const { return _name; }
+    const QString& key() const { return _key; }
     const Language& language() const { return _language; }
     const QJsonObject& options() const { return _options; }
     const QString& description() const { return _description; }
@@ -41,6 +42,7 @@ public:
 protected:
     QString _name;
     QString _description;
+    QString _key;
     Language _language;
     QJsonObject _options;
 };

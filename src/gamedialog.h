@@ -19,26 +19,26 @@ limitations under the License.
 #include <QDialog>
 
 namespace Ui {
-class ProgressDialog;
+class GameDialog;
 }
 
-class ProgressDialog : public QDialog
+class GameDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit ProgressDialog(QWidget *parent = 0);
-    ~ProgressDialog();
-
-    void appendData(const QString& str);
-
-public slots:
-    void processFinished();
-
+    explicit GameDialog(const QString& path, QWidget *parent = 0);
+    ~GameDialog();
 
 private slots:
-    void on_buttonBox_accepted();
+    void on_pushButton_close_clicked();
+
+    void on_pushButton_compile_clicked();
+
+    void on_pushButton_deploy_clicked();
+
+    void on_pushButton_openFolder_clicked();
 
 private:
-    Ui::ProgressDialog *ui;
+    Ui::GameDialog *ui;
 };

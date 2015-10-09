@@ -17,6 +17,9 @@ limitations under the License.
 #pragma once
 
 #include <QMainWindow>
+#include <QStringList>
+#include <QString>
+#include <QSettings>
 
 namespace Ui {
 class MainWindow;
@@ -27,6 +30,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    static constexpr int MAX_RECENT_FILES=8;
+
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
@@ -34,14 +39,24 @@ protected:
 
 private slots:
 
+    void openRecentFile_triggered();
+
     void on_pushButtonNewGame_clicked();
-
-    void on_pushButtonEditGame_clicked();
-
     void on_actionPreferences_triggered();
-
     void on_actionAbout_triggered();
+    void on_pushButtonOpenGame_clicked();
+    void on_actionOpen_triggered();
+    void on_actionClear_Recent_Games_triggered();
 
 private:
+    void updateRecentFiles();
+    void setRecentFile(const QString& fileName);
+    QStringList recentFiles() const;
+    bool validatePath(const QString& path) const;
+    void createActions();
+
+
     Ui::MainWindow *ui;
+    QSettings _settings;
+    QAction* _recentFiles[MAX_RECENT_FILES];
 };

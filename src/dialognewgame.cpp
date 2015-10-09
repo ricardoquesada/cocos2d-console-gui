@@ -29,6 +29,7 @@ limitations under the License.
 #include "ui_dialognewgame.h"
 #include "templatewizard.h"
 #include "progressdialog.h"
+#include "gamedialog.h"
 
 DialogNewGame::DialogNewGame(QWidget *parent)
     : QDialog(parent)
@@ -120,8 +121,7 @@ void DialogNewGame::copyFiles(const TemplateWizard& wizard, const TemplateEntry&
     QStringList commandLine = QStringList() << PreferencesDialog::findCocosPath() + "/cocos"
                                             << "new"
                                             << wizard.field("gameName").toString()
-//                                            << "-lcpp"
-                                            << "--template-name" << templateEntry.name()
+                                            << "--template-name" << templateEntry.key()
                                             << "-d" << wizard.field("gamePath").toString();
 
     _progressDialog = new ProgressDialog(this);
@@ -138,7 +138,11 @@ void DialogNewGame::copyFiles(const TemplateWizard& wizard, const TemplateEntry&
     connect(_process,SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int,QProcess::ExitStatus)));
     connect(_process,SIGNAL(finished(int,QProcess::ExitStatus)), _progressDialog, SLOT(processFinished()));
 
-    _progressDialog->exec();
+    if (_progressDialog->exec())
+    {
+        auto path = wizard.field("gamePath").toString();
+        GameDialog(path, this).exec();
+    }
 }
 
 void DialogNewGame::processReadyReadStandardOutput()
@@ -146,14 +150,14 @@ void DialogNewGame::processReadyReadStandardOutput()
     _progressDialog->appendData(_process->read(_process->bytesAvailable()));
 
     // Output the data
-    qDebug() << "-- section --";
-    qDebug() << _data.data();
+//    qDebug() << "-- section --";
+//    qDebug() << _data.data();
 }
 
 void DialogNewGame::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    (void)exitCode;
-    (void)exitStatus;
+    Q_UNUSED(exitCode);
+    Q_UNUSED(exitStatus);
 }
 
 

@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     templateentry.cpp \
     aboutdialog.cpp \
     preferencesdialog.cpp \
-    progressdialog.cpp
+    progressdialog.cpp \
+    gamedialog.cpp
 
 HEADERS  += mainwindow.h \
     dialognewgame.h \
@@ -30,13 +31,15 @@ HEADERS  += mainwindow.h \
     templateentry.h \
     aboutdialog.h \
     preferencesdialog.h \
-    progressdialog.h
+    progressdialog.h \
+    gamedialog.h
 
 FORMS    += mainwindow.ui \
     dialognewgame.ui \
     aboutdialog.ui \
     preferencesdialog.ui \
-    progressdialog.ui
+    progressdialog.ui \
+    gamedialog.ui
 
 RESOURCES += \
     resources.qrc

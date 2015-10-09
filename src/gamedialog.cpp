@@ -14,31 +14,40 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ****************************************************************************/
 
-#pragma once
+#include "gamedialog.h"
+#include "ui_gamedialog.h"
 
-#include <QDialog>
+#include <QDesktopServices>
 
-namespace Ui {
-class ProgressDialog;
+GameDialog::GameDialog(const QString &path, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::GameDialog)
+{
+    ui->setupUi(this);
+    ui->textBrowser->append(path);
 }
 
-class ProgressDialog : public QDialog
+GameDialog::~GameDialog()
 {
-    Q_OBJECT
+    delete ui;
+}
 
-public:
-    explicit ProgressDialog(QWidget *parent = 0);
-    ~ProgressDialog();
+void GameDialog::on_pushButton_close_clicked()
+{
 
-    void appendData(const QString& str);
+}
 
-public slots:
-    void processFinished();
+void GameDialog::on_pushButton_compile_clicked()
+{
 
+}
 
-private slots:
-    void on_buttonBox_accepted();
+void GameDialog::on_pushButton_deploy_clicked()
+{
 
-private:
-    Ui::ProgressDialog *ui;
-};
+}
+
+void GameDialog::on_pushButton_openFolder_clicked()
+{
+    QDesktopServices::openUrl(QUrl("file://Users/"));
+}
