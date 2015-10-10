@@ -37,7 +37,7 @@ WelcomeDialog::WelcomeDialog(QWidget *parent) :
     _settings("org.cocos2d-x","Cocos2d Console GUI")
 {
     ui->setupUi(this);
-    ui->label_icon->setText("<img height='192' width='192' src=':/logo.png'>");
+    ui->label_icon->setText("<img height='128' width='128' src=':/logo.png'>");
 
     createActions();
 }
