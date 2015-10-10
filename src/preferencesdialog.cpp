@@ -44,7 +44,7 @@ QString PreferencesDialog::findCocosPath()
 
     // current directory
     QString cwd = QDir::currentPath();
-    QString settingsPath = QSettings().value("cocos_console_path").toString();
+    QString settingsPath = QSettings("org.cocos2d-x","Cocos2d Console GUI").value("cocos_console_path").toString();
 
     if (fileExists(settingsPath + "/cocos"))
         return settingsPath;
@@ -80,12 +80,12 @@ QString PreferencesDialog::findCocosPath()
 
 PreferencesDialog::PreferencesDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::PreferencesDialog)
+    ui(new Ui::PreferencesDialog),
+    _settings("org.cocos2d-x","Cocos2d Console GUI")
 {
     ui->setupUi(this);
 
-    QSettings settings;
-    auto defaultDir = settings.value("cocos_console_path").toString();
+    auto defaultDir = _settings.value("cocos_console_path").toString();
     if (defaultDir.isEmpty())
     {
         defaultDir = PreferencesDialog::findCocosPath();
@@ -110,8 +110,7 @@ void PreferencesDialog::on_directoryButton_clicked()
 
 void PreferencesDialog::on_buttonBox_accepted()
 {
-    QSettings settings;
-    settings.setValue("cocos_console_path", ui->lineEdit->text());
+    _settings.setValue("cocos_console_path", ui->lineEdit->text());
 }
 
 void PreferencesDialog::on_lineEdit_editingFinished()

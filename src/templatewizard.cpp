@@ -23,6 +23,8 @@ limitations under the License.
 TemplateWizard::TemplateWizard(const TemplateEntry& templateEntry, QWidget *parent)
     : QWizard(parent)
     , _templateEntry(templateEntry)
+    , _settings("org.cocos2d-x","Cocos2d Console GUI")
+
 {
     auto options = _templateEntry.options();
 

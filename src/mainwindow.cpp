@@ -34,7 +34,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , _settings("org.cocos2d-x","Cocos2d Console GUI")
-
 {
     ui->setupUi(this);
     ui->label->setText("<img height='192' width='192' src=':/logo.png'>");
@@ -53,16 +52,27 @@ MainWindow::~MainWindow()
 void MainWindow::openRecentFile_triggered()
 {
     QAction *action = qobject_cast<QAction *>(sender());
+
     if (action) {
         auto path = action->data().toString();
-        GameDialog(path,this).exec();
+        if (path.length() > 0)
+            GameDialog(path,this).exec();
+        else
+            qDebug() << "Invalid path";
     }
 }
 void MainWindow::itemDoubleClicked(QListWidgetItem* item)
 {
     auto path = item->data(Qt::UserRole).toString();
-    GameDialog dialog(path, this);
-    dialog.exec();
+    if (path.length() > 0)
+    {
+        GameDialog dialog(path, this);
+        dialog.exec();
+    }
+    else
+    {
+        qDebug() << "Invalid path";
+    }
 }
 
 //

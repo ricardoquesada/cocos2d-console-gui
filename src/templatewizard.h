@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <QWizard>
 #include <QProcess>
+#include <QSettings>
 
 QT_BEGIN_NAMESPACE
 class QCheckBox;
@@ -43,6 +44,7 @@ public:
 
 protected:
     const TemplateEntry& _templateEntry;
+    QSettings _settings;
 };
 
 class LocationPage: public QWizardPage
