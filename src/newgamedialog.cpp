@@ -29,7 +29,8 @@ limitations under the License.
 #include "ui_newgamedialog.h"
 #include "templatewizard.h"
 #include "progressdialog.h"
-#include "gamedialog.h"
+#include "gamestate.h"
+#include "mainwindow.h"
 
 NewGameDialog::NewGameDialog(QWidget *parent)
     : QDialog(parent)
@@ -140,8 +141,20 @@ void NewGameDialog::copyFiles(const TemplateWizard& wizard, const TemplateEntry&
 
     if (_progressDialog->exec())
     {
+        bool found = false;
         auto path = wizard.field("gamePath").toString();
-        GameDialog(path, this).exec();
+        foreach (QWidget *widget, QApplication::topLevelWidgets())
+        {
+            if (dynamic_cast<MainWindow*>(widget))
+            {
+                auto gameState = new GameState(path);
+                static_cast<MainWindow*>(widget)->setGameState(gameState);
+                found = true;
+            }
+        }
+        if (!found)
+            qDebug() << "MainWindow not found";
+
     }
 }
 

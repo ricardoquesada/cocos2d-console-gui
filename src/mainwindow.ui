@@ -10,77 +10,10 @@
     <height>348</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Cocos2D Console GUI</string>
-  </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonNewGame">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>50</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>New Game</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonOpenGame">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>50</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Open Game...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Recent games</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QListWidget" name="listWidget"/>
-        </item>
-       </layout>
-      </item>
-     </layout>
+     <widget class="QTextBrowser" name="textBrowser"/>
     </item>
    </layout>
   </widget>
@@ -98,6 +31,7 @@
      <string>Help</string>
     </property>
     <addaction name="actionAbout"/>
+    <addaction name="actionWelcome"/>
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
    </widget>
@@ -112,11 +46,31 @@
      <addaction name="separator"/>
      <addaction name="actionClear_Recent_Games"/>
     </widget>
+    <addaction name="actionNew_Game"/>
     <addaction name="actionOpen"/>
     <addaction name="menuRecentGames"/>
+    <addaction name="separator"/>
+    <addaction name="actionClose_Game"/>
    </widget>
-   <addaction name="menuHelp"/>
+   <widget class="QMenu" name="menuProduct">
+    <property name="title">
+     <string>Product</string>
+    </property>
+    <addaction name="actionRun"/>
+    <addaction name="separator"/>
+    <addaction name="actionBuild"/>
+    <addaction name="actionClean"/>
+    <addaction name="actionStop"/>
+    <addaction name="separator"/>
+    <addaction name="actionOpen_File_Browser"/>
+    <addaction name="separator"/>
+    <addaction name="actionOpen_Xcode"/>
+    <addaction name="actionOpen_in_Visual_Studio"/>
+    <addaction name="actionOpen_in_Android_Studio"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuProduct"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -125,6 +79,13 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionNew_Game"/>
+   <addaction name="actionOpen"/>
+   <addaction name="separator"/>
+   <addaction name="actionRun"/>
+   <addaction name="actionStop"/>
+   <addaction name="separator"/>
+   <addaction name="actionOpen_File_Browser"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionAbout">
@@ -138,6 +99,10 @@
    </property>
   </action>
   <action name="actionOpen">
+   <property name="icon">
+    <iconset theme="document-open" resource="resources.qrc">
+     <normaloff>:/icons/22x22/actions/document-open.png</normaloff>:/icons/22x22/actions/document-open.png</iconset>
+   </property>
    <property name="text">
     <string>Open Game...</string>
    </property>
@@ -150,8 +115,96 @@
     <string>Clear Recent Games</string>
    </property>
   </action>
+  <action name="actionNew_Game">
+   <property name="icon">
+    <iconset theme="document-new" resource="resources.qrc">
+     <normaloff>:/icons/22x22/actions/document-new.png</normaloff>:/icons/22x22/actions/document-new.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Game...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionBuild">
+   <property name="text">
+    <string>Build</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="actionRun">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/22x22/actions/media-playback-start.png</normaloff>:/icons/22x22/actions/media-playback-start.png</iconset>
+   </property>
+   <property name="text">
+    <string>Run</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/22x22/actions/process-stop.png</normaloff>:/icons/22x22/actions/process-stop.png</iconset>
+   </property>
+   <property name="text">
+    <string>Stop</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+.</string>
+   </property>
+  </action>
+  <action name="actionClean">
+   <property name="text">
+    <string>Clean</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+K</string>
+   </property>
+  </action>
+  <action name="actionOpen_File_Browser">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/22x22/apps/system-file-manager.png</normaloff>:/icons/22x22/apps/system-file-manager.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show in File Browser</string>
+   </property>
+  </action>
+  <action name="actionOpen_Xcode">
+   <property name="text">
+    <string>Open in Xcode</string>
+   </property>
+  </action>
+  <action name="actionClose_Game">
+   <property name="text">
+    <string>Close Game</string>
+   </property>
+  </action>
+  <action name="actionOpen_in_Visual_Studio">
+   <property name="text">
+    <string>Open in Visual Studio</string>
+   </property>
+  </action>
+  <action name="actionOpen_in_Android_Studio">
+   <property name="text">
+    <string>Open in Android Studio</string>
+   </property>
+  </action>
+  <action name="actionWelcome">
+   <property name="text">
+    <string>Welcome</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

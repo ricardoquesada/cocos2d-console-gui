@@ -21,12 +21,14 @@ limitations under the License.
 #include <QDebug>
 #include <QSettings>
 #include <QListWidgetItem>
+#include <QApplication>
 
 #include "newgamedialog.h"
-#include "gamedialog.h"
 #include "templateentry.h"
 #include "aboutdialog.h"
 #include "preferencesdialog.h"
+#include "gamestate.h"
+#include "mainwindow.h"
 
 constexpr int WelcomeDialog::MAX_RECENT_FILES;
 
@@ -55,8 +57,20 @@ void WelcomeDialog::itemDoubleClicked(QListWidgetItem* item)
     auto path = item->data(Qt::UserRole).toString();
     if (path.length() > 0)
     {
-        GameDialog dialog(path, this);
-        dialog.exec();
+        bool found = false;
+        foreach (QWidget *widget, QApplication::topLevelWidgets())
+        {
+            if (dynamic_cast<MainWindow*>(widget))
+            {
+                auto gameState = new GameState(path);
+                static_cast<MainWindow*>(widget)->setGameState(gameState);
+                found = true;
+                close();
+            }
+        }
+
+        if (!found)
+            qDebug() << "MainWindow not found";
     }
     else
     {
@@ -80,7 +94,20 @@ void WelcomeDialog::on_pushButton_OpenGame_clicked()
         if (validatePath(path))
         {
             setRecentFile(path);
-            GameDialog(path, this).exec();
+
+            bool found = false;
+            foreach (QWidget *widget, QApplication::topLevelWidgets())
+            {
+                if (dynamic_cast<MainWindow*>(widget))
+                {
+                    auto gameState = new GameState(path);
+                    static_cast<MainWindow*>(widget)->setGameState(gameState);
+                    found = true;
+                    close();
+                }
+            }
+            if (!found)
+                qDebug() << "MainWindow not found";
         }
     }
 }

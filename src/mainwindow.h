@@ -25,6 +25,8 @@ QT_BEGIN_NAMESPACE
 class QListWidgetItem;
 QT_END_NAMESPACE
 
+class GameState;
+
 namespace Ui {
 class MainWindow;
 }
@@ -39,21 +41,36 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void setGameState(GameState* gameState);
+    GameState* getGameState() const;
+
 protected:
 
 private slots:
 
     void openRecentFile_triggered();
-    void itemDoubleClicked(QListWidgetItem* item);
 
-    void on_pushButtonNewGame_clicked();
     void on_actionPreferences_triggered();
     void on_actionAbout_triggered();
-    void on_pushButtonOpenGame_clicked();
     void on_actionOpen_triggered();
     void on_actionClear_Recent_Games_triggered();
+    void on_actionNew_Game_triggered();
 
+    void on_actionRun_triggered();
 
+    void on_actionStop_triggered();
+
+    void on_actionClean_triggered();
+
+    void on_actionOpen_Xcode_triggered();
+
+    void on_actionOpen_in_Visual_Studio_triggered();
+
+    void on_actionOpen_in_Android_Studio_triggered();
+
+    void on_actionOpen_File_Browser_triggered();
+
+    void on_actionWelcome_triggered();
 
 private:
     void updateRecentFiles();
@@ -61,10 +78,12 @@ private:
     QStringList recentFiles() const;
     bool validatePath(const QString& path) const;
     void createActions();
+    void closeGameState();
 
 
     Ui::MainWindow *ui;
     QSettings _settings;
     QAction* _recentFilesAction[MAX_RECENT_FILES];
-    QListWidgetItem* _recentFilesWidget[MAX_RECENT_FILES];
+
+    GameState* _gameState;
 };

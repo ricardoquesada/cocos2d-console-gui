@@ -18,7 +18,6 @@ limitations under the License.
 
 #include "progressdialog.h"
 #include "ui_progressdialog.h"
-#include "gamedialog.h"
 
 ProgressDialog::ProgressDialog(QWidget *parent) :
     QDialog(parent),

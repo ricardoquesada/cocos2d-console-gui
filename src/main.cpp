@@ -20,6 +20,7 @@ limitations under the License.
 #include <QApplication>
 #include <QIcon>
 #include <QSettings>
+#include <QDebug>
 
 int main(int argc, char *argv[])
 {
@@ -30,26 +31,25 @@ int main(int argc, char *argv[])
     app.setApplicationName(QLatin1String("Cocos2d Console GUI"));
     app.setApplicationDisplayName(QLatin1String("Cocos2d Console GUI"));
 
+
+#ifdef Q_OS_MAC
+    app.setAttribute(Qt::AA_DontShowIconsInMenus);
+#endif
+
     QApplication::setWindowIcon(QIcon(":/logo.png"));
 
     QSettings settings("org.cocos2d-x", "Cocos2d Console GUI");
-
     bool show_welcome = settings.value("show_welcome_dialog", true).toBool();
+
+    MainWindow w;
 
     if (show_welcome)
     {
-        WelcomeDialog dialog;
+        WelcomeDialog dialog(&w);
         dialog.exec();
     }
-    else
-    {
-//        MainWindow w;
-//        w.show();
 
-        WelcomeDialog dialog;
-        dialog.exec();
-
-    }
+    w.show();
 
     return app.exec();
 }

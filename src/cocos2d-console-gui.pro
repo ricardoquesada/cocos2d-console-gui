@@ -22,9 +22,9 @@ SOURCES += main.cpp\
     aboutdialog.cpp \
     preferencesdialog.cpp \
     progressdialog.cpp \
-    gamedialog.cpp \
     welcomedialog.cpp \
-    newgamedialog.cpp
+    newgamedialog.cpp \
+    gamestate.cpp
 
 HEADERS  += mainwindow.h \
     templatewizard.h \
@@ -32,15 +32,14 @@ HEADERS  += mainwindow.h \
     aboutdialog.h \
     preferencesdialog.h \
     progressdialog.h \
-    gamedialog.h \
     welcomedialog.h \
-    newgamedialog.h
+    newgamedialog.h \
+    gamestate.h
 
 FORMS    += mainwindow.ui \
     aboutdialog.ui \
     preferencesdialog.ui \
     progressdialog.ui \
-    gamedialog.ui \
     welcomedialog.ui \
     newgamedialog.ui
 
