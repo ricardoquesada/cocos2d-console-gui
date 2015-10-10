@@ -161,8 +161,9 @@ void MainWindow::setGameState(GameState* gameState)
 
     if (gameState)
     {
-        setWindowFilePath(gameState->getPath());
         _gameState = gameState;
+        setWindowFilePath(gameState->getPath());
+        setRecentFile(gameState->getPath());
     }
 }
 

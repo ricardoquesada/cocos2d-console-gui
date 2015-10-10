@@ -84,7 +84,8 @@ void WelcomeDialog::itemDoubleClicked(QListWidgetItem* item)
 void WelcomeDialog::on_pushButton_NewGame_clicked()
 {
     NewGameDialog dialog(this);
-    dialog.exec();
+    if (dialog.exec())
+        close();
 }
 
 void WelcomeDialog::on_pushButton_OpenGame_clicked()

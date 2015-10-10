@@ -147,8 +147,9 @@ void NewGameDialog::copyFiles(const TemplateWizard& wizard, const TemplateEntry&
         {
             if (dynamic_cast<MainWindow*>(widget))
             {
+                auto mainWindow = static_cast<MainWindow*>(widget);
                 auto gameState = new GameState(path);
-                static_cast<MainWindow*>(widget)->setGameState(gameState);
+                mainWindow->setGameState(gameState);
                 found = true;
             }
         }
