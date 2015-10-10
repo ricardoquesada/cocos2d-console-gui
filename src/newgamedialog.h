@@ -25,18 +25,18 @@ limitations under the License.
 #include "templatewizard.h"
 
 namespace Ui {
-class DialogNewGame;
+class NewGameDialog;
 }
 
 class ProgressDialog;
 
-class DialogNewGame : public QDialog
+class NewGameDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit DialogNewGame(QWidget *parent = 0);
-    ~DialogNewGame();
+    explicit NewGameDialog(QWidget *parent = 0);
+    ~NewGameDialog();
 
 protected:
     bool parseTemplates();
@@ -54,7 +54,7 @@ private:
     QList<TemplateEntry> _entriesLua;
     QList<TemplateEntry> _entriesJavaScript;
 
-    Ui::DialogNewGame *ui;
+    Ui::NewGameDialog *ui;
 
     QByteArray _data;
     QProcess* _process;

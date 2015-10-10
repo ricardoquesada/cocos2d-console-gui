@@ -15,8 +15,11 @@ limitations under the License.
 ****************************************************************************/
 
 #include "mainwindow.h"
+#include "welcomedialog.h"
+
 #include <QApplication>
 #include <QIcon>
+#include <QSettings>
 
 int main(int argc, char *argv[])
 {
@@ -29,8 +32,24 @@ int main(int argc, char *argv[])
 
     QApplication::setWindowIcon(QIcon(":/logo.png"));
 
-    MainWindow w;
-    w.show();
+    QSettings settings("org.cocos2d-x", "Cocos2d Console GUI");
+
+    bool show_welcome = settings.value("show_welcome_dialog", true).toBool();
+
+    if (show_welcome)
+    {
+        WelcomeDialog dialog;
+        dialog.exec();
+    }
+    else
+    {
+//        MainWindow w;
+//        w.show();
+
+        WelcomeDialog dialog;
+        dialog.exec();
+
+    }
 
     return app.exec();
 }

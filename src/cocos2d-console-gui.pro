@@ -17,29 +17,32 @@ CONFIG += c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    dialognewgame.cpp \
     templatewizard.cpp \
     templateentry.cpp \
     aboutdialog.cpp \
     preferencesdialog.cpp \
     progressdialog.cpp \
-    gamedialog.cpp
+    gamedialog.cpp \
+    welcomedialog.cpp \
+    newgamedialog.cpp
 
 HEADERS  += mainwindow.h \
-    dialognewgame.h \
     templatewizard.h \
     templateentry.h \
     aboutdialog.h \
     preferencesdialog.h \
     progressdialog.h \
-    gamedialog.h
+    gamedialog.h \
+    welcomedialog.h \
+    newgamedialog.h
 
 FORMS    += mainwindow.ui \
-    dialognewgame.ui \
     aboutdialog.ui \
     preferencesdialog.ui \
     progressdialog.ui \
-    gamedialog.ui
+    gamedialog.ui \
+    welcomedialog.ui \
+    newgamedialog.ui
 
 RESOURCES += \
     resources.qrc

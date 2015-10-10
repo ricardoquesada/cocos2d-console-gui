@@ -25,18 +25,18 @@ limitations under the License.
 #include <QProgressDialog>
 
 #include "preferencesdialog.h"
-#include "dialognewgame.h"
-#include "ui_dialognewgame.h"
+#include "newgamedialog.h"
+#include "ui_newgamedialog.h"
 #include "templatewizard.h"
 #include "progressdialog.h"
 #include "gamedialog.h"
 
-DialogNewGame::DialogNewGame(QWidget *parent)
+NewGameDialog::NewGameDialog(QWidget *parent)
     : QDialog(parent)
     , _entriesCpp()
     , _entriesLua()
     , _entriesJavaScript()
-    , ui(new Ui::DialogNewGame)
+    , ui(new Ui::NewGameDialog)
     , _progressDialog(nullptr)
     , _running(true)
 {
@@ -60,12 +60,12 @@ DialogNewGame::DialogNewGame(QWidget *parent)
     ui->textBrowser->setDocumentTitle("hello");
 }
 
-DialogNewGame::~DialogNewGame()
+NewGameDialog::~NewGameDialog()
 {
     delete ui;
 }
 
-void DialogNewGame::populateTemplateList(const QString& title, QList<TemplateEntry>* list, QListWidget* parent)
+void NewGameDialog::populateTemplateList(const QString& title, QList<TemplateEntry>* list, QListWidget* parent)
 {
     if (list->count())
     {
@@ -86,7 +86,7 @@ void DialogNewGame::populateTemplateList(const QString& title, QList<TemplateEnt
 
 }
 
-void DialogNewGame::on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+void NewGameDialog::on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
     // unused
     (void)previous;
@@ -99,7 +99,7 @@ void DialogNewGame::on_listWidget_currentItemChanged(QListWidgetItem *current, Q
 }
 
 
-void DialogNewGame::on_buttonBox_accepted()
+void NewGameDialog::on_buttonBox_accepted()
 {
     auto variant = ui->listWidget->selectedItems().at(0)->data(Qt::UserRole);
     auto entry = variant.value<const TemplateEntry*>();
@@ -111,7 +111,7 @@ void DialogNewGame::on_buttonBox_accepted()
         copyFiles(wizard, *entry);
 }
 
-void DialogNewGame::copyFiles(const TemplateWizard& wizard, const TemplateEntry& templateEntry)
+void NewGameDialog::copyFiles(const TemplateWizard& wizard, const TemplateEntry& templateEntry)
 {
     _process = new QProcess(this);
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -145,7 +145,7 @@ void DialogNewGame::copyFiles(const TemplateWizard& wizard, const TemplateEntry&
     }
 }
 
-void DialogNewGame::processReadyReadStandardOutput()
+void NewGameDialog::processReadyReadStandardOutput()
 {
     _progressDialog->appendData(_process->read(_process->bytesAvailable()));
 
@@ -154,7 +154,7 @@ void DialogNewGame::processReadyReadStandardOutput()
 //    qDebug() << _data.data();
 }
 
-void DialogNewGame::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
+void NewGameDialog::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
     Q_UNUSED(exitCode);
     Q_UNUSED(exitStatus);
@@ -163,7 +163,7 @@ void DialogNewGame::processFinished(int exitCode, QProcess::ExitStatus exitStatu
 
 ///
 
-bool DialogNewGame::parseTemplates()
+bool NewGameDialog::parseTemplates()
 {
     QProcess process(this);
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
