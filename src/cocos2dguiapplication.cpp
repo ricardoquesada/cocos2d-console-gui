@@ -17,10 +17,17 @@ limitations under the License.
 #include "cocos2dguiapplication.h"
 
 #include <QFileOpenEvent>
+#include <QDebug>
 
 Cocos2dGUIApplication::Cocos2dGUIApplication(int &argc, char **argv)
     : QApplication(argc, argv)
+    , _triggeredByFileOpenEvent(false)
 {
+}
+
+bool Cocos2dGUIApplication::triggeredByFileOpenEvent() const
+{
+    return _triggeredByFileOpenEvent;
 }
 
 bool Cocos2dGUIApplication::event(QEvent *event)
@@ -28,6 +35,7 @@ bool Cocos2dGUIApplication::event(QEvent *event)
         switch (event->type())
         {
         case QEvent::FileOpen:
+            _triggeredByFileOpenEvent = true;
             emit fileOpenRequest(static_cast<QFileOpenEvent*>(event)->file());
             return true;
         default:

@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
     createActions();
+    setGameState(nullptr);
 }
 
 MainWindow::~MainWindow()
@@ -155,12 +156,15 @@ void MainWindow::on_actionStop_triggered()
 
 void MainWindow::on_actionClean_triggered()
 {
-
 }
 
 void MainWindow::on_actionOpen_Xcode_triggered()
 {
+    Q_ASSERT(_gameState);
 
+    QFileInfo fileInfo(_gameState->getFilePath());
+    QString xcodefile = fileInfo.canonicalPath() + "/proj.ios_mac/" + _gameState->getProjectName() + ".xcodeproj";
+    QDesktopServices::openUrl(QUrl("file://" + xcodefile));
 }
 
 void MainWindow::on_actionOpen_in_Visual_Studio_triggered()
@@ -175,8 +179,15 @@ void MainWindow::on_actionOpen_in_Android_Studio_triggered()
 
 void MainWindow::on_actionOpen_File_Browser_triggered()
 {
+    Q_ASSERT(_gameState);
+
     QFileInfo fileInfo(_gameState->getFilePath());
     QDesktopServices::openUrl(QUrl("file://" + fileInfo.canonicalPath()));
+}
+
+void MainWindow::on_actionClose_Game_triggered()
+{
+    setGameState(nullptr);
 }
 
 //
@@ -193,6 +204,8 @@ void MainWindow::setGameState(GameState* gameState)
         setWindowFilePath(gameState->getFilePath());
         setRecentFile(gameState->getFilePath());
     }
+
+    updateActions();
 }
 
 GameState* MainWindow::getGameState() const
@@ -203,6 +216,34 @@ GameState* MainWindow::getGameState() const
 //
 // Helpers
 //
+void MainWindow::updateActions()
+{
+    bool enable = (_gameState != nullptr);
+
+    QAction* actions[] = {
+        ui->actionClose_Game,
+        ui->actionOpen_File_Browser,
+        ui->actionOpen_in_Android_Studio,
+#ifdef Q_OS_MAC
+        ui->actionOpen_Xcode,
+#elif defined(Q_OS_WIN)
+        ui->actionOpen_in_Visual_Studio,
+#endif
+        ui->actionRun,
+        ui->actionStop,
+        ui->actionBuild,
+        ui->actionClean,
+
+    };
+
+    const int ACTIONS_MAX = sizeof(actions) / sizeof(actions[0]);
+
+    for (int i=0; i<ACTIONS_MAX; i++)
+    {
+        actions[i]->setEnabled(enable);
+    }
+}
+
 void MainWindow::closeGameState()
 {
     if (!_gameState)
@@ -228,6 +269,12 @@ void MainWindow::createActions()
     }
     ui->menuRecentGames->insertSeparator(ui->actionClear_Recent_Games);
     updateRecentFiles();
+
+#ifdef Q_OS_MAC
+    ui->actionOpen_in_Visual_Studio->setEnabled(false);
+#elif defined (Q_OS_WIN)
+    ui->actionOpen_Xcode->setEnabled(false);
+#endif
 }
 
 QStringList MainWindow::recentFiles() const

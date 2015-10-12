@@ -75,7 +75,10 @@ private slots:
 
     void on_actionWelcome_triggered();
 
+    void on_actionClose_Game_triggered();
+
 private:
+    void updateActions();
     void updateRecentFiles();
     void setRecentFile(const QString& fileName);
     QStringList recentFiles() const;

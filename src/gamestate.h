@@ -24,7 +24,9 @@ public:
     explicit GameState(const QString& filePath);
 
     const QString& getFilePath() const;
+    const QString& getProjectName() const;
 
 private:
     const QString _filePath;
+    QString _projectName;
 };

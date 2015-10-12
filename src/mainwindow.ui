@@ -89,6 +89,9 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionAbout">
+   <property name="icon">
+    <iconset theme="help-about"/>
+   </property>
    <property name="text">
     <string>About</string>
    </property>
@@ -111,6 +114,9 @@
    </property>
   </action>
   <action name="actionClear_Recent_Games">
+   <property name="icon">
+    <iconset theme="document-open-recent"/>
+   </property>
    <property name="text">
     <string>Clear Recent Games</string>
    </property>
@@ -184,6 +190,9 @@
   <action name="actionClose_Game">
    <property name="text">
     <string>Close Game</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
   <action name="actionOpen_in_Visual_Studio">

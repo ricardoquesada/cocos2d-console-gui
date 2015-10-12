@@ -25,9 +25,14 @@ class Cocos2dGUIApplication : public QApplication
 public:
     explicit Cocos2dGUIApplication(int &argc, char **argv);
 
+    bool triggeredByFileOpenEvent() const;
+
 protected:
     bool event(QEvent* event) Q_DECL_OVERRIDE;
 
 signals:
     void fileOpenRequest(const QString &file);
+
+private:
+    bool _triggeredByFileOpenEvent;
 };

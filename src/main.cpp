@@ -39,20 +39,25 @@ int main(int argc, char *argv[])
 
     QApplication::setWindowIcon(QIcon(":/logo.png"));
 
-    QSettings settings("org.cocos2d-x", "Cocos2d Console GUI");
-    bool show_welcome = settings.value("show_welcome_dialog", true).toBool();
 
     MainWindow w;
 
-    if (show_welcome)
+    QSettings settings("org.cocos2d-x", "Cocos2d Console GUI");
+    bool show_welcome = settings.value("show_welcome_dialog", true).toBool();
+    QObject::connect(&app, &Cocos2dGUIApplication::fileOpenRequest, &w, &MainWindow::openFile);
+
+#ifdef Q_OS_MAC
+    // process Events before main loop in order to process the QFileOpenEvent
+    app.processEvents();
+#endif
+
+    if (show_welcome && !app.triggeredByFileOpenEvent())
     {
         WelcomeDialog dialog(&w);
         dialog.exec();
     }
-
     w.show();
 
-    QObject::connect(&app, SIGNAL(fileOpenRequest(const QString&)), &w, SLOT(openFile(const QString&)));
 
     return app.exec();
 }

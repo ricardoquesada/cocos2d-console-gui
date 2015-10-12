@@ -5,11 +5,11 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>Cocos2d Console GUI</string>
+    <string>Cocos2d-Console-GUI</string>
 	<key>CFBundleGetInfoString</key>
 	<string>Cocos2d Console GUI, Copyright 2015 Chukong Technologies</string>
 	<key>CFBundleIconFile</key>
-	<string>cocos2d-icon-mac</string>
+    <string>cocos2dproj-icon-mac</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.cocos2d-x.console-gui</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -32,7 +32,7 @@
 			<key>CFBundleTypeName</key>
 			<string>Cocos2d Project</string>
 			<key>CFBundleTypeIconFile</key>
-			<string>cocos2d-proj-icon-mac</string>
+            <string>cocos2dproj-icon-mac</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleTypeExtensions</key>
