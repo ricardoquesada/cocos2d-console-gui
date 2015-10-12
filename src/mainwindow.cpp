@@ -23,6 +23,9 @@ limitations under the License.
 #include <QListWidgetItem>
 #include <QDesktopServices>
 #include <QFileInfo>
+#include <QProcessEnvironment>
+#include <QMessageBox>
+#include <QStringList>
 
 #include "newgamedialog.h"
 #include "templateentry.h"
@@ -31,6 +34,7 @@ limitations under the License.
 #include "welcomedialog.h"
 #include "gamestate.h"
 
+
 constexpr int MainWindow::MAX_RECENT_FILES;
 
 MainWindow::MainWindow(QWidget *parent)
@@ -38,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , _settings("org.cocos2d-x","Cocos2d Console GUI")
     , _lastDir(QDir::homePath())
+    , _runningProcess(nullptr)
     , _gameState(nullptr)
 {
     setUnifiedTitleAndToolBarOnMac(true);
@@ -45,6 +50,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     createActions();
     setGameState(nullptr);
+
+    ui->textBrowser->append(QString("> Cocos2d Console GUI v") + APP_VERSION);
 }
 
 MainWindow::~MainWindow()
@@ -86,6 +93,27 @@ void MainWindow::openFile(const QString& filePath)
     {
         qDebug() << "Invalid path: " << filePath;
     }
+}
+
+void MainWindow::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    if (_runningProcess)
+    {
+        delete _runningProcess;
+        _runningProcess = nullptr;
+    }
+
+    if (exitStatus == QProcess::NormalExit)
+        ui->textBrowser->append(QString("Ok: Process finished with exit code: %1").arg(exitCode));
+    else
+        ui->textBrowser->append(QString("Error: Process stopped. Exit code: %1").arg(exitCode));
+
+    updateActions();
+}
+
+void MainWindow::processStdOutReady()
+{
+    ui->textBrowser->append(_runningProcess->read(_runningProcess->bytesAvailable()));
 }
 
 //
@@ -146,12 +174,18 @@ void MainWindow::on_actionWelcome_triggered()
 
 void MainWindow::on_actionRun_triggered()
 {
-
+    on_actionBuild_triggered();
 }
 
-void MainWindow::on_actionStop_triggered()
+bool MainWindow::on_actionStop_triggered()
 {
+    if (_runningProcess)
+    {
+        ui->textBrowser->append("Stoping process...");
+        _runningProcess->kill();
+    }
 
+    return true;
 }
 
 void MainWindow::on_actionClean_triggered()
@@ -190,6 +224,17 @@ void MainWindow::on_actionClose_Game_triggered()
     setGameState(nullptr);
 }
 
+void MainWindow::on_actionBuild_triggered()
+{
+    if (maybeRunProcess())
+    {
+        QStringList list;
+        list << "compile" << "-p" << "ios";
+
+        runCocosCommand(list);
+    }
+}
+
 //
 // Public Methods
 //
@@ -216,10 +261,30 @@ GameState* MainWindow::getGameState() const
 //
 // Helpers
 //
+bool MainWindow::runCocosCommand(const QStringList& stringList)
+{
+    _runningProcess = new QProcess(this);
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    _runningProcess->setProcessEnvironment(env);
+
+    _runningProcess->setProcessChannelMode(QProcess::MergedChannels);
+    _runningProcess->setWorkingDirectory(_gameState->getPath());
+
+    QString cocosFilePath = PreferencesDialog::findCocosPath() + "/cocos";
+    _runningProcess->start(cocosFilePath, stringList);
+
+    ui->textBrowser->append(cocosFilePath + " " + stringList.join(" "));
+
+    connect(_runningProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processStdOutReady()));
+    connect(_runningProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int,QProcess::ExitStatus)));
+
+    updateActions();
+
+    return true;
+}
+
 void MainWindow::updateActions()
 {
-    bool enable = (_gameState != nullptr);
-
     QAction* actions[] = {
         ui->actionClose_Game,
         ui->actionOpen_File_Browser,
@@ -235,12 +300,21 @@ void MainWindow::updateActions()
         ui->actionClean,
 
     };
-
     const int ACTIONS_MAX = sizeof(actions) / sizeof(actions[0]);
 
     for (int i=0; i<ACTIONS_MAX; i++)
     {
-        actions[i]->setEnabled(enable);
+        actions[i]->setEnabled(_gameState != nullptr);
+    }
+
+    if (_gameState)
+    {
+        bool processRunning = (_runningProcess != nullptr);
+        ui->actionRun->setEnabled(!processRunning);
+        ui->actionBuild->setEnabled(!processRunning);
+        ui->actionRun->setEnabled(!processRunning);
+
+        ui->actionStop->setEnabled(processRunning);
     }
 }
 
@@ -333,5 +407,22 @@ bool MainWindow::validatePath(const QString &dir) const
 
 bool MainWindow::maybeSave()
 {
+    return true;
+}
+
+bool MainWindow::maybeRunProcess()
+{
+    if (_runningProcess)
+    {
+        QMessageBox::StandardButton ret;
+        ret = QMessageBox::warning(this, tr("Application"),
+                     tr("There is another process running.\n"
+                        "Stop current process?"),
+                     QMessageBox::Ok | QMessageBox::Cancel);
+        if (ret == QMessageBox::Ok)
+            return on_actionStop_triggered();
+        else if (ret == QMessageBox::Cancel)
+            return false;
+    }
     return true;
 }

@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>562</width>
-    <height>348</height>
+    <height>378</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QTextBrowser" name="textBrowser"/>
+     <widget class="QListWidget" name="listWidget"/>
     </item>
    </layout>
   </widget>
@@ -88,6 +88,21 @@
    <addaction name="actionOpen_File_Browser"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QDockWidget" name="dockWidget">
+   <property name="windowTitle">
+    <string>Console Output</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QTextBrowser" name="textBrowser"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
   <action name="actionAbout">
    <property name="icon">
     <iconset theme="help-about"/>
@@ -188,6 +203,9 @@
    </property>
   </action>
   <action name="actionClose_Game">
+   <property name="icon">
+    <iconset theme="window-close"/>
+   </property>
    <property name="text">
     <string>Close Game</string>
    </property>

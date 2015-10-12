@@ -21,12 +21,19 @@ limitations under the License.
 GameState::GameState(const QString& filePath)
     : _filePath(filePath)
 {
-    _projectName = QFileInfo(filePath).baseName();
+    QFileInfo fileinfo(filePath);
+    _projectName = fileinfo.baseName();
+    _path = fileinfo.canonicalPath();
 }
 
 const QString& GameState::getFilePath() const
 {
     return _filePath;
+}
+
+const QString& GameState::getPath() const
+{
+    return _path;
 }
 
 const QString& GameState::getProjectName() const

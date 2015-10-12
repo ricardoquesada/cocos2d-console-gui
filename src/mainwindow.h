@@ -20,6 +20,7 @@ limitations under the License.
 #include <QStringList>
 #include <QString>
 #include <QSettings>
+#include <QProcess>
 
 QT_BEGIN_NAMESPACE
 class QListWidgetItem;
@@ -51,31 +52,24 @@ public slots:
 protected:
 
 private slots:
-
     void openRecentFile_triggered();
+    void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void processStdOutReady();
 
     void on_actionPreferences_triggered();
     void on_actionAbout_triggered();
     void on_actionClear_Recent_Games_triggered();
     void on_actionNew_Game_triggered();
-
     void on_actionRun_triggered();
-
-    void on_actionStop_triggered();
-
+    bool on_actionStop_triggered();
     void on_actionClean_triggered();
-
     void on_actionOpen_Xcode_triggered();
-
     void on_actionOpen_in_Visual_Studio_triggered();
-
     void on_actionOpen_in_Android_Studio_triggered();
-
     void on_actionOpen_File_Browser_triggered();
-
     void on_actionWelcome_triggered();
-
     void on_actionClose_Game_triggered();
+    void on_actionBuild_triggered();
 
 private:
     void updateActions();
@@ -86,11 +80,14 @@ private:
     void createActions();
     void closeGameState();
     bool maybeSave();
+    bool maybeRunProcess();
+    bool runCocosCommand(const QStringList& stringList);
 
     Ui::MainWindow *ui;
     QSettings _settings;
     QAction* _recentFilesAction[MAX_RECENT_FILES];
     QString _lastDir;
+    QProcess* _runningProcess;
 
     GameState* _gameState;
 };

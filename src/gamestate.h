@@ -23,10 +23,12 @@ class GameState
 public:
     explicit GameState(const QString& filePath);
 
+    const QString& getPath() const;
     const QString& getFilePath() const;
     const QString& getProjectName() const;
 
 private:
     const QString _filePath;
+    QString _path;
     QString _projectName;
 };
