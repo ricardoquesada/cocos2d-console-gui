@@ -46,6 +46,7 @@ public:
 
 public slots:
     void openFile(const QString& path);
+    void on_actionOpen_triggered();
 
 protected:
 
@@ -55,7 +56,6 @@ private slots:
 
     void on_actionPreferences_triggered();
     void on_actionAbout_triggered();
-    void on_actionOpen_triggered();
     void on_actionClear_Recent_Games_triggered();
     void on_actionNew_Game_triggered();
 

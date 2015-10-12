@@ -1,13 +1,12 @@
 #include "gamestate.h"
 
-GameState::GameState(const QString& path)
-    : _path(path)
+GameState::GameState(const QString& filePath)
+    : _filePath(filePath)
 {
-
 }
 
-const QString& GameState::getPath() const
+const QString& GameState::getFilePath() const
 {
-    return _path;
+    return _filePath;
 }
 

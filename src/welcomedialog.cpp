@@ -89,28 +89,19 @@ void WelcomeDialog::on_pushButton_NewGame_clicked()
 }
 
 void WelcomeDialog::on_pushButton_OpenGame_clicked()
-{
-    auto path = QFileDialog::getExistingDirectory(this, "Select Existing Game Directory");
-    if (path.length() > 0) {
-        if (validatePath(path))
+{    
+    bool found = false;
+    foreach (QWidget *widget, QApplication::topLevelWidgets())
+    {
+        if (dynamic_cast<MainWindow*>(widget))
         {
-            setRecentFile(path);
-
-            bool found = false;
-            foreach (QWidget *widget, QApplication::topLevelWidgets())
-            {
-                if (dynamic_cast<MainWindow*>(widget))
-                {
-                    auto gameState = new GameState(path);
-                    static_cast<MainWindow*>(widget)->setGameState(gameState);
-                    found = true;
-                    close();
-                }
-            }
-            if (!found)
-                qDebug() << "MainWindow not found";
+            static_cast<MainWindow*>(widget)->on_actionOpen_triggered();
+            found = true;
+            close();
         }
     }
+    if (!found)
+        qDebug() << "MainWindow not found";
 }
 
 //

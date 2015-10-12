@@ -21,10 +21,10 @@ limitations under the License.
 class GameState
 {
 public:
-    explicit GameState(const QString& path);
+    explicit GameState(const QString& filePath);
 
-    const QString& getPath() const;
+    const QString& getFilePath() const;
 
 private:
-    const QString _path;
+    const QString _filePath;
 };

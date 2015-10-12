@@ -22,6 +22,7 @@ limitations under the License.
 #include <QSettings>
 #include <QListWidgetItem>
 #include <QDesktopServices>
+#include <QFileInfo>
 
 #include "newgamedialog.h"
 #include "templateentry.h"
@@ -117,7 +118,7 @@ void MainWindow::on_actionOpen_triggered()
                                                _lastDir,
                                                tr(
                                                    "All files (*);;" \
-                                                   "Cocos2d Project (*.vchar64proj);;"
+                                                   "Cocos2d Project (*.cocos2dproj);;"
                                                ),
                                                &filter
                                                /*,QFileDialog::DontUseNativeDialog*/
@@ -174,7 +175,8 @@ void MainWindow::on_actionOpen_in_Android_Studio_triggered()
 
 void MainWindow::on_actionOpen_File_Browser_triggered()
 {
-    QDesktopServices::openUrl(QUrl("file://" + _gameState->getPath()));
+    QFileInfo fileInfo(_gameState->getFilePath());
+    QDesktopServices::openUrl(QUrl("file://" + fileInfo.canonicalPath()));
 }
 
 //
@@ -188,8 +190,8 @@ void MainWindow::setGameState(GameState* gameState)
     if (gameState)
     {
         _gameState = gameState;
-        setWindowFilePath(gameState->getPath());
-        setRecentFile(gameState->getPath());
+        setWindowFilePath(gameState->getFilePath());
+        setRecentFile(gameState->getFilePath());
     }
 }
 
@@ -276,7 +278,8 @@ bool MainWindow::validatePath(const QString &dir) const
     // in the meantime, check for ./cocos-project.json existance.
 
     // file .cocos-project.json must exist, but this check is very fragile
-    QString path = dir + "/.cocos-project.json";
+    QFileInfo fileinfo(dir);
+    QString path = fileinfo.canonicalPath() + "/.cocos-project.json";
     QFile file(path);
     return file.exists();
 }

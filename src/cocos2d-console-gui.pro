@@ -51,7 +51,7 @@ RESOURCES += \
 QMAKE_CXXFLAGS += -Werror
 
 macx {
-    TARGET = "Cocos2d Console GUI"
+    TARGET = Cocos2d-Console-GUI
     ICON = res/cocos2dproj-icon-mac.icns
     QMAKE_INFO_PLIST = Info.plist
 }
