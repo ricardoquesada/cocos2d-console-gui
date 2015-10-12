@@ -147,9 +147,9 @@ void NewGameDialog::copyFiles(const TemplateWizard& wizard, const TemplateEntry&
         {
             if (dynamic_cast<MainWindow*>(widget))
             {
-                auto mainWindow = static_cast<MainWindow*>(widget);
-                auto gameState = new GameState(path);
-                mainWindow->setGameState(gameState);
+                const QString gameName = wizard.field("gameName").toString();
+                const QString filePath = path + "/" + gameName + "/" + gameName + ".cocos2dproj";
+                static_cast<MainWindow*>(widget)->openFile(filePath);
                 found = true;
             }
         }
