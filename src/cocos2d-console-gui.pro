@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     progressdialog.cpp \
     welcomedialog.cpp \
     newgamedialog.cpp \
-    gamestate.cpp
+    gamestate.cpp \
+    cocos2dguiapplication.cpp
 
 HEADERS  += mainwindow.h \
     templatewizard.h \
@@ -34,7 +35,8 @@ HEADERS  += mainwindow.h \
     progressdialog.h \
     welcomedialog.h \
     newgamedialog.h \
-    gamestate.h
+    gamestate.h \
+    cocos2dguiapplication.h
 
 FORMS    += mainwindow.ui \
     aboutdialog.ui \
@@ -47,3 +49,9 @@ RESOURCES += \
     resources.qrc
 
 QMAKE_CXXFLAGS += -Werror
+
+macx {
+    TARGET = "Cocos2d Console GUI"
+    ICON = res/cocos2dproj-icon-mac.icns
+    QMAKE_INFO_PLIST = Info.plist
+}

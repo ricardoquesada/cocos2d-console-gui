@@ -15,16 +15,17 @@ limitations under the License.
 ****************************************************************************/
 
 #include "mainwindow.h"
-#include "welcomedialog.h"
 
-#include <QApplication>
 #include <QIcon>
 #include <QSettings>
 #include <QDebug>
 
+#include "welcomedialog.h"
+#include "cocos2dguiapplication.h"
+
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    Cocos2dGUIApplication app(argc, argv);
 
     app.setOrganizationDomain(QLatin1String("cocos2d-x.org"));
     app.setApplicationVersion(QLatin1String(APP_VERSION));
@@ -50,6 +51,8 @@ int main(int argc, char *argv[])
     }
 
     w.show();
+
+    QObject::connect(&app, SIGNAL(fileOpenRequest(const QString&)), &w, SLOT(openFile(const QString&)));
 
     return app.exec();
 }

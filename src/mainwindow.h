@@ -44,6 +44,9 @@ public:
     void setGameState(GameState* gameState);
     GameState* getGameState() const;
 
+public slots:
+    void openFile(const QString& path);
+
 protected:
 
 private slots:
@@ -79,11 +82,12 @@ private:
     bool validatePath(const QString& path) const;
     void createActions();
     void closeGameState();
-
+    bool maybeSave();
 
     Ui::MainWindow *ui;
     QSettings _settings;
     QAction* _recentFilesAction[MAX_RECENT_FILES];
+    QString _lastDir;
 
     GameState* _gameState;
 };

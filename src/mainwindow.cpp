@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , _settings("org.cocos2d-x","Cocos2d Console GUI")
+    , _lastDir(QDir::homePath())
     , _gameState(nullptr)
 {
     setUnifiedTitleAndToolBarOnMac(true);
@@ -70,6 +71,21 @@ void MainWindow::openRecentFile_triggered()
     }
 }
 
+void MainWindow::openFile(const QString& filePath)
+{
+    if (filePath.length() > 0 && validatePath(filePath))
+    {
+        setRecentFile(filePath);
+        auto gameState = new GameState(filePath);
+        setGameState(gameState);
+
+    }
+    else
+    {
+        qDebug() << "Invalid path: " << filePath;
+    }
+}
+
 //
 // QtCreator Slots
 //
@@ -93,13 +109,23 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    auto path = QFileDialog::getExistingDirectory(this, "Select Existing Game Directory");
-    if (path.length() > 0) {
-        if (validatePath(path))
-        {
-            setRecentFile(path);
-            auto gameState = new GameState(path);
-            setGameState(gameState);
+    if (maybeSave())
+    {
+        QString filter = _settings.value("dir/lastUsedOpenFilter", "Cocos2d Project").toString();
+        auto fn = QFileDialog::getOpenFileName(this,
+                                               tr("Select File"),
+                                               _lastDir,
+                                               tr(
+                                                   "All files (*);;" \
+                                                   "Cocos2d Project (*.vchar64proj);;"
+                                               ),
+                                               &filter
+                                               /*,QFileDialog::DontUseNativeDialog*/
+                                               );
+
+        if (fn.length()> 0) {
+            _settings.setValue("dir/lastUsedOpenFilter", filter);
+            openFile(fn);
         }
     }
 }
@@ -246,8 +272,16 @@ void MainWindow::setRecentFile(const QString& fileName)
 
 bool MainWindow::validatePath(const QString &dir) const
 {
+    // FIXME: must validate that the cocos2dproj is valid...
+    // in the meantime, check for ./cocos-project.json existance.
+
     // file .cocos-project.json must exist, but this check is very fragile
     QString path = dir + "/.cocos-project.json";
     QFile file(path);
     return file.exists();
+}
+
+bool MainWindow::maybeSave()
+{
+    return true;
 }
