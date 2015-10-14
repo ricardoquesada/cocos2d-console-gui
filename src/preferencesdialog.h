@@ -32,13 +32,18 @@ public:
     ~PreferencesDialog();
 
     static QString findCocosPath();
+    static QString findSDKBOXPath();
 
 private slots:
-    void on_directoryButton_clicked();
-
     void on_buttonBox_accepted();
 
-    void on_lineEdit_editingFinished();
+    void on_directoryButton_cocos_clicked();
+
+    void on_lineEdit_cocos_editingFinished();
+
+    void on_directoryButton_sdkbox_clicked();
+
+    void on_lineEdit_sdkbox_editingFinished();
 
 private:
     Ui::PreferencesDialog *ui;

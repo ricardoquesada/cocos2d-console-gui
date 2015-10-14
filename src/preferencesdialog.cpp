@@ -78,6 +78,46 @@ QString PreferencesDialog::findCocosPath()
     return ret;
 }
 
+QString PreferencesDialog::findSDKBOXPath()
+{
+    QString ret = "";
+
+    // current directory
+    QString cwd = QDir::currentPath();
+    QString settingsPath = QSettings("org.cocos2d-x","Cocos2d Console GUI").value("sdkbox_path").toString();
+
+    if (fileExists(settingsPath + "/sdkbox"))
+        return settingsPath;
+
+    else if (fileExists(cwd + "/sdkbox"))
+        ret = cwd;
+
+    else if (fileExists(cwd + "/../../sdkbox"))
+        ret = cwd + "/../../";
+
+   // Some wild guesses
+    else if (fileExists(QDir::homePath() + "/cocos2d-x/tools/cocos2d-console/bin/sdkbox"))
+        ret = QDir::homePath() + "/cocos2d-x/tools/cocos2d-console/bin";
+
+    else if (fileExists(QDir::homePath() + "/progs/cocos2d-x/tools/cocos2d-console/bin/sdkbox"))
+        ret = QDir::homePath() + "/progs/cocos2d-x/tools/cocos2d-console/bin";
+
+    else
+    {
+        auto list = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
+        foreach(const auto& element, list)
+        {
+            fileExists(element + "/Cocos/bin/cocos");
+            ret = element + "/Cocos/bin/cocos";
+            break;
+        }
+    }
+
+    if (!ret.isEmpty())
+        ret = QFileInfo(ret).canonicalFilePath();
+    return ret;
+}
+
 PreferencesDialog::PreferencesDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PreferencesDialog),
@@ -87,10 +127,13 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 
     auto defaultDir = _settings.value("cocos_console_path").toString();
     if (defaultDir.isEmpty())
-    {
         defaultDir = PreferencesDialog::findCocosPath();
-    }
-    ui->lineEdit->setText(defaultDir);
+    ui->lineEdit_cocos->setText(defaultDir);
+
+    defaultDir = _settings.value("sdkbox_path").toString();
+    if (defaultDir.isEmpty())
+        defaultDir = PreferencesDialog::findCocosPath();
+    ui->lineEdit_sdkbox->setText(defaultDir);
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -98,23 +141,50 @@ PreferencesDialog::~PreferencesDialog()
     delete ui;
 }
 
-void PreferencesDialog::on_directoryButton_clicked()
+void PreferencesDialog::on_directoryButton_cocos_clicked()
 {
     auto filename = QFileDialog::getExistingDirectory(this,
                                                  "Cocos2D Console Path",
-                                                 ui->lineEdit->text());
+                                                 ui->lineEdit_cocos->text());
 
     if (!filename.isEmpty())
-        ui->lineEdit->setText(filename);
+        ui->lineEdit_cocos->setText(filename);
 }
 
 void PreferencesDialog::on_buttonBox_accepted()
 {
-    _settings.setValue("cocos_console_path", ui->lineEdit->text());
+    _settings.setValue("cocos_console_path", ui->lineEdit_cocos->text());
+    _settings.setValue("sdkbox_path", ui->lineEdit_sdkbox->text());
 }
 
-void PreferencesDialog::on_lineEdit_editingFinished()
+void PreferencesDialog::on_lineEdit_cocos_editingFinished()
 {
     // try to find "cocos". If not, report it as red
-    auto cocos_path = ui->lineEdit->text();
+    auto cocos_path = ui->lineEdit_cocos->text();
+    QFileInfo fi(cocos_path + "/cocos");
+    if (!fi.exists())
+        ui->label_error->setText("<font color='red'>Invalid path. 'cocos' not found</font>");
+    else
+        ui->label_error->setText("");
+}
+
+void PreferencesDialog::on_directoryButton_sdkbox_clicked()
+{
+    auto filename = QFileDialog::getExistingDirectory(this,
+                                                 "SDKBOX Path",
+                                                 ui->lineEdit_sdkbox->text());
+
+    if (!filename.isEmpty())
+        ui->lineEdit_sdkbox->setText(filename);
+}
+
+void PreferencesDialog::on_lineEdit_sdkbox_editingFinished()
+{
+    // try to find "sdkbox". If not, report it as red
+    auto sdkbox_path = ui->lineEdit_sdkbox->text();
+    QFileInfo fi(sdkbox_path + "/sdkbox");
+    if (!fi.exists())
+        ui->label_error->setText("<font color='red'>Invalid path. 'sdkbox' not found</font>");
+    else
+        ui->label_error->setText("");
 }
