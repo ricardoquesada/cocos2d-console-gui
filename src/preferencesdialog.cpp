@@ -23,6 +23,8 @@ limitations under the License.
 #include <QFileInfo>
 #include <QDebug>
 #include <QStandardPaths>
+#include <QProcess>
+#include <QProcessEnvironment>
 
 
 // function taken from here:
@@ -31,25 +33,45 @@ static bool fileExists(const QString& path)
 {
     QFileInfo checkFile(path);
     // check if file exists and if yes: Is it really a file and no directory?
-    if (checkFile.exists() && checkFile.isFile()) {
-        return true;
-    } else {
-        return false;
-    }
+    return checkFile.exists() && checkFile.isFile();
 }
 
 QString PreferencesDialog::findCocosPath()
 {
-    QString ret = "";
-
-    // current directory
-    QString cwd = QDir::currentPath();
-    QString settingsPath = QSettings("org.cocos2d-x","Cocos2d Console GUI").value("cocos_console_path").toString();
+    QSettings settings("org.cocos2d-x","Cocos2d Console GUI");
+    QString settingsPath = settings.value("cocos_console_path").toString();
 
     if (fileExists(settingsPath + "/cocos"))
         return settingsPath;
 
-    else if (fileExists(cwd + "/cocos"))
+#if defined(Q_OS_OSX) || defined(Q_OS_UNIX)
+    {
+        QProcess process;
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        process.setProcessEnvironment(env);
+
+        process.setProcessChannelMode(QProcess::MergedChannels);
+
+        QStringList stringList;
+        stringList << "-l" << "-c" << "which cocos";
+        process.start("/bin/bash", stringList);
+
+        if (process.waitForFinished(5000))
+        {
+            auto filepath = process.readAllStandardOutput();
+            if (fileExists(filepath))
+            {
+                settings.setValue("cocos_path", filepath);
+                return filepath;
+            }
+        }
+    }
+#endif // Q_OS_OSX
+
+    QString ret = "";
+
+    QString cwd = QDir::currentPath();
+    if (fileExists(cwd + "/cocos"))
         ret = cwd;
 
     else if (fileExists(cwd + "/../../cocos"))
@@ -74,22 +96,49 @@ QString PreferencesDialog::findCocosPath()
     }
 
     if (!ret.isEmpty())
+    {
         ret = QFileInfo(ret).canonicalFilePath();
+        settings.setValue("cocos_path", ret);
+    }
     return ret;
 }
 
 QString PreferencesDialog::findSDKBOXPath()
 {
-    QString ret = "";
-
-    // current directory
-    QString cwd = QDir::currentPath();
-    QString settingsPath = QSettings("org.cocos2d-x","Cocos2d Console GUI").value("sdkbox_path").toString();
+    QSettings settings("org.cocos2d-x","Cocos2d Console GUI");
+    QString settingsPath = settings.value("sdkbox_path").toString();
 
     if (fileExists(settingsPath + "/sdkbox"))
         return settingsPath;
 
-    else if (fileExists(cwd + "/sdkbox"))
+#if defined(Q_OS_OSX) || defined(Q_OS_UNIX)
+    {
+        QProcess process;
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        process.setProcessEnvironment(env);
+
+        process.setProcessChannelMode(QProcess::MergedChannels);
+
+        QStringList stringList;
+        stringList << "-l" << "-c" << "which sdkbox";
+        process.start("/bin/bash", stringList);
+
+        if (process.waitForFinished(5000))
+        {
+            auto filepath = process.readAllStandardOutput();
+            if (fileExists(filepath))
+            {
+                settings.setValue("sdkbox_path", filepath);
+                return filepath;
+            }
+        }
+    }
+#endif // Q_OS_OSX
+
+    QString ret = "";
+    QString cwd = QDir::currentPath();
+
+    if (fileExists(cwd + "/sdkbox"))
         ret = cwd;
 
     else if (fileExists(cwd + "/../../sdkbox"))
@@ -107,14 +156,17 @@ QString PreferencesDialog::findSDKBOXPath()
         auto list = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
         foreach(const auto& element, list)
         {
-            fileExists(element + "/Cocos/bin/cocos");
-            ret = element + "/Cocos/bin/cocos";
+            fileExists(element + "/Cocos/bin/sdkbox");
+            ret = element + "/Cocos/bin/sdkbox";
             break;
         }
     }
 
     if (!ret.isEmpty())
+    {
         ret = QFileInfo(ret).canonicalFilePath();
+        settings.setValue("sdkbox_path", ret);
+    }
     return ret;
 }
 
@@ -124,16 +176,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     _settings("org.cocos2d-x","Cocos2d Console GUI")
 {
     ui->setupUi(this);
-
-    auto defaultDir = _settings.value("cocos_console_path").toString();
-    if (defaultDir.isEmpty())
-        defaultDir = PreferencesDialog::findCocosPath();
-    ui->lineEdit_cocos->setText(defaultDir);
-
-    defaultDir = _settings.value("sdkbox_path").toString();
-    if (defaultDir.isEmpty())
-        defaultDir = PreferencesDialog::findCocosPath();
-    ui->lineEdit_sdkbox->setText(defaultDir);
+    ui->lineEdit_cocos->setText(PreferencesDialog::findCocosPath());
+    ui->lineEdit_sdkbox->setText(PreferencesDialog::findSDKBOXPath());
 }
 
 PreferencesDialog::~PreferencesDialog()
