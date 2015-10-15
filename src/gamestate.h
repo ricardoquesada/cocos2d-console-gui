@@ -17,11 +17,10 @@ limitations under the License.
 #pragma once
 
 #include <QString>
-#include <QMap>
+#include <QJsonObject>
 #include <QSettings>
 #include <QStringList>
 #include <QObject>
-#include <QProcess>
 #include <QStringList>
 
 
@@ -36,13 +35,13 @@ public:
     const QString& getFilePath() const;
     const QString& getProjectName() const;
 
-    const QMap<QString,QString>& getGameProperties() const;
-    const QMap<QString,QString>& getGameLibraries() const;
+    const QJsonObject &getGameProperties() const;
+    const QJsonObject &getGameLibraries() const;
 
 private slots:
 
 private:
-    bool runSDKBOXCommand(const QStringList& stringList);
+    bool runSDKBOXCommand(const QStringList& stringList, QJsonObject *outObject);
 
     void parseGameProperties();
     void parseGameLibraries();
@@ -53,10 +52,9 @@ private:
 
     QString _path;
     QString _projectName;
-    QProcess* _runningProcess;
 
-    QMap<QString,QString> _gameProperties;
-    QMap<QString,QString> _gameLibraries;
+    QJsonObject _gameProperties;
+    QJsonObject _gameLibraries;
 
     QStringList _buffer;
 };

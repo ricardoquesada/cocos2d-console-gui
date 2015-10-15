@@ -26,6 +26,8 @@ limitations under the License.
 #include <QProcessEnvironment>
 #include <QMessageBox>
 #include <QStringList>
+#include <QStandardItemModel>
+#include <QStandardItem>
 
 #include "newgamedialog.h"
 #include "templateentry.h"
@@ -50,6 +52,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     createActions();
     setGameState(nullptr);
+
+    setupTables();
 
     ui->textBrowser->append(QString("> Cocos2d Console GUI v") + APP_VERSION);
 }
@@ -248,6 +252,9 @@ void MainWindow::setGameState(GameState* gameState)
         _gameState = gameState;
         setWindowFilePath(gameState->getFilePath());
         setRecentFile(gameState->getFilePath());
+
+        populateGameProperties();
+        populateGameLibraries();
     }
 
     updateActions();
@@ -425,4 +432,51 @@ bool MainWindow::maybeRunProcess()
             return false;
     }
     return true;
+}
+
+void MainWindow::populateGameLibraries()
+{
+    Q_ASSERT(_gameState);
+}
+
+void MainWindow::populateGameProperties()
+{
+    Q_ASSERT(_gameState);
+
+    auto properties = _gameState->getGameProperties();
+
+    struct _values {
+        QString key;
+        QString description;
+    } values[] = {
+        { "COCOS_2DX_VERSION", "Cocos2d-x Version" },
+        { "XCODE_PROJECT", "Xcode Project File" },
+        { "ANDROID_STUDIO_PROJECT_DIR", "Android Studio Project Path" },
+    };
+    const int MAX_VALUES = sizeof(values) / sizeof(values[0]);
+
+    for (int i=0; i<MAX_VALUES; i++)
+    {
+        auto name = new QStandardItem(values[i].description);
+        auto value = new QStandardItem(properties[values[i].key].toString());
+
+        auto model = dynamic_cast<QStandardItemModel*>(ui->tableView_gameProperties->model());
+        model->setItem(i, 0, name);
+        model->setItem(i, 1, value);
+    }
+}
+
+void MainWindow::setupTables()
+{
+    // 2 Rows and 2 Columns
+    auto model = new QStandardItemModel(2,2,this);
+    model->setHorizontalHeaderItem(0, new QStandardItem(QString("Description")));
+    model->setHorizontalHeaderItem(1, new QStandardItem(QString("Value")));
+    ui->tableView_gameProperties->setModel(model);
+
+    // 2 Rows and 2 Columns
+    model = new QStandardItemModel(2,2,this);
+    model->setHorizontalHeaderItem(0, new QStandardItem(QString("Library")));
+    model->setHorizontalHeaderItem(1, new QStandardItem(QString("Version")));
+    ui->tableView_gameLibraries->setModel(model);
 }

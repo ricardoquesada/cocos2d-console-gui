@@ -82,6 +82,9 @@ private:
     bool maybeSave();
     bool maybeRunProcess();
     bool runCocosCommand(const QStringList& stringList);
+    void populateGameProperties();
+    void populateGameLibraries();
+    void setupTables();
 
     Ui::MainWindow *ui;
     QSettings _settings;

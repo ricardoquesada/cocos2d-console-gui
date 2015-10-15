@@ -19,13 +19,16 @@ limitations under the License.
 #include <QFileInfo>
 #include <QProcessEnvironment>
 #include <QDebug>
+#include <QLocale>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonParseError>
 
 #include "preferencesdialog.h"
 
 GameState::GameState(const QString& filePath)
     : _filePath(filePath)
     , _settings("org.cocos2d-x","Cocos2d Console GUI")
-    , _runningProcess(nullptr)
     , _gameProperties()
     , _gameLibraries()
     , _buffer()
@@ -42,14 +45,14 @@ void GameState::parseGameProperties()
 {
     QStringList args;
     args << "symbols" << "--jsonapi";
-    runSDKBOXCommand(args);
+    runSDKBOXCommand(args, &_gameProperties);
 }
 
 void GameState::parseGameLibraries()
 {
     QStringList args;
     args << "info" << "--jsonapi";
-    runSDKBOXCommand(args);
+    runSDKBOXCommand(args, &_gameLibraries);
 }
 
 const QString& GameState::getFilePath() const
@@ -67,12 +70,12 @@ const QString& GameState::getProjectName() const
     return _projectName;
 }
 
-const QMap<QString,QString>& GameState::getGameProperties() const
+const QJsonObject& GameState::getGameProperties() const
 {
     return _gameProperties;
 }
 
-const QMap<QString,QString>& GameState::getGameLibraries() const
+const QJsonObject& GameState::getGameLibraries() const
 {
     return _gameLibraries;
 }
@@ -80,25 +83,32 @@ const QMap<QString,QString>& GameState::getGameLibraries() const
 //
 // Helpers
 //
-bool GameState::runSDKBOXCommand(const QStringList& stringList)
+bool GameState::runSDKBOXCommand(const QStringList& stringList, QJsonObject* outObject)
 {
-    _runningProcess = new QProcess(this);
+    QProcess process(this);
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    env.insert("COCOS_CONSOLE_ROOT", PreferencesDialog::findCocosPath());
-    env.insert("LANG", "en_US.UTF-8");
-    _runningProcess->setProcessEnvironment(env);
+    // needed for gettext apps, like cocos and sdkbox
+    env.insert("LANG", QLocale::system().name());
+    process.setProcessEnvironment(env);
 
-    _runningProcess->setProcessChannelMode(QProcess::MergedChannels);
-    _runningProcess->setWorkingDirectory(getPath());
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    process.setWorkingDirectory(getPath());
 
     QString sdkboxFilePath = PreferencesDialog::findSDKBOXPath() + "/sdkbox";
-    _runningProcess->start(sdkboxFilePath, stringList);
+    process.start(sdkboxFilePath, stringList);
 
-    bool ret = _runningProcess->waitForFinished(5000);
+    bool ret = process.waitForFinished(5000);
     if (ret)
     {
-        qDebug() << _runningProcess->readAllStandardOutput();
+        const auto json(process.readAllStandardOutput());
+
+        QJsonParseError error;
+        QJsonDocument loadDoc(QJsonDocument::fromJson(json, &error));
+        if (error.error != QJsonParseError::NoError) {
+            qDebug() << error.errorString();
+            return false;
+        }
+        *outObject = loadDoc.object();
     }
-    qDebug() << "Ret: " << ret;
     return ret;
 }
