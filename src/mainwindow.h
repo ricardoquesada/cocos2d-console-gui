@@ -82,6 +82,8 @@ private slots:
 
     void on_pushButton_addLibrary_clicked();
 
+    void on_pushButton_clearConsole_clicked();
+
 private:
     void updateActions();
     void updateRecentFiles();

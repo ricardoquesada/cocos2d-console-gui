@@ -324,7 +324,8 @@ void MainWindow::updateActions()
         actions[i]->setEnabled(_gameState != nullptr);
     }
     ui->pushButton_addLibrary->setEnabled(_gameState != nullptr);
-    _progressBar->setEnabled(_gameState != nullptr);
+    _progressBar->setMinimum(0);
+    _progressBar->setMaximum(10);
 
     if (_gameState)
     {
@@ -336,7 +337,10 @@ void MainWindow::updateActions()
         ui->actionStop->setEnabled(processRunning);
 
         ui->pushButton_addLibrary->setEnabled(!processRunning);
-        _progressBar->setEnabled(processRunning);
+
+        int min_max = processRunning ? 0 : 1;
+        _progressBar->setMinimum(min_max);
+        _progressBar->setMaximum(min_max);
     }
 }
 
@@ -500,9 +504,9 @@ void MainWindow::setupModels()
     // Game Properties
 
     // 2 Rows and 2 Columns
-    auto model = new QStandardItemModel(2,2,this);
-    model->setHorizontalHeaderItem(0, new QStandardItem(QString("Description")));
-    model->setHorizontalHeaderItem(1, new QStandardItem(QString("Value")));
+    auto model = new QStandardItemModel(0, 2, this);
+    model->setHorizontalHeaderItem(0, new QStandardItem("Description"));
+    model->setHorizontalHeaderItem(1, new QStandardItem("Value"));
     ui->tableView_gameProperties->setModel(model);
 
     ui->tableView_gameProperties->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -529,4 +533,9 @@ void MainWindow::on_pushButton_addLibrary_clicked()
             });
         }
     }
+}
+
+void MainWindow::on_pushButton_clearConsole_clicked()
+{
+    ui->textBrowser->clear();
 }
