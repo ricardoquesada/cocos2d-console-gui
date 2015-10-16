@@ -473,6 +473,8 @@ void MainWindow::populateGameProperties()
     {
         auto name = new QStandardItem(values[i].description);
         auto value = new QStandardItem(properties[values[i].key].toString());
+        name->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        value->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
         auto model = dynamic_cast<QStandardItemModel*>(ui->tableView_gameProperties->model());
         model->setItem(i, 0, name);
@@ -489,6 +491,9 @@ void MainWindow::setupTables()
     model->setHorizontalHeaderItem(0, new QStandardItem(QString("Description")));
     model->setHorizontalHeaderItem(1, new QStandardItem(QString("Value")));
     ui->tableView_gameProperties->setModel(model);
+
+    ui->tableView_gameProperties->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    ui->tableView_gameProperties->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 }
 
 void MainWindow::on_pushButton_addLibrary_clicked()
