@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
     bool show_welcome = settings.value("show_welcome_dialog", true).toBool();
     QObject::connect(&app, &Cocos2dGUIApplication::fileOpenRequest, &w, &MainWindow::openFile);
 
+
 #ifdef Q_OS_MAC
     // process Events before main loop in order to process the QFileOpenEvent
     app.processEvents();

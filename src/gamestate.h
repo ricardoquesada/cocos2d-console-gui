@@ -43,6 +43,11 @@ public:
     void parseGameLibraries();
     void parseSystemLibraries();
 
+signals:
+    void gameLibrariesUpdated();
+    void systemLibrariesUpdated();
+    void gamePropertiesUpdated();
+
 private slots:
 
 private:

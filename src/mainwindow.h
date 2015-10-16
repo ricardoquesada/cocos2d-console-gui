@@ -24,6 +24,7 @@ limitations under the License.
 
 QT_BEGIN_NAMESPACE
 class QListWidgetItem;
+class QProgressBar;
 QT_END_NAMESPACE
 
 class GameState;
@@ -54,11 +55,14 @@ public slots:
     void openFile(const QString& path);
     void on_actionOpen_triggered();
 
+signals:
+    void processFinished();
+
 protected:
 
 private slots:
     void openRecentFile_triggered();
-    void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void processStdOutReady();
 
     void on_actionPreferences_triggered();
@@ -88,10 +92,11 @@ private:
     void closeGameState();
     bool maybeSave();
     bool maybeRunProcess();
-    bool runCommand(int commandType, const QStringList& stringList);
+    QProcess *runCommand(int commandType, const QStringList& stringList, const std::function<void()> &onFinished);
     void populateGameProperties();
     void populateGameLibraries();
-    void setupTables();
+    void setupModels();
+    void setupStatusBar();
 
     Ui::MainWindow *ui;
     QSettings _settings;
@@ -100,4 +105,5 @@ private:
     QProcess* _runningProcess;
 
     GameState* _gameState;
+    QProgressBar* _progressBar;
 };

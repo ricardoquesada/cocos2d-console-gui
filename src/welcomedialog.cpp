@@ -118,7 +118,7 @@ void WelcomeDialog::createActions()
     updateRecentFiles();
 
     //
-    connect(ui->listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)) , this, SLOT(itemDoubleClicked(QListWidgetItem*)));
+    connect(ui->listWidget, &QListWidget::itemDoubleClicked, this, &WelcomeDialog::itemDoubleClicked);
 }
 
 QStringList WelcomeDialog::recentFiles() const

@@ -49,6 +49,8 @@ void GameState::parseGameProperties()
     QStringList args;
     args << "--noupdate" << "--jsonapi" << "symbols";
     runSDKBOXCommand(args, &_gameProperties);
+
+    emit gamePropertiesUpdated();
 }
 
 void GameState::parseGameLibraries()
@@ -56,6 +58,8 @@ void GameState::parseGameLibraries()
     QStringList args;
     args << "--noupdate" << "--jsonapi" << "info";
     runSDKBOXCommand(args, &_gameLibraries);
+
+    emit gameLibrariesUpdated();
 }
 
 void GameState::parseSystemLibraries()
@@ -63,6 +67,8 @@ void GameState::parseSystemLibraries()
     QStringList args;
     args << "--noupdate" << "--jsonapi" << "list";
     runSDKBOXCommand(args, &_systemLibraries);
+
+    emit systemLibrariesUpdated();
 }
 
 const QString& GameState::getFilePath() const

@@ -135,7 +135,7 @@ void NewGameDialog::copyFiles(const TemplateWizard& wizard, const TemplateEntry&
     _process->start(executable, commandLine);
 
 
-    connect(_process,SIGNAL(readyReadStandardOutput()), this, SLOT(processReadyReadStandardOutput()));
+    connect(_process, &QProcess::readyReadStandardOutput, this, &NewGameDialog::processReadyReadStandardOutput);
     connect(_process,SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int,QProcess::ExitStatus)));
     connect(_process,SIGNAL(finished(int,QProcess::ExitStatus)), _progressDialog, SLOT(processFinished()));
 

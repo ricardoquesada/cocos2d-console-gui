@@ -29,6 +29,7 @@ limitations under the License.
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QStringListModel>
+#include <QProgressBar>
 
 #include "aboutdialog.h"
 #include "preferencesdialog.h"
@@ -53,10 +54,11 @@ MainWindow::MainWindow(QWidget *parent)
     setUnifiedTitleAndToolBarOnMac(true);
 
     ui->setupUi(this);
+    setupStatusBar();
     createActions();
     setGameState(nullptr);
 
-    setupTables();
+    setupModels();
 
     ui->textBrowser->append(QString("Cocos2d Console GUI v") + APP_VERSION);
 }
@@ -102,12 +104,14 @@ void MainWindow::openFile(const QString& filePath)
     }
 }
 
-void MainWindow::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
+void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
     if (_runningProcess)
     {
         delete _runningProcess;
         _runningProcess = nullptr;
+
+        emit processFinished();
     }
 
     if (exitStatus == QProcess::NormalExit)
@@ -235,10 +239,9 @@ void MainWindow::on_actionBuild_triggered()
 {
     if (maybeRunProcess())
     {
-        QStringList list;
-        list << "compile" << "-p" << "ios";
-
-        runCommand(COCOS_COMMAND, list);
+        QStringList args;
+        args << "compile" << "-p" << "ios";
+        runCommand(COCOS_COMMAND, args, [](){});
     }
 }
 
@@ -271,7 +274,7 @@ GameState* MainWindow::getGameState() const
 //
 // Helpers
 //
-bool MainWindow::runCommand(int commandType, const QStringList& args)
+QProcess* MainWindow::runCommand(int commandType, const QStringList& args, const std::function<void()>& onFinished)
 {
     _runningProcess = new QProcess(this);
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -289,12 +292,13 @@ bool MainWindow::runCommand(int commandType, const QStringList& args)
 
     ui->textBrowser->append("<font color='blue' face='verdana'>$ " + executable + " " + args.join(" ") + "</font>");
 
-    connect(_runningProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processStdOutReady()));
-    connect(_runningProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int,QProcess::ExitStatus)));
+    connect(_runningProcess, &QProcess::readyReadStandardOutput, this, &MainWindow::processStdOutReady);
+    connect(_runningProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onProcessFinished(int,QProcess::ExitStatus)));
+    connect(this, &MainWindow::processFinished, onFinished);
 
     updateActions();
 
-    return true;
+    return _runningProcess;
 }
 
 void MainWindow::updateActions()
@@ -320,6 +324,7 @@ void MainWindow::updateActions()
         actions[i]->setEnabled(_gameState != nullptr);
     }
     ui->pushButton_addLibrary->setEnabled(_gameState != nullptr);
+    _progressBar->setEnabled(_gameState != nullptr);
 
     if (_gameState)
     {
@@ -331,6 +336,7 @@ void MainWindow::updateActions()
         ui->actionStop->setEnabled(processRunning);
 
         ui->pushButton_addLibrary->setEnabled(!processRunning);
+        _progressBar->setEnabled(processRunning);
     }
 }
 
@@ -365,6 +371,15 @@ void MainWindow::createActions()
 #elif defined (Q_OS_WIN)
     ui->actionOpen_Xcode->setEnabled(false);
 #endif
+}
+
+void MainWindow::setupStatusBar()
+{
+    _progressBar = new QProgressBar(this);
+    ui->statusBar->addPermanentWidget(_progressBar);
+
+    _progressBar->setMinimum(0);
+    _progressBar->setMaximum(0);
 }
 
 QStringList MainWindow::recentFiles() const
@@ -446,10 +461,8 @@ bool MainWindow::maybeRunProcess()
 void MainWindow::populateGameLibraries()
 {
     auto keys = _gameState->getGameLibraries().keys();
-    auto model = new QStringListModel(this);
+    auto model = dynamic_cast<QStringListModel*>(ui->listView_libraries->model());
     model->setStringList(keys);
-
-    ui->listView_libraries->setModel(model);
 }
 
 void MainWindow::populateGameProperties()
@@ -482,7 +495,7 @@ void MainWindow::populateGameProperties()
     }
 }
 
-void MainWindow::setupTables()
+void MainWindow::setupModels()
 {
     // Game Properties
 
@@ -494,6 +507,10 @@ void MainWindow::setupTables()
 
     ui->tableView_gameProperties->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     ui->tableView_gameProperties->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+
+    //
+    auto model2 = new QStringListModel(this);
+    ui->listView_libraries->setModel(model2);
 }
 
 void MainWindow::on_pushButton_addLibrary_clicked()
@@ -505,9 +522,11 @@ void MainWindow::on_pushButton_addLibrary_clicked()
         if (selected.length() > 0) {
             QStringList args;
             args << "--noupdate" << "--jsonapi" << "import" << selected;
-            runCommand(SDKBOX_COMMAND, args);
-            _gameState->parseGameLibraries();
+            runCommand(SDKBOX_COMMAND, args, [&]()
+            {
+                _gameState->parseGameLibraries();
+                populateGameLibraries();
+            });
         }
-        update();
     }
 }
