@@ -37,6 +37,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    enum {
+        COCOS_COMMAND,
+        SDKBOX_COMMAND
+    };
+
     static constexpr int MAX_RECENT_FILES=8;
 
     explicit MainWindow(QWidget *parent = 0);
@@ -71,6 +76,8 @@ private slots:
     void on_actionClose_Game_triggered();
     void on_actionBuild_triggered();
 
+    void on_pushButton_addLibrary_clicked();
+
 private:
     void updateActions();
     void updateRecentFiles();
@@ -81,7 +88,7 @@ private:
     void closeGameState();
     bool maybeSave();
     bool maybeRunProcess();
-    bool runCocosCommand(const QStringList& stringList);
+    bool runCommand(int commandType, const QStringList& stringList);
     void populateGameProperties();
     void populateGameLibraries();
     void setupTables();

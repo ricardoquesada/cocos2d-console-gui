@@ -28,12 +28,15 @@ limitations under the License.
 #include <QStringList>
 #include <QStandardItemModel>
 #include <QStandardItem>
+#include <QStringListModel>
 
-#include "newgamedialog.h"
-#include "templateentry.h"
 #include "aboutdialog.h"
 #include "preferencesdialog.h"
 #include "welcomedialog.h"
+#include "librariesdialog.h"
+#include "newgamedialog.h"
+
+#include "templateentry.h"
 #include "gamestate.h"
 
 
@@ -55,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupTables();
 
-    ui->textBrowser->append(QString("> Cocos2d Console GUI v") + APP_VERSION);
+    ui->textBrowser->append(QString("Cocos2d Console GUI v") + APP_VERSION);
 }
 
 MainWindow::~MainWindow()
@@ -108,9 +111,9 @@ void MainWindow::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
     }
 
     if (exitStatus == QProcess::NormalExit)
-        ui->textBrowser->append(QString("Ok: Process finished with exit code: %1").arg(exitCode));
+        ui->textBrowser->append("<font color='green'>Success: Process finished with exit code:" + QString::number(exitCode) + "</font>");
     else
-        ui->textBrowser->append(QString("Error: Process stopped. Exit code: %1").arg(exitCode));
+        ui->textBrowser->append("<font color='red'>Process stopped. Exit code: " + QString::number(exitCode) + "</font>");
 
     updateActions();
 }
@@ -235,7 +238,7 @@ void MainWindow::on_actionBuild_triggered()
         QStringList list;
         list << "compile" << "-p" << "ios";
 
-        runCocosCommand(list);
+        runCommand(COCOS_COMMAND, list);
     }
 }
 
@@ -268,19 +271,23 @@ GameState* MainWindow::getGameState() const
 //
 // Helpers
 //
-bool MainWindow::runCocosCommand(const QStringList& stringList)
+bool MainWindow::runCommand(int commandType, const QStringList& args)
 {
     _runningProcess = new QProcess(this);
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    env.insert("LANG", QLocale::system().name());
     _runningProcess->setProcessEnvironment(env);
 
     _runningProcess->setProcessChannelMode(QProcess::MergedChannels);
     _runningProcess->setWorkingDirectory(_gameState->getPath());
 
-    QString cocosFilePath = PreferencesDialog::findCocosPath() + "/cocos";
-    _runningProcess->start(cocosFilePath, stringList);
+    QString executable = (commandType == COCOS_COMMAND)
+            ? PreferencesDialog::findCocosPath() + "/cocos"
+            : PreferencesDialog::findSDKBOXPath() + "/sdkbox";
 
-    ui->textBrowser->append(cocosFilePath + " " + stringList.join(" "));
+    _runningProcess->start(executable, args);
+
+    ui->textBrowser->append("<font color='blue' face='verdana'>$ " + executable + " " + args.join(" ") + "</font>");
 
     connect(_runningProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processStdOutReady()));
     connect(_runningProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int,QProcess::ExitStatus)));
@@ -296,7 +303,7 @@ void MainWindow::updateActions()
         ui->actionClose_Game,
         ui->actionOpen_File_Browser,
         ui->actionOpen_in_Android_Studio,
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
         ui->actionOpen_Xcode,
 #elif defined(Q_OS_WIN)
         ui->actionOpen_in_Visual_Studio,
@@ -305,7 +312,6 @@ void MainWindow::updateActions()
         ui->actionStop,
         ui->actionBuild,
         ui->actionClean,
-
     };
     const int ACTIONS_MAX = sizeof(actions) / sizeof(actions[0]);
 
@@ -313,6 +319,7 @@ void MainWindow::updateActions()
     {
         actions[i]->setEnabled(_gameState != nullptr);
     }
+    ui->pushButton_addLibrary->setEnabled(_gameState != nullptr);
 
     if (_gameState)
     {
@@ -322,6 +329,8 @@ void MainWindow::updateActions()
         ui->actionRun->setEnabled(!processRunning);
 
         ui->actionStop->setEnabled(processRunning);
+
+        ui->pushButton_addLibrary->setEnabled(!processRunning);
     }
 }
 
@@ -351,7 +360,7 @@ void MainWindow::createActions()
     ui->menuRecentGames->insertSeparator(ui->actionClear_Recent_Games);
     updateRecentFiles();
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_OSX
     ui->actionOpen_in_Visual_Studio->setEnabled(false);
 #elif defined (Q_OS_WIN)
     ui->actionOpen_Xcode->setEnabled(false);
@@ -436,7 +445,11 @@ bool MainWindow::maybeRunProcess()
 
 void MainWindow::populateGameLibraries()
 {
-    Q_ASSERT(_gameState);
+    auto keys = _gameState->getGameLibraries().keys();
+    auto model = new QStringListModel(this);
+    model->setStringList(keys);
+
+    ui->listView_libraries->setModel(model);
 }
 
 void MainWindow::populateGameProperties()
@@ -450,6 +463,7 @@ void MainWindow::populateGameProperties()
         QString description;
     } values[] = {
         { "COCOS_2DX_VERSION", "Cocos2d-x Version" },
+        { "COCOS_PROJECT_TYPE", "Language" },
         { "XCODE_PROJECT", "Xcode Project File" },
         { "ANDROID_STUDIO_PROJECT_DIR", "Android Studio Project Path" },
     };
@@ -468,15 +482,27 @@ void MainWindow::populateGameProperties()
 
 void MainWindow::setupTables()
 {
+    // Game Properties
+
     // 2 Rows and 2 Columns
     auto model = new QStandardItemModel(2,2,this);
     model->setHorizontalHeaderItem(0, new QStandardItem(QString("Description")));
     model->setHorizontalHeaderItem(1, new QStandardItem(QString("Value")));
     ui->tableView_gameProperties->setModel(model);
+}
 
-    // 2 Rows and 2 Columns
-    model = new QStandardItemModel(2,2,this);
-    model->setHorizontalHeaderItem(0, new QStandardItem(QString("Library")));
-    model->setHorizontalHeaderItem(1, new QStandardItem(QString("Version")));
-    ui->tableView_gameLibraries->setModel(model);
+void MainWindow::on_pushButton_addLibrary_clicked()
+{
+    LibrariesDialog dialog(_gameState, this);
+    if (dialog.exec())
+    {
+        auto selected = dialog.getSelectedString();
+        if (selected.length() > 0) {
+            QStringList args;
+            args << "--noupdate" << "--jsonapi" << "import" << selected;
+            runCommand(SDKBOX_COMMAND, args);
+            _gameState->parseGameLibraries();
+        }
+        update();
+    }
 }

@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     welcomedialog.cpp \
     newgamedialog.cpp \
     gamestate.cpp \
-    cocos2dguiapplication.cpp
+    cocos2dguiapplication.cpp \
+    librariesdialog.cpp
 
 HEADERS  += mainwindow.h \
     templatewizard.h \
@@ -36,14 +37,16 @@ HEADERS  += mainwindow.h \
     welcomedialog.h \
     newgamedialog.h \
     gamestate.h \
-    cocos2dguiapplication.h
+    cocos2dguiapplication.h \
+    librariesdialog.h
 
 FORMS    += mainwindow.ui \
     aboutdialog.ui \
     preferencesdialog.ui \
     progressdialog.ui \
     welcomedialog.ui \
-    newgamedialog.ui
+    newgamedialog.ui \
+    librariesdialog.ui
 
 RESOURCES += \
     resources.qrc

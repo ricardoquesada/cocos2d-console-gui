@@ -31,7 +31,6 @@ GameState::GameState(const QString& filePath)
     , _settings("org.cocos2d-x","Cocos2d Console GUI")
     , _gameProperties()
     , _gameLibraries()
-    , _buffer()
 {
     QFileInfo fileinfo(filePath);
     _projectName = fileinfo.baseName();
@@ -39,20 +38,31 @@ GameState::GameState(const QString& filePath)
 
     parseGameLibraries();
     parseGameProperties();
+
+    // FIXME: should be system-wide, so they shouldn't
+    // be re-parsed on each game instance.
+    parseSystemLibraries();
 }
 
 void GameState::parseGameProperties()
 {
     QStringList args;
-    args << "symbols" << "--jsonapi";
+    args << "--noupdate" << "--jsonapi" << "symbols";
     runSDKBOXCommand(args, &_gameProperties);
 }
 
 void GameState::parseGameLibraries()
 {
     QStringList args;
-    args << "info" << "--jsonapi";
+    args << "--noupdate" << "--jsonapi" << "info";
     runSDKBOXCommand(args, &_gameLibraries);
+}
+
+void GameState::parseSystemLibraries()
+{
+    QStringList args;
+    args << "--noupdate" << "--jsonapi" << "list";
+    runSDKBOXCommand(args, &_systemLibraries);
 }
 
 const QString& GameState::getFilePath() const
@@ -78,6 +88,11 @@ const QJsonObject& GameState::getGameProperties() const
 const QJsonObject& GameState::getGameLibraries() const
 {
     return _gameLibraries;
+}
+
+const QJsonObject& GameState::getSystemLibraries() const
+{
+    return _systemLibraries;
 }
 
 //

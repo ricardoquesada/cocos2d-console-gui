@@ -178,6 +178,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     ui->setupUi(this);
     ui->lineEdit_cocos->setText(PreferencesDialog::findCocosPath());
     ui->lineEdit_sdkbox->setText(PreferencesDialog::findSDKBOXPath());
+
+    // report error in case there is an error
+//    on_lineEdit_cocos_editingFinished();
+//    on_lineEdit_sdkbox_editingFinished();
 }
 
 PreferencesDialog::~PreferencesDialog()
