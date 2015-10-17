@@ -23,7 +23,6 @@ limitations under the License.
 #include <QListWidgetItem>
 #include <QDesktopServices>
 #include <QFileInfo>
-#include <QProcessEnvironment>
 #include <QMessageBox>
 #include <QStringList>
 #include <QStandardItemModel>
@@ -301,7 +300,7 @@ void MainWindow::setGameState(GameState* gameState)
         connect(_gameState, &GameState::gamePropertiesUpdated, this, &MainWindow::gamePropertiesUpdated);
 
         updateActions();
-        ui->textBrowser->append("Parsing " + gameState->getFilePath());
+        ui->textBrowser->append("Parsing " + gameState->getFilePath() + "...");
 
         auto runMgr = RunMgr::getInstance();
 

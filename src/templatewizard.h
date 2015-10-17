@@ -17,7 +17,6 @@ limitations under the License.
 #pragma once
 
 #include <QWizard>
-#include <QProcess>
 #include <QSettings>
 
 QT_BEGIN_NAMESPACE

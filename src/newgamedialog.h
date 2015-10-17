@@ -19,7 +19,6 @@ limitations under the License.
 #include <QDialog>
 #include <QListWidgetItem>
 #include <QList>
-#include <QProcess>
 #include <QByteArray>
 #include <QStringList>
 

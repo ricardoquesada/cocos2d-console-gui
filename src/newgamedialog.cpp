@@ -21,7 +21,6 @@ limitations under the License.
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <QProcess>
 #include <QProgressDialog>
 
 #include "preferencesdialog.h"

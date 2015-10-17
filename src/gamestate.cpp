@@ -17,7 +17,6 @@ limitations under the License.
 #include "gamestate.h"
 
 #include <QFileInfo>
-#include <QProcessEnvironment>
 #include <QDebug>
 #include <QLocale>
 #include <QJsonDocument>

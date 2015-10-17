@@ -20,7 +20,6 @@ limitations under the License.
 #include <QStringList>
 #include <QString>
 #include <QSettings>
-#include <QProcess>
 
 QT_BEGIN_NAMESPACE
 class QListWidgetItem;
