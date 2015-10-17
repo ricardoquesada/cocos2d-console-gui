@@ -1,0 +1,172 @@
+/****************************************************************************
+Copyright 2015 Chukong Technologies
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+****************************************************************************/
+
+#include "runmgr.h"
+
+#include <QDebug>
+#include <QDir>
+
+#include "gamestate.h"
+#include "preferencesdialog.h"
+
+RunMgr* RunMgr::getInstance()
+{
+    static RunMgr* _instance = nullptr;
+    if (!_instance)
+        _instance = new RunMgr;
+    return _instance;
+}
+
+RunMgr::RunMgr(QObject *parent)
+    : QObject(parent)
+    , _syncCommands()
+{
+}
+
+//
+// public
+//
+bool RunMgr::isBusy() const
+{
+    return (!_syncCommands.isEmpty());
+}
+
+bool RunMgr::runAsync(Run* runCommand)
+{
+    runCommand->run();
+    return true;
+}
+
+bool RunMgr::runSync(Run* runCommand)
+{
+    if (_syncCommands.isEmpty())
+        runCommand->run();
+
+    _syncCommands.append(runCommand);
+    connect(runCommand, &Run::finished, this, &RunMgr::onProcessFinished);
+
+    return true;
+}
+
+//
+// Slots
+//
+void RunMgr::onProcessFinished(const QStringList& output)
+{
+    Q_UNUSED(output);
+
+    auto command = _syncCommands.at(0);
+    disconnect(command, &Run::finished, this, &RunMgr::onProcessFinished);
+
+    _syncCommands.removeFirst();
+    if (_syncCommands.length() == 1)
+    {
+        _syncCommands.first()->run();
+    }
+
+    if (_syncCommands.isEmpty())
+        emit ready();
+}
+
+
+//
+// class Run
+//
+Run::Run(QObject *parent)
+    : QObject(parent)
+    , _process(nullptr)
+{
+}
+
+Run::~Run()
+{
+    if (_process)
+        delete _process;
+}
+
+bool Run::run()
+{
+    _process = new QProcess(this);
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    // needed for gettext apps, like cocos and sdkbox
+    env.insert("LANG", QLocale::system().name());
+    _process->setProcessEnvironment(env);
+
+    _process->setProcessChannelMode(QProcess::MergedChannels);
+    _process->setWorkingDirectory(_cwd);
+
+    _process->start(_cmd, _args);
+
+    connect(_process, &QProcess::readyReadStandardOutput, this, &Run::onProcessStdOutReady);
+    connect(_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onProcessFinished(int,QProcess::ExitStatus)));
+
+    return true;
+}
+
+void Run::onProcessStdOutReady()
+{
+    auto available = _process->read(_process->bytesAvailable());
+    _output.append(available);
+
+    emit dataAvailable(available);
+}
+
+void Run::onProcessFinished(int code, QProcess::ExitStatus exitStatus)
+{
+    _errorCode = code;
+    _exitStatus = exitStatus;
+
+    emit finished(_output);
+
+    deleteLater();
+}
+
+//
+// class  RunSDKBOXInfo
+//
+RunSDKBOXInfo::RunSDKBOXInfo(GameState* gameState, QObject* parent)
+    : Run(parent)
+{
+    Q_ASSERT(gameState);
+
+    _args << "--noupdate" << "--jsonapi" << "info";
+    _cmd = PreferencesDialog::findSDKBOXPath() + "/sdkbox";
+    _cwd = gameState->getPath();
+}
+
+//
+// class  RunSDKBOXInfo
+//
+RunSDKBOXSymbols::RunSDKBOXSymbols(GameState* gameState, QObject* parent)
+    : Run(parent)
+{
+    Q_ASSERT(gameState);
+
+    _args << "--noupdate" << "--jsonapi" << "symbols";
+    _cmd = PreferencesDialog::findSDKBOXPath() + "/sdkbox";
+    _cwd = gameState->getPath();
+}
+
+//
+// class  RunSDKBOXLibraries
+//
+RunSDKBOXLibraries::RunSDKBOXLibraries(QObject* parent)
+    : Run(parent)
+{
+    _args << "--noupdate" << "--jsonapi" << "list";
+    _cmd = PreferencesDialog::findSDKBOXPath() + "/sdkbox";
+    _cwd = QDir::homePath();
+}

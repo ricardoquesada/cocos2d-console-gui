@@ -20,14 +20,16 @@ limitations under the License.
 #include <QStringListModel>
 
 #include "gamestate.h"
+#include "systemstate.h"
 
 LibrariesDialog::LibrariesDialog(GameState* gameState, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::LibrariesDialog)
 {
+    Q_UNUSED(gameState);
     ui->setupUi(this);
 
-    auto keys = gameState->getSystemLibraries().keys();
+    auto keys = SystemState::getInstance()->getSystemLibraries().keys();
 
     // Remove already used libraries, including "SDKBOX"
     // "SDKBOX" library is exported, which shouldn't... ignore it.

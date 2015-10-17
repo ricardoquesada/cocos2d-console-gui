@@ -31,44 +31,48 @@ GameState::GameState(const QString& filePath)
     , _settings("org.cocos2d-x","Cocos2d Console GUI")
     , _gameProperties()
     , _gameLibraries()
+    , _gamePropertiesParsed(false)
+    , _gameLibrariesParsed(false)
 {
     QFileInfo fileinfo(filePath);
     _projectName = fileinfo.baseName();
     _path = fileinfo.canonicalPath();
-
-    parseGameLibraries();
-    parseGameProperties();
-
-    // FIXME: should be system-wide, so they shouldn't
-    // be re-parsed on each game instance.
-    parseSystemLibraries();
 }
 
-void GameState::parseGameProperties()
+bool GameState::isReady() const
 {
-    QStringList args;
-    args << "--noupdate" << "--jsonapi" << "symbols";
-    runSDKBOXCommand(args, &_gameProperties);
+    return (_gameLibrariesParsed && _gamePropertiesParsed);
+}
 
+bool GameState::parseGameProperties(const QString& json)
+{
+    QJsonParseError error;
+    QJsonDocument loadDoc(QJsonDocument::fromJson(json.toUtf8(), &error));
+    if (error.error != QJsonParseError::NoError)
+    {
+        qDebug() << "Error parsing JSON:" << error.errorString();
+        return false;
+    }
+
+    _gameProperties = loadDoc.object();
+    _gamePropertiesParsed = true;
     emit gamePropertiesUpdated();
+    return true;
 }
 
-void GameState::parseGameLibraries()
+bool GameState::parseGameLibraries(const QString& json)
 {
-    QStringList args;
-    args << "--noupdate" << "--jsonapi" << "info";
-    runSDKBOXCommand(args, &_gameLibraries);
-
+    QJsonParseError error;
+    QJsonDocument loadDoc(QJsonDocument::fromJson(json.toUtf8(), &error));
+    if (error.error != QJsonParseError::NoError)
+    {
+        qDebug() << "Error parsing JSON:" << error.errorString();
+        return false;
+    }
+    _gameLibraries = loadDoc.object();
+    _gameLibrariesParsed = true;
     emit gameLibrariesUpdated();
-}
-
-void GameState::parseSystemLibraries()
-{
-    QStringList args;
-    args << "--noupdate" << "--jsonapi" << "list";
-    runSDKBOXCommand(args, &_systemLibraries);
-
-    emit systemLibrariesUpdated();
+    return true;
 }
 
 const QString& GameState::getFilePath() const
@@ -94,42 +98,4 @@ const QJsonObject& GameState::getGameProperties() const
 const QJsonObject& GameState::getGameLibraries() const
 {
     return _gameLibraries;
-}
-
-const QJsonObject& GameState::getSystemLibraries() const
-{
-    return _systemLibraries;
-}
-
-//
-// Helpers
-//
-bool GameState::runSDKBOXCommand(const QStringList& stringList, QJsonObject* outObject)
-{
-    QProcess process(this);
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    // needed for gettext apps, like cocos and sdkbox
-    env.insert("LANG", QLocale::system().name());
-    process.setProcessEnvironment(env);
-
-    process.setProcessChannelMode(QProcess::MergedChannels);
-    process.setWorkingDirectory(getPath());
-
-    QString sdkboxFilePath = PreferencesDialog::findSDKBOXPath() + "/sdkbox";
-    process.start(sdkboxFilePath, stringList);
-
-    bool ret = process.waitForFinished(5000);
-    if (ret)
-    {
-        const auto json(process.readAllStandardOutput());
-
-        QJsonParseError error;
-        QJsonDocument loadDoc(QJsonDocument::fromJson(json, &error));
-        if (error.error != QJsonParseError::NoError) {
-            qDebug() << error.errorString();
-            return false;
-        }
-        *outObject = loadDoc.object();
-    }
-    return ret;
 }

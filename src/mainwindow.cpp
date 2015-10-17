@@ -39,6 +39,7 @@ limitations under the License.
 
 #include "templateentry.h"
 #include "gamestate.h"
+#include "runmgr.h"
 
 
 constexpr int MainWindow::MAX_RECENT_FILES;
@@ -73,6 +74,85 @@ MainWindow::~MainWindow()
 //
 // Manual Slots
 //
+void MainWindow::gameLibrariesUpdated()
+{
+    auto keys = _gameState->getGameLibraries().keys();
+    auto model = dynamic_cast<QStringListModel*>(ui->listView_libraries->model());
+    model->setStringList(keys);
+}
+
+void MainWindow::gamePropertiesUpdated()
+{
+    Q_ASSERT(_gameState);
+
+    auto properties = _gameState->getGameProperties();
+
+    struct _values {
+        QString key;
+        QString description;
+    } values[] = {
+        { "COCOS_2DX_VERSION", "Cocos2d-x Version" },
+        { "COCOS_PROJECT_TYPE", "Language" },
+        { "XCODE_PROJECT", "Xcode Project File" },
+        { "ANDROID_STUDIO_PROJECT_DIR", "Android Studio Project Path" },
+    };
+    const int MAX_VALUES = sizeof(values) / sizeof(values[0]);
+
+    for (int i=0; i<MAX_VALUES; i++)
+    {
+        auto name = new QStandardItem(values[i].description);
+        auto value = new QStandardItem(properties[values[i].key].toString());
+        name->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        value->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+        auto model = dynamic_cast<QStandardItemModel*>(ui->tableView_gameProperties->model());
+        model->setItem(i, 0, name);
+        model->setItem(i, 1, value);
+    }
+}
+
+void MainWindow::openFile(const QString& filePath)
+{
+    if (filePath.length() > 0 && validatePath(filePath))
+    {
+        setRecentFile(filePath);
+        auto gameState = new GameState(filePath);
+        setGameState(gameState);
+    }
+    else
+    {
+        qDebug() << "Invalid path: " << filePath;
+    }
+}
+
+void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    if (_runningProcess)
+    {
+        _processOnFinish(_processOutput);
+
+        delete _runningProcess;
+        _runningProcess = nullptr;
+    }
+
+    if (exitStatus == QProcess::NormalExit)
+        ui->textBrowser->append("<font color='green'>Success: Process finished with exit code:" + QString::number(exitCode) + "</font>");
+    else
+        ui->textBrowser->append("<font color='red'>Process stopped. Exit code: " + QString::number(exitCode) + "</font>");
+
+    updateActions();
+}
+
+void MainWindow::processStdOutReady()
+{
+    auto available = _runningProcess->read(_runningProcess->bytesAvailable());
+    ui->textBrowser->append(available);
+    _processOutput.append(available);
+}
+
+//
+// QtCreator Slots
+//
 void MainWindow::openRecentFile_triggered()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -89,47 +169,6 @@ void MainWindow::openRecentFile_triggered()
     }
 }
 
-void MainWindow::openFile(const QString& filePath)
-{
-    if (filePath.length() > 0 && validatePath(filePath))
-    {
-        setRecentFile(filePath);
-        auto gameState = new GameState(filePath);
-        setGameState(gameState);
-
-    }
-    else
-    {
-        qDebug() << "Invalid path: " << filePath;
-    }
-}
-
-void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
-{
-    if (_runningProcess)
-    {
-        delete _runningProcess;
-        _runningProcess = nullptr;
-
-        emit processFinished();
-    }
-
-    if (exitStatus == QProcess::NormalExit)
-        ui->textBrowser->append("<font color='green'>Success: Process finished with exit code:" + QString::number(exitCode) + "</font>");
-    else
-        ui->textBrowser->append("<font color='red'>Process stopped. Exit code: " + QString::number(exitCode) + "</font>");
-
-    updateActions();
-}
-
-void MainWindow::processStdOutReady()
-{
-    ui->textBrowser->append(_runningProcess->read(_runningProcess->bytesAvailable()));
-}
-
-//
-// QtCreator Slots
-//
 void MainWindow::on_actionNew_Game_triggered()
 {
     NewGameDialog dialog(this);
@@ -233,6 +272,7 @@ void MainWindow::on_actionOpen_File_Browser_triggered()
 void MainWindow::on_actionClose_Game_triggered()
 {
     setGameState(nullptr);
+    setupModels();
 }
 
 void MainWindow::on_actionBuild_triggered()
@@ -241,7 +281,7 @@ void MainWindow::on_actionBuild_triggered()
     {
         QStringList args;
         args << "compile" << "-p" << "ios";
-        runCommand(COCOS_COMMAND, args, [](){});
+        runCommand(COCOS_COMMAND, args, [](const QStringList&){});
     }
 }
 
@@ -259,10 +299,37 @@ void MainWindow::setGameState(GameState* gameState)
         setWindowFilePath(gameState->getFilePath());
         setRecentFile(gameState->getFilePath());
 
-        populateGameProperties();
-        populateGameLibraries();
-    }
+        connect(_gameState, &GameState::gameLibrariesUpdated, this, &MainWindow::gameLibrariesUpdated);
+        connect(_gameState, &GameState::gamePropertiesUpdated, this, &MainWindow::gamePropertiesUpdated);
 
+        updateActions();
+        ui->textBrowser->append("Parsing...");
+
+        auto runMgr = RunMgr::getInstance();
+
+        // FIXME: create an way to queue commands
+        auto cmdInfo = new RunSDKBOXInfo(gameState);
+        auto cmdSymbols = new RunSDKBOXSymbols(gameState);
+
+        connect(cmdInfo, &RunSDKBOXInfo::finished, [&](const QStringList& output)
+        {
+            QString json = output.join("");
+            _gameState->parseGameLibraries(json);
+            ui->textBrowser->append("Done parsing game libraries.");
+            updateActions();
+        });
+
+        connect(cmdSymbols, &RunSDKBOXSymbols::finished, [&](const QStringList& output)
+        {
+            QString json = output.join("");
+            _gameState->parseGameProperties(json);
+            ui->textBrowser->append("Done parsing game properties.");
+            updateActions();
+        });
+
+        runMgr->runSync(cmdInfo);
+        runMgr->runSync(cmdSymbols);
+    }
     updateActions();
 }
 
@@ -274,9 +341,12 @@ GameState* MainWindow::getGameState() const
 //
 // Helpers
 //
-QProcess* MainWindow::runCommand(int commandType, const QStringList& args, const std::function<void()>& onFinished)
+QProcess* MainWindow::runCommand(int commandType, const QStringList& args, const OnFinishCallback& onFinished)
 {
     _runningProcess = new QProcess(this);
+    _processOnFinish = onFinished;
+    _processOutput.clear();
+
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     env.insert("LANG", QLocale::system().name());
     _runningProcess->setProcessEnvironment(env);
@@ -294,7 +364,6 @@ QProcess* MainWindow::runCommand(int commandType, const QStringList& args, const
 
     connect(_runningProcess, &QProcess::readyReadStandardOutput, this, &MainWindow::processStdOutReady);
     connect(_runningProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onProcessFinished(int,QProcess::ExitStatus)));
-    connect(this, &MainWindow::processFinished, onFinished);
 
     updateActions();
 
@@ -319,17 +388,22 @@ void MainWindow::updateActions()
     };
     const int ACTIONS_MAX = sizeof(actions) / sizeof(actions[0]);
 
+    bool gameStateReady = ( _gameState && _gameState->isReady());
+
     for (int i=0; i<ACTIONS_MAX; i++)
     {
-        actions[i]->setEnabled(_gameState != nullptr);
+        actions[i]->setEnabled(gameStateReady);
     }
-    ui->pushButton_addLibrary->setEnabled(_gameState != nullptr);
-    _progressBar->setMinimum(0);
-    _progressBar->setMaximum(10);
+    ui->pushButton_addLibrary->setEnabled(gameStateReady);
 
-    if (_gameState)
+    // progress bar
+    bool processRunning = RunMgr::getInstance()->isBusy();
+    int min_max = processRunning ? 0 : 1;
+    _progressBar->setMinimum(min_max);
+    _progressBar->setMaximum(min_max);
+
+    if (gameStateReady)
     {
-        bool processRunning = (_runningProcess != nullptr);
         ui->actionRun->setEnabled(!processRunning);
         ui->actionBuild->setEnabled(!processRunning);
         ui->actionRun->setEnabled(!processRunning);
@@ -337,10 +411,6 @@ void MainWindow::updateActions()
         ui->actionStop->setEnabled(processRunning);
 
         ui->pushButton_addLibrary->setEnabled(!processRunning);
-
-        int min_max = processRunning ? 0 : 1;
-        _progressBar->setMinimum(min_max);
-        _progressBar->setMaximum(min_max);
     }
 }
 
@@ -348,6 +418,9 @@ void MainWindow::closeGameState()
 {
     if (!_gameState)
         return;
+
+    disconnect(_gameState, &GameState::gameLibrariesUpdated, this, &MainWindow::gameLibrariesUpdated);
+    disconnect(_gameState, &GameState::gamePropertiesUpdated, this, &MainWindow::gamePropertiesUpdated);
 
     delete _gameState;
     _gameState = nullptr;
@@ -375,6 +448,8 @@ void MainWindow::createActions()
 #elif defined (Q_OS_WIN)
     ui->actionOpen_Xcode->setEnabled(false);
 #endif
+
+    connect(RunMgr::getInstance(), &RunMgr::ready, this, &MainWindow::updateActions);
 }
 
 void MainWindow::setupStatusBar()
@@ -462,42 +537,7 @@ bool MainWindow::maybeRunProcess()
     return true;
 }
 
-void MainWindow::populateGameLibraries()
-{
-    auto keys = _gameState->getGameLibraries().keys();
-    auto model = dynamic_cast<QStringListModel*>(ui->listView_libraries->model());
-    model->setStringList(keys);
-}
 
-void MainWindow::populateGameProperties()
-{
-    Q_ASSERT(_gameState);
-
-    auto properties = _gameState->getGameProperties();
-
-    struct _values {
-        QString key;
-        QString description;
-    } values[] = {
-        { "COCOS_2DX_VERSION", "Cocos2d-x Version" },
-        { "COCOS_PROJECT_TYPE", "Language" },
-        { "XCODE_PROJECT", "Xcode Project File" },
-        { "ANDROID_STUDIO_PROJECT_DIR", "Android Studio Project Path" },
-    };
-    const int MAX_VALUES = sizeof(values) / sizeof(values[0]);
-
-    for (int i=0; i<MAX_VALUES; i++)
-    {
-        auto name = new QStandardItem(values[i].description);
-        auto value = new QStandardItem(properties[values[i].key].toString());
-        name->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-        value->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-        auto model = dynamic_cast<QStandardItemModel*>(ui->tableView_gameProperties->model());
-        model->setItem(i, 0, name);
-        model->setItem(i, 1, value);
-    }
-}
 
 void MainWindow::setupModels()
 {
@@ -524,13 +564,16 @@ void MainWindow::on_pushButton_addLibrary_clicked()
     {
         auto selected = dialog.getSelectedString();
         if (selected.length() > 0) {
-            QStringList args;
-            args << "--noupdate" << "--jsonapi" << "import" << selected;
-            runCommand(SDKBOX_COMMAND, args, [&]()
+            auto runMgr = RunMgr::getInstance();
+            auto cmdInfo = new RunSDKBOXInfo(_gameState);
+
+            connect(cmdInfo, &RunSDKBOXInfo::finished, [&](const QStringList& output)
             {
-                _gameState->parseGameLibraries();
-                populateGameLibraries();
+                QString json = output.join("");
+                _gameState->parseGameLibraries(json);
+                ui->textBrowser->append("Done parsing game libraries.");
             });
+            runMgr->runSync(cmdInfo);
         }
     }
 }

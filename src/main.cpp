@@ -22,6 +22,7 @@ limitations under the License.
 
 #include "welcomedialog.h"
 #include "cocos2dguiapplication.h"
+#include "systemstate.h"
 
 int main(int argc, char *argv[])
 {
@@ -51,6 +52,9 @@ int main(int argc, char *argv[])
     // process Events before main loop in order to process the QFileOpenEvent
     app.processEvents();
 #endif
+
+    // initialize it now
+    SystemState::getInstance();
 
     if (show_welcome && !app.triggeredByFileOpenEvent())
     {

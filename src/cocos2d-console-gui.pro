@@ -26,7 +26,9 @@ SOURCES += main.cpp\
     newgamedialog.cpp \
     gamestate.cpp \
     cocos2dguiapplication.cpp \
-    librariesdialog.cpp
+    librariesdialog.cpp \
+    systemstate.cpp \
+    runmgr.cpp
 
 HEADERS  += mainwindow.h \
     templatewizard.h \
@@ -38,7 +40,9 @@ HEADERS  += mainwindow.h \
     newgamedialog.h \
     gamestate.h \
     cocos2dguiapplication.h \
-    librariesdialog.h
+    librariesdialog.h \
+    systemstate.h \
+    runmgr.h
 
 FORMS    += mainwindow.ui \
     aboutdialog.ui \

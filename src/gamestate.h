@@ -37,23 +37,19 @@ public:
 
     const QJsonObject &getGameProperties() const;
     const QJsonObject &getGameLibraries() const;
-    const QJsonObject &getSystemLibraries() const;
 
-    void parseGameProperties();
-    void parseGameLibraries();
-    void parseSystemLibraries();
+    bool isReady() const;
+
+    bool parseGameProperties(const QString &json);
+    bool parseGameLibraries(const QString &json);
 
 signals:
     void gameLibrariesUpdated();
-    void systemLibrariesUpdated();
     void gamePropertiesUpdated();
 
 private slots:
 
 private:
-    bool runSDKBOXCommand(const QStringList& stringList, QJsonObject *outObject);
-
-
     const QString _filePath;
     QSettings _settings;
 
@@ -62,5 +58,7 @@ private:
 
     QJsonObject _gameProperties;
     QJsonObject _gameLibraries;
-    QJsonObject _systemLibraries;
+
+    bool _gamePropertiesParsed;
+    bool _gameLibrariesParsed;
 };
