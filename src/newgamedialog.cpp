@@ -30,6 +30,7 @@ limitations under the License.
 #include "templatewizard.h"
 #include "progressdialog.h"
 #include "gamestate.h"
+#include "systemstate.h"
 #include "mainwindow.h"
 #include "runmgr.h"
 
@@ -167,47 +168,26 @@ void NewGameDialog::processFinished(Run* command)
 
 bool NewGameDialog::parseTemplates()
 {
-    QProcess process(this);
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    process.setProcessEnvironment(env);
-    process.start( PreferencesDialog::findCocosPath() + "/cocos", QStringList() << "new" << "--list-templates");
+    auto objects = SystemState::getInstance()->getSystemTemplates();
 
-    // wait for error or five seconds
-    if (process.waitForFinished(5000))
+    foreach (const auto& jsonObject, objects)
     {
-        const auto json(process.readAllStandardOutput());
+        TemplateEntry entry = TemplateEntry::createFromJson(jsonObject.toObject());
 
-        QJsonParseError error;
-        QJsonDocument loadDoc(QJsonDocument::fromJson(json, &error));
-        if (error.error != QJsonParseError::NoError) {
-            qDebug() << error.errorString();
-            return false;
+        switch(entry.language()){
+            case TemplateEntry::Language::CPP:
+                _entriesCpp.push_back(entry);
+                break;
+
+            case TemplateEntry::Language::LUA:
+                _entriesLua.push_back(entry);
+                break;
+
+            case TemplateEntry::Language::JAVASCRIPT:
+                _entriesJavaScript.push_back(entry);
+                break;
         }
-        auto objects = loadDoc.object();
-        foreach (const auto& jsonObject, objects) {
-            TemplateEntry entry = TemplateEntry::createFromJson(jsonObject.toObject());
-
-            switch(entry.language()){
-                case TemplateEntry::Language::CPP:
-                    _entriesCpp.push_back(entry);
-                    break;
-
-                case TemplateEntry::Language::LUA:
-                    _entriesLua.push_back(entry);
-                    break;
-
-                case TemplateEntry::Language::JAVASCRIPT:
-                    _entriesJavaScript.push_back(entry);
-                    break;
-            }
-        }
-
-        return true;
-
     }
-    else
-    {
-        qDebug() << "Error running cocos";
-        return false;
-    }
+
+    return true;
 }

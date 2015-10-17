@@ -26,15 +26,24 @@ public:
     static SystemState* getInstance();
 
     const QJsonObject& getSystemLibraries() const;
+    const QJsonObject& getSystemTemplates() const;
+
 signals:
     void systemLibrariesUpdated();
+    void systemTemplatesUpdated();
 
 public slots:
 
 protected:
     bool parseSystemLibraries(const QString& json);
+    bool parseSystemTemplates(const QString& json);
+
     explicit SystemState(QObject *parent = 0);
 
     QJsonObject _systemLibraries;
     bool _systemLibrariesParsed;
+
+    QJsonObject _systemTemplates;
+    bool _systemTemplatesParsed;
+
 };

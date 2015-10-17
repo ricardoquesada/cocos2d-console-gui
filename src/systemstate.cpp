@@ -31,13 +31,22 @@ SystemState* SystemState::getInstance()
 
 SystemState::SystemState(QObject *parent) : QObject(parent)
 {
-    auto command = new RunSDKBOXLibraries(this);
-    RunMgr::getInstance()->runAsync(command);
-    connect(command, &RunSDKBOXLibraries::finished, [&](Run* command)
+    auto commandLibs = new RunSDKBOXLibraries(this);
+    RunMgr::getInstance()->runAsync(commandLibs);
+    connect(commandLibs, &RunSDKBOXLibraries::finished, [&](Run* command)
     {
         QString json = command->getOutput().join("");
         parseSystemLibraries(json);
     });
+
+    auto commandTemplates = new RunCocosListTemplates(this);
+    RunMgr::getInstance()->runAsync(commandTemplates);
+    connect(commandTemplates, &RunCocosListTemplates::finished, [&](Run* command)
+    {
+        QString json = command->getOutput().join("");
+        parseSystemTemplates(json);
+    });
+
 }
 
 const QJsonObject& SystemState::getSystemLibraries() const
@@ -45,12 +54,25 @@ const QJsonObject& SystemState::getSystemLibraries() const
     if (!_systemLibrariesParsed)
     {
         // FIXME:
-        qDebug() << "System State not parsed";
+        qDebug() << "System Libraries not parsed";
         while(!_systemLibrariesParsed)
             ;
     }
 
     return _systemLibraries;
+}
+
+const QJsonObject& SystemState::getSystemTemplates() const
+{
+    if (!_systemTemplatesParsed)
+    {
+        // FIXME:
+        qDebug() << "System Templates not parsed";
+        while(!_systemTemplatesParsed)
+            ;
+    }
+
+    return _systemTemplates;
 }
 
 bool SystemState::parseSystemLibraries(const QString &json)
@@ -59,7 +81,7 @@ bool SystemState::parseSystemLibraries(const QString &json)
     QJsonDocument loadDoc(QJsonDocument::fromJson(json.toUtf8(), &error));
     if (error.error != QJsonParseError::NoError)
     {
-        qDebug() << "Error parsing JSON:" << error.errorString();
+        qDebug() << "Error parsing System Libraries JSON:" << error.errorString();
         return false;
     }
     _systemLibraries = loadDoc.object();
@@ -68,3 +90,17 @@ bool SystemState::parseSystemLibraries(const QString &json)
     return true;
 }
 
+bool SystemState::parseSystemTemplates(const QString &json)
+{
+    QJsonParseError error;
+    QJsonDocument loadDoc(QJsonDocument::fromJson(json.toUtf8(), &error));
+    if (error.error != QJsonParseError::NoError)
+    {
+        qDebug() << "Error parsing System Templates JSON:" << error.errorString();
+        return false;
+    }
+    _systemTemplates = loadDoc.object();
+    _systemTemplatesParsed = true;
+    emit systemTemplatesUpdated();
+    return true;
+}

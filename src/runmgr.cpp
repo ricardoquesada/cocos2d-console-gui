@@ -198,3 +198,14 @@ RunCocosNew::RunCocosNew(const QString& gameName, const QString& gamePath, const
     _cmd = PreferencesDialog::findCocosPath() + "/cocos";
     _cwd = gamePath;
 }
+
+//
+// class  RunCocosListTemplates
+//
+RunCocosListTemplates::RunCocosListTemplates(QObject* parent)
+    : Run(parent)
+{
+    _args << "new" << "--list-templates";
+    _cmd = PreferencesDialog::findCocosPath() + "/cocos";
+    _cwd = QDir::homePath();
+}

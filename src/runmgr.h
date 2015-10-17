@@ -111,3 +111,10 @@ class RunCocosNew : public Run
 public:
     explicit RunCocosNew(const QString& gameName, const QString& gamePath, const QString &templateName, QObject* parent);
 };
+
+class RunCocosListTemplates : public Run
+{
+    Q_OBJECT
+public:
+    explicit RunCocosListTemplates(QObject* parent);
+};
