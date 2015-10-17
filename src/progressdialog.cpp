@@ -18,6 +18,7 @@ limitations under the License.
 
 #include "progressdialog.h"
 #include "ui_progressdialog.h"
+#include "runmgr.h"
 
 ProgressDialog::ProgressDialog(QWidget *parent) :
     QDialog(parent),
@@ -37,8 +38,10 @@ void ProgressDialog::appendData(const QString& str)
     ui->textBrowser->append(str);
 }
 
-void ProgressDialog::processFinished()
+void ProgressDialog::processFinished(Run* command)
 {
+    Q_UNUSED(command);
+
     ui->progressBar->setMaximum(1);
     ui->progressBar->setValue(1);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);

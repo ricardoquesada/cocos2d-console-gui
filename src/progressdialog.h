@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <QDialog>
 
+class Run;
 namespace Ui {
 class ProgressDialog;
 }
@@ -33,7 +34,7 @@ public:
     void appendData(const QString& str);
 
 public slots:
-    void processFinished();
+    void processFinished(Run *command);
 
 
 private slots:

@@ -33,9 +33,9 @@ SystemState::SystemState(QObject *parent) : QObject(parent)
 {
     auto command = new RunSDKBOXLibraries(this);
     RunMgr::getInstance()->runAsync(command);
-    connect(command, &RunSDKBOXLibraries::finished, [&](const QStringList& output)
+    connect(command, &RunSDKBOXLibraries::finished, [&](Run* command)
     {
-        QString json = output.join("");
+        QString json = command->getOutput().join("");
         parseSystemLibraries(json);
     });
 }

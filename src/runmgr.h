@@ -40,7 +40,7 @@ signals:
     void ready();
 
 private slots:
-    void onProcessFinished(const QStringList& output);
+    void onProcessFinished(Run* command);
 
 private:
     explicit RunMgr(QObject *parent = 0);
@@ -57,12 +57,15 @@ public:
     explicit Run(QObject* parent = nullptr);
     virtual ~Run();
 
+    QProcess* getProcess();
     int getErrorCode() const;
     QProcess::ExitStatus getExitStatus() const;
+    QString getCommandLine() const;
+    const QStringList& getOutput() const;
 
 signals:
-    void dataAvailable(const QByteArray& available);
-    void finished(const QStringList& output);
+    void dataAvailable(Run* command, const QByteArray& available);
+    void finished(Run* command);
 
 public slots:
     void onProcessFinished(int code, QProcess::ExitStatus exitStatus);
@@ -102,3 +105,9 @@ public:
     explicit RunSDKBOXLibraries(QObject* parent = nullptr);
 };
 
+class RunCocosNew : public Run
+{
+    Q_OBJECT
+public:
+    explicit RunCocosNew(const QString& gameName, const QString& gamePath, const QString &templateName, QObject* parent);
+};

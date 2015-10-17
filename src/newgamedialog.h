@@ -20,9 +20,13 @@ limitations under the License.
 #include <QListWidgetItem>
 #include <QList>
 #include <QProcess>
+#include <QByteArray>
+#include <QStringList>
 
 #include "templateentry.h"
 #include "templatewizard.h"
+
+class Run;
 
 namespace Ui {
 class NewGameDialog;
@@ -46,8 +50,8 @@ protected:
 private slots:
     void on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void on_buttonBox_accepted();
-    void processReadyReadStandardOutput();
-    void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void processOutputReady(Run *command, const QByteArray& data);
+    void processFinished(Run *command);
 
 private:
     QList<TemplateEntry> _entriesCpp;
@@ -57,7 +61,6 @@ private:
     Ui::NewGameDialog *ui;
 
     QByteArray _data;
-    QProcess* _process;
     ProgressDialog* _progressDialog;
     bool _running;
 };

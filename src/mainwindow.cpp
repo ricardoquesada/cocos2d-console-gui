@@ -311,17 +311,17 @@ void MainWindow::setGameState(GameState* gameState)
         auto cmdInfo = new RunSDKBOXInfo(gameState);
         auto cmdSymbols = new RunSDKBOXSymbols(gameState);
 
-        connect(cmdInfo, &RunSDKBOXInfo::finished, [&](const QStringList& output)
+        connect(cmdInfo, &RunSDKBOXInfo::finished, [&](Run* command)
         {
-            QString json = output.join("");
+            QString json = command->getOutput().join("");
             _gameState->parseGameLibraries(json);
             ui->textBrowser->append("Done parsing game libraries.");
             updateActions();
         });
 
-        connect(cmdSymbols, &RunSDKBOXSymbols::finished, [&](const QStringList& output)
+        connect(cmdSymbols, &RunSDKBOXSymbols::finished, [&](Run* command)
         {
-            QString json = output.join("");
+            QString json = command->getOutput().join("");
             _gameState->parseGameProperties(json);
             ui->textBrowser->append("Done parsing game properties.");
             updateActions();
@@ -567,9 +567,9 @@ void MainWindow::on_pushButton_addLibrary_clicked()
             auto runMgr = RunMgr::getInstance();
             auto cmdInfo = new RunSDKBOXInfo(_gameState);
 
-            connect(cmdInfo, &RunSDKBOXInfo::finished, [&](const QStringList& output)
+            connect(cmdInfo, &RunSDKBOXInfo::finished, [&](Run* command)
             {
-                QString json = output.join("");
+                QString json = command->getOutput().join("");
                 _gameState->parseGameLibraries(json);
                 ui->textBrowser->append("Done parsing game libraries.");
             });

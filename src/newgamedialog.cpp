@@ -31,6 +31,7 @@ limitations under the License.
 #include "progressdialog.h"
 #include "gamestate.h"
 #include "mainwindow.h"
+#include "runmgr.h"
 
 NewGameDialog::NewGameDialog(QWidget *parent)
     : QDialog(parent)
@@ -114,30 +115,21 @@ void NewGameDialog::on_buttonBox_accepted()
 
 void NewGameDialog::copyFiles(const TemplateWizard& wizard, const TemplateEntry& templateEntry)
 {
-    _process = new QProcess(this);
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    _process->setProcessEnvironment(env);
-
-    _process->setProcessChannelMode(QProcess::MergedChannels);
-    QStringList commandLine = QStringList() << PreferencesDialog::findCocosPath() + "/cocos"
-                                            << "new"
-                                            << wizard.field("gameName").toString()
-                                            << "--template-name" << templateEntry.key()
-                                            << "-d" << wizard.field("gamePath").toString();
+    auto cocosNew = new RunCocosNew(wizard.field("gameName").toString(),
+                                    wizard.field("gamePath").toString(),
+                                    templateEntry.key(),
+                                    this);
 
     _progressDialog = new ProgressDialog(this);
     _progressDialog->setModal(true);
     _progressDialog->appendData(tr("Running:"));
-    _progressDialog->appendData(commandLine.join(" "));
+    _progressDialog->appendData("<font color='blue'>" + cocosNew->getCommandLine() + "</font>");
 
-    auto executable = commandLine.at(0);
-    commandLine.removeFirst();
-    _process->start(executable, commandLine);
+    RunMgr::getInstance()->runSync(cocosNew);
 
-
-    connect(_process, &QProcess::readyReadStandardOutput, this, &NewGameDialog::processReadyReadStandardOutput);
-    connect(_process,SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int,QProcess::ExitStatus)));
-    connect(_process,SIGNAL(finished(int,QProcess::ExitStatus)), _progressDialog, SLOT(processFinished()));
+    connect(cocosNew, &RunCocosNew::dataAvailable, this, &NewGameDialog::processOutputReady);
+    connect(cocosNew, &RunCocosNew::finished, this, &NewGameDialog::processFinished);
+    connect(cocosNew, &RunCocosNew::finished, _progressDialog, &ProgressDialog::processFinished);
 
     if (_progressDialog->exec())
     {
@@ -159,19 +151,15 @@ void NewGameDialog::copyFiles(const TemplateWizard& wizard, const TemplateEntry&
     }
 }
 
-void NewGameDialog::processReadyReadStandardOutput()
+void NewGameDialog::processOutputReady(Run* command, const QByteArray& data)
 {
-    _progressDialog->appendData(_process->read(_process->bytesAvailable()));
-
-    // Output the data
-//    qDebug() << "-- section --";
-//    qDebug() << _data.data();
+    Q_UNUSED(command);
+    _progressDialog->appendData(data);
 }
 
-void NewGameDialog::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
+void NewGameDialog::processFinished(Run* command)
 {
-    Q_UNUSED(exitCode);
-    Q_UNUSED(exitStatus);
+    Q_UNUSED(command);
 }
 
 

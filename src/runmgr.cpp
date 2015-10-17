@@ -64,11 +64,13 @@ bool RunMgr::runSync(Run* runCommand)
 //
 // Slots
 //
-void RunMgr::onProcessFinished(const QStringList& output)
+void RunMgr::onProcessFinished(Run* cmd)
 {
-    Q_UNUSED(output);
+    Q_UNUSED(cmd);
 
     auto command = _syncCommands.at(0);
+    Q_ASSERT(command == cmd);
+
     disconnect(command, &Run::finished, this, &RunMgr::onProcessFinished);
 
     _syncCommands.removeFirst();
@@ -97,6 +99,21 @@ Run::~Run()
         delete _process;
 }
 
+QProcess* Run::getProcess()
+{
+    return _process;
+}
+
+QString Run::getCommandLine() const
+{
+    return _cmd + " " + _args.join(" ");
+}
+
+const QStringList& Run::getOutput() const
+{
+    return _output;
+}
+
 bool Run::run()
 {
     _process = new QProcess(this);
@@ -121,7 +138,7 @@ void Run::onProcessStdOutReady()
     auto available = _process->read(_process->bytesAvailable());
     _output.append(available);
 
-    emit dataAvailable(available);
+    emit dataAvailable(this, available);
 }
 
 void Run::onProcessFinished(int code, QProcess::ExitStatus exitStatus)
@@ -129,7 +146,7 @@ void Run::onProcessFinished(int code, QProcess::ExitStatus exitStatus)
     _errorCode = code;
     _exitStatus = exitStatus;
 
-    emit finished(_output);
+    emit finished(this);
 
     deleteLater();
 }
@@ -169,4 +186,15 @@ RunSDKBOXLibraries::RunSDKBOXLibraries(QObject* parent)
     _args << "--noupdate" << "--jsonapi" << "list";
     _cmd = PreferencesDialog::findSDKBOXPath() + "/sdkbox";
     _cwd = QDir::homePath();
+}
+
+//
+// class  RunCocosNew
+//
+RunCocosNew::RunCocosNew(const QString& gameName, const QString& gamePath, const QString& templateName, QObject* parent)
+    : Run(parent)
+{
+    _args << "new" << gameName << "-k" << templateName;
+    _cmd = PreferencesDialog::findCocosPath() + "/cocos";
+    _cwd = gamePath;
 }
