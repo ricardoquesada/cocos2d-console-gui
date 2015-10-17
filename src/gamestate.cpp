@@ -62,8 +62,14 @@ bool GameState::parseGameProperties(const QString& json)
 
 bool GameState::parseGameLibraries(const QString& json)
 {
+    // WORKAROUND:
+    // json could be empty instead of "{}"
+
+    QByteArray byteArray;
+
+    byteArray = (json.length() > 0) ? json.toUtf8() : "{}";
     QJsonParseError error;
-    QJsonDocument loadDoc(QJsonDocument::fromJson(json.toUtf8(), &error));
+    QJsonDocument loadDoc(QJsonDocument::fromJson(byteArray, &error));
     if (error.error != QJsonParseError::NoError)
     {
         qDebug() << "Error parsing JSON:" << error.errorString();

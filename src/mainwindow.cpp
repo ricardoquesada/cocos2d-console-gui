@@ -303,7 +303,7 @@ void MainWindow::setGameState(GameState* gameState)
         connect(_gameState, &GameState::gamePropertiesUpdated, this, &MainWindow::gamePropertiesUpdated);
 
         updateActions();
-        ui->textBrowser->append("Parsing...");
+        ui->textBrowser->append("Parsing " + gameState->getFilePath());
 
         auto runMgr = RunMgr::getInstance();
 
