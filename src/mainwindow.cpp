@@ -49,7 +49,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , _settings("org.cocos2d-x","Cocos2d Console GUI")
     , _lastDir(QDir::homePath())
-    , _runningProcess(nullptr)
     , _gameState(nullptr)
 {
     setUnifiedTitleAndToolBarOnMac(true);
@@ -125,29 +124,20 @@ void MainWindow::openFile(const QString& filePath)
     }
 }
 
-void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
+void MainWindow::onProcessFinished(Run* command)
 {
-    if (_runningProcess)
-    {
-        _processOnFinish(_processOutput);
-
-        delete _runningProcess;
-        _runningProcess = nullptr;
-    }
-
-    if (exitStatus == QProcess::NormalExit)
-        ui->textBrowser->append("<font color='green'>Success: Process finished with exit code:" + QString::number(exitCode) + "</font>");
+    if (command->getExitStatus() == QProcess::NormalExit)
+        ui->textBrowser->append("<font color='green'>Success: Process finished with exit code:" + QString::number(command->getExitCode()) + "</font>");
     else
-        ui->textBrowser->append("<font color='red'>Process stopped. Exit code: " + QString::number(exitCode) + "</font>");
+        ui->textBrowser->append("<font color='red'>Process stopped. Exit code: " + QString::number(command->getExitCode()) + "</font>");
 
     updateActions();
 }
 
-void MainWindow::processStdOutReady()
+void MainWindow::onProcessDataAvailable(Run* command, const QString& data)
 {
-    auto available = _runningProcess->read(_runningProcess->bytesAvailable());
-    ui->textBrowser->append(available);
-    _processOutput.append(available);
+    Q_UNUSED(command);
+    ui->textBrowser->append(data);
 }
 
 //
@@ -229,10 +219,10 @@ void MainWindow::on_actionRun_triggered()
 
 bool MainWindow::on_actionStop_triggered()
 {
-    if (_runningProcess)
+    if (RunMgr::getInstance()->isBusy())
     {
         ui->textBrowser->append("Stoping process...");
-        _runningProcess->kill();
+        RunMgr::getInstance()->killAll();
     }
 
     return true;
@@ -277,11 +267,19 @@ void MainWindow::on_actionClose_Game_triggered()
 
 void MainWindow::on_actionBuild_triggered()
 {
+    Q_ASSERT(_gameState);
+
     if (maybeRunProcess())
     {
-        QStringList args;
-        args << "compile" << "-p" << "ios";
-        runCommand(COCOS_COMMAND, args, [](const QStringList&){});
+        auto run = new RunCocosCompile(_gameState, "ios", this);
+        RunMgr::getInstance()->runSync(run);
+
+        ui->textBrowser->append("<font color='blue' face='verdana'>$ " + run->getCommandLine() + "</font>");
+
+        connect(run, &RunCocosCompile::dataAvailable, this, &MainWindow::onProcessDataAvailable);
+        connect(run, &RunCocosCompile::finished, this, &MainWindow::onProcessFinished);
+
+        updateActions();
     }
 }
 
@@ -341,35 +339,6 @@ GameState* MainWindow::getGameState() const
 //
 // Helpers
 //
-QProcess* MainWindow::runCommand(int commandType, const QStringList& args, const OnFinishCallback& onFinished)
-{
-    _runningProcess = new QProcess(this);
-    _processOnFinish = onFinished;
-    _processOutput.clear();
-
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    env.insert("LANG", QLocale::system().name());
-    _runningProcess->setProcessEnvironment(env);
-
-    _runningProcess->setProcessChannelMode(QProcess::MergedChannels);
-    _runningProcess->setWorkingDirectory(_gameState->getPath());
-
-    QString executable = (commandType == COCOS_COMMAND)
-            ? PreferencesDialog::findCocosPath() + "/cocos"
-            : PreferencesDialog::findSDKBOXPath() + "/sdkbox";
-
-    _runningProcess->start(executable, args);
-
-    ui->textBrowser->append("<font color='blue' face='verdana'>$ " + executable + " " + args.join(" ") + "</font>");
-
-    connect(_runningProcess, &QProcess::readyReadStandardOutput, this, &MainWindow::processStdOutReady);
-    connect(_runningProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onProcessFinished(int,QProcess::ExitStatus)));
-
-    updateActions();
-
-    return _runningProcess;
-}
-
 void MainWindow::updateActions()
 {
     QAction* actions[] = {
@@ -522,7 +491,7 @@ bool MainWindow::maybeSave()
 
 bool MainWindow::maybeRunProcess()
 {
-    if (_runningProcess)
+    if (RunMgr::getInstance()->isBusy())
     {
         QMessageBox::StandardButton ret;
         ret = QMessageBox::warning(this, tr("Application"),

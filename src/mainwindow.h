@@ -28,6 +28,7 @@ class QProgressBar;
 QT_END_NAMESPACE
 
 class GameState;
+class Run;
 
 namespace Ui {
 class MainWindow;
@@ -44,8 +45,6 @@ public:
     };
 
     static constexpr int MAX_RECENT_FILES=8;
-
-    typedef std::function<void(const QStringList&)> OnFinishCallback;
 
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -66,8 +65,8 @@ private slots:
     void gamePropertiesUpdated();
     void gameLibrariesUpdated();
     void openRecentFile_triggered();
-    void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
-    void processStdOutReady();
+    void onProcessFinished(Run* command);
+    void onProcessDataAvailable(Run* command, const QString& data);
 
     void on_actionPreferences_triggered();
     void on_actionAbout_triggered();
@@ -98,7 +97,6 @@ private:
     void closeGameState();
     bool maybeSave();
     bool maybeRunProcess();
-    QProcess *runCommand(int commandType, const QStringList& stringList, const OnFinishCallback& onFinished);
     void setupModels();
     void setupStatusBar();
 
@@ -106,10 +104,6 @@ private:
     QSettings _settings;
     QAction* _recentFilesAction[MAX_RECENT_FILES];
     QString _lastDir;
-
-    QProcess* _runningProcess;
-    OnFinishCallback _processOnFinish;
-    QStringList _processOutput;
 
     GameState* _gameState;
     QProgressBar* _progressBar;

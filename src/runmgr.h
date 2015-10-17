@@ -33,7 +33,7 @@ public:
 
     bool runAsync(Run* runCommand);
     bool runSync(Run* runCommand);
-
+    void killAll();
     bool isBusy() const;
 
 signals:
@@ -58,7 +58,7 @@ public:
     virtual ~Run();
 
     QProcess* getProcess();
-    int getErrorCode() const;
+    int getExitCode() const;
     QProcess::ExitStatus getExitStatus() const;
     QString getCommandLine() const;
     const QStringList& getOutput() const;
@@ -68,7 +68,7 @@ signals:
     void finished(Run* command);
 
 public slots:
-    void onProcessFinished(int code, QProcess::ExitStatus exitStatus);
+    void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void onProcessStdOutReady();
 
 protected:
@@ -79,7 +79,7 @@ protected:
     QStringList _args;
     QString _cwd;
 
-    int _errorCode;
+    int _exitCode;
     QProcess::ExitStatus _exitStatus;
     QProcess* _process;
 };
@@ -117,4 +117,11 @@ class RunCocosListTemplates : public Run
     Q_OBJECT
 public:
     explicit RunCocosListTemplates(QObject* parent);
+};
+
+class RunCocosCompile: public Run
+{
+    Q_OBJECT
+public:
+    explicit RunCocosCompile(GameState *gameState, const QString& platform, QObject* parent);
 };

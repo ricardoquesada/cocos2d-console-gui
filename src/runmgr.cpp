@@ -39,6 +39,22 @@ RunMgr::RunMgr(QObject *parent)
 //
 // public
 //
+void RunMgr::killAll()
+{
+    if (isBusy())
+    {
+        auto front = _syncCommands.first();
+        front->getProcess()->terminate();
+
+        Run* command;
+        foreach (command, _syncCommands)
+        {
+            delete command;
+        }
+        _syncCommands.clear();
+    }
+}
+
 bool RunMgr::isBusy() const
 {
     return (!_syncCommands.isEmpty());
@@ -133,6 +149,16 @@ bool Run::run()
     return true;
 }
 
+int Run::getExitCode() const
+{
+    return _exitCode;
+}
+
+QProcess::ExitStatus Run::getExitStatus() const
+{
+    return _exitStatus;
+}
+
 void Run::onProcessStdOutReady()
 {
     auto available = _process->read(_process->bytesAvailable());
@@ -141,9 +167,9 @@ void Run::onProcessStdOutReady()
     emit dataAvailable(this, available);
 }
 
-void Run::onProcessFinished(int code, QProcess::ExitStatus exitStatus)
+void Run::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    _errorCode = code;
+    _exitCode = exitCode;
     _exitStatus = exitStatus;
 
     emit finished(this);
@@ -208,4 +234,16 @@ RunCocosListTemplates::RunCocosListTemplates(QObject* parent)
     _args << "new" << "--list-templates";
     _cmd = PreferencesDialog::findCocosPath() + "/cocos";
     _cwd = QDir::homePath();
+}
+
+//
+// RunCocosCompile
+//
+RunCocosCompile::RunCocosCompile(GameState* gameState, const QString& platform, QObject* parent)
+    : Run(parent)
+{
+    _args << "compile" << "-p" << platform;
+    _cmd = PreferencesDialog::findCocosPath() + "/cocos";
+    _cwd = gameState->getPath();
+
 }
