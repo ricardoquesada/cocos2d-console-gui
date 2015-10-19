@@ -60,6 +60,14 @@ MainWindow::MainWindow(QWidget *parent)
     setupModels();
 
     ui->textBrowser->append(QString("Cocos2d Console GUI v") + APP_VERSION);
+    auto cocosPath = PreferencesDialog::findCocosPath();
+    if (cocosPath.length() == 0)
+        ui->textBrowser->append(QString("<font color='red'>Error: cocos.py not found. Open Preferences</font>"));
+
+
+    auto sdkboxPath = PreferencesDialog::findSDKBOXPath();
+    if (sdkboxPath.length() == 0)
+        ui->textBrowser->append(QString("<font color='red'>Error: sdkbox.py not found. Open Preferences</font>"));
 }
 
 MainWindow::~MainWindow()
