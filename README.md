@@ -21,6 +21,7 @@ cocos launcher
 
 ```
 $ cp -R ~/Download/Cocos2d-Console-GUI.app ~/Users/cocos2d-x/tools/cocos2d-console/bin
+```
 
 ## Use latest cocos-console.py version
 
