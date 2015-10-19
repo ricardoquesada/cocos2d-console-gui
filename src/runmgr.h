@@ -57,6 +57,8 @@ public:
     explicit Run(QObject* parent = nullptr);
     virtual ~Run();
 
+    virtual void kill();
+
     QProcess* getProcess();
     int getExitCode() const;
     QProcess::ExitStatus getExitStatus() const;

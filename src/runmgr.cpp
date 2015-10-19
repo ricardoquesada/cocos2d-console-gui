@@ -44,7 +44,7 @@ void RunMgr::killAll()
     if (isBusy())
     {
         auto front = _syncCommands.first();
-        front->getProcess()->terminate();
+        front->kill();
 
         Run* command;
         foreach (command, _syncCommands)
@@ -113,6 +113,12 @@ Run::~Run()
 {
     if (_process)
         delete _process;
+}
+
+void Run::kill()
+{
+    _process->kill();
+    _process->terminate();
 }
 
 QProcess* Run::getProcess()
