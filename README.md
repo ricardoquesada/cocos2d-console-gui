@@ -10,9 +10,9 @@ cocos launcher
 
 ## Compile ...
 
-. Download latest [QtCreator](http://www.qt.io/download/)
-. Open `src/cocos2d-console-gui.pro` file from QtCreator
-. Compile it
+* Download latest [QtCreator](http://www.qt.io/download/)
+* Open `src/cocos2d-console-gui.pro` file from QtCreator
+* Compile it
 
 ## ... or Download pre-compiled binary
 
