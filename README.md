@@ -41,7 +41,7 @@ $ ./build.py
 $ cp -R bin/* ~/cocos2d-x/tools/cocos2d-console/bin
 ```
 
-## Run it.
+## Run it
 
 ```
 $ cocos gui
