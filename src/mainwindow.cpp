@@ -97,6 +97,9 @@ void MainWindow::gameUpdateLibraries()
     auto keys = _gameState->getGameLibraries().keys();
     auto model = dynamic_cast<QStringListModel*>(ui->listView_libraries->model());
     model->setStringList(keys);
+
+    if (_gameState->isReady())
+        statusBar()->showMessage("Ready", 3000);
 }
 
 void MainWindow::gameUpdateProperties()
@@ -127,6 +130,9 @@ void MainWindow::gameUpdateProperties()
         model->setItem(i, 0, name);
         model->setItem(i, 1, value);
     }
+
+    if (_gameState->isReady())
+        statusBar()->showMessage("Ready", 3000);
 }
 
 void MainWindow::gameUpdatePlatforms()
@@ -136,6 +142,14 @@ void MainWindow::gameUpdatePlatforms()
         auto str = value.toString();
         _comboBoxPlatforms->addItem(str);
     }
+
+    if (_gameState->isReady())
+        statusBar()->showMessage("Ready", 3000);
+}
+
+void MainWindow::displayCommand(const QString& commandLine)
+{
+    ui->plainTextEdit->appendPlainText("Running: " + commandLine);
 }
 
 
@@ -305,8 +319,6 @@ void MainWindow::on_actionBuild_triggered()
         auto run = new RunCocosCompile(_gameState, platform, mode, this);
         RunMgr::getInstance()->runSync(run);
 
-        ui->plainTextEdit->appendHtml("<font color='blue' face='verdana'>$ " + run->getCommandLine() + "</font>");
-
         connect(run, &RunCocosCompile::dataAvailable, this, &MainWindow::onProcessDataAvailable);
         connect(run, &RunCocosCompile::finished, this, &MainWindow::onProcessFinished);
 
@@ -334,6 +346,7 @@ void MainWindow::setGameState(GameState* gameState)
 
         updateActions();
         ui->plainTextEdit->appendPlainText("Parsing " + gameState->getFilePath() + "...");
+        statusBar()->showMessage("Parsing " + gameState->getFilePath());
 
         auto runMgr = RunMgr::getInstance();
 
@@ -462,7 +475,8 @@ void MainWindow::createActions()
     ui->actionOpen_Xcode->setEnabled(false);
 #endif
 
-    connect(RunMgr::getInstance(), &RunMgr::ready, this, &MainWindow::updateActions);
+    connect(RunMgr::getInstance(), &RunMgr::isReady, this, &MainWindow::updateActions);
+    connect(RunMgr::getInstance(), &RunMgr::commandRun, this, &MainWindow::displayCommand);
 
     // toolbar actions
     auto toolbars = findChildren<QToolBar *>();
@@ -474,11 +488,11 @@ void MainWindow::createActions()
         _comboBoxMode = new QComboBox;
         _comboBoxMode->addItem(tr("Debug"));
         _comboBoxMode->addItem(tr("Release"));
-        toolbar->addWidget(_comboBoxMode);
+        toolbar->insertWidget(ui->actionBuild, _comboBoxMode);
 
         // supported platforms. Empty by default. Will be filled once it is parsed
         _comboBoxPlatforms = new QComboBox;
-        toolbar->addWidget(_comboBoxPlatforms);
+        toolbar->insertWidget(ui->actionBuild, _comboBoxPlatforms);
     }
 }
 

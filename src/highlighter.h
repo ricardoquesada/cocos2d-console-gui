@@ -29,6 +29,7 @@ class Highlighter : public QSyntaxHighlighter
 
 public:
     Highlighter(QTextDocument *parent = 0);
+    virtual ~Highlighter();
 
 protected:
     void highlightBlock(const QString& text) Q_DECL_OVERRIDE;
@@ -44,5 +45,6 @@ private:
     QTextCharFormat _errorFormat;
     QTextCharFormat _warningFormat;
     QTextCharFormat _successFormat;
+    QTextCharFormat _runningFormat;
 };
 

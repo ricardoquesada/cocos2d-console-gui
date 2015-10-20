@@ -37,7 +37,8 @@ public:
     bool isBusy() const;
 
 signals:
-    void ready();
+    void isReady();
+    void commandRun(const QString& commandLine);
 
 private slots:
     void onProcessFinished(Run* command);

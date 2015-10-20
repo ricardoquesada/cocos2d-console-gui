@@ -35,12 +35,24 @@ Highlighter::Highlighter(QTextDocument *parent)
     rule.format = _warningFormat;
     _highlightingRules.append(rule);
 
-    _warningFormat.setFontWeight(QFont::Bold);
-    _warningFormat.setForeground(Qt::green);
+    _successFormat.setFontWeight(QFont::Bold);
+    _successFormat.setForeground(Qt::green);
     rule.pattern = QRegExp("\\success\\b");
     rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
-    rule.format = _warningFormat;
+    rule.format = _successFormat;
     _highlightingRules.append(rule);
+
+    _runningFormat.setFontWeight(QFont::Bold);
+    _runningFormat.setForeground(Qt::gray);
+    _runningFormat.setFontItalic(true);
+    rule.pattern = QRegExp("\\Running\\b");
+    rule.format = _runningFormat;
+    _highlightingRules.append(rule);
+
+}
+
+Highlighter::~Highlighter()
+{
 }
 
 void Highlighter::highlightBlock(const QString &text)
@@ -48,10 +60,9 @@ void Highlighter::highlightBlock(const QString &text)
     foreach (const HighlightingRule &rule, _highlightingRules) {
         QRegExp expression(rule.pattern);
         int index = expression.indexIn(text);
-        while (index >= 0) {
-            int length = expression.matchedLength();
-            setFormat(index, length, rule.format);
-            index = expression.indexIn(text, index + length);
+        if (index >= 0) {
+            setFormat(0, text.length(), rule.format);
+            break;
         }
     }
 }

@@ -67,6 +67,8 @@ private slots:
     void gameUpdateLibraries();
     void gameUpdatePlatforms();
 
+    void displayCommand(const QString& commandLine);
+
     void openRecentFile_triggered();
     void onProcessFinished(Run* command);
     void onProcessDataAvailable(Run* command, const QString& data);

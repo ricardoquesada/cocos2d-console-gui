@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <QDebug>
 #include <QDir>
+#include <QFileInfo>
 
 #include "gamestate.h"
 #include "preferencesdialog.h"
@@ -63,13 +64,17 @@ bool RunMgr::isBusy() const
 bool RunMgr::runAsync(Run* runCommand)
 {
     runCommand->run();
+    emit commandRun(runCommand->getCommandLine());
     return true;
 }
 
 bool RunMgr::runSync(Run* runCommand)
 {
     if (_syncCommands.isEmpty())
+    {
         runCommand->run();
+        emit commandRun(runCommand->getCommandLine());
+    }
 
     _syncCommands.append(runCommand);
     connect(runCommand, &Run::finished, this, &RunMgr::onProcessFinished);
@@ -93,10 +98,11 @@ void RunMgr::onProcessFinished(Run* cmd)
     if (_syncCommands.length() > 0)
     {
         _syncCommands.first()->run();
+        emit commandRun(_syncCommands.first()->getCommandLine());
     }
 
     if (_syncCommands.isEmpty())
-        emit ready();
+        emit isReady();
 }
 
 
@@ -128,7 +134,7 @@ QProcess* Run::getProcess()
 
 QString Run::getCommandLine() const
 {
-    return _cmd + " " + _args.join(" ");
+    return QFileInfo(_cmd).baseName() + " " + _args.join(" ");
 }
 
 const QStringList& Run::getOutput() const
