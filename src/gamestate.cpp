@@ -41,7 +41,7 @@ GameState::GameState(const QString& filePath)
 
 bool GameState::isReady() const
 {
-    return (_gameLibrariesParsed && _gamePropertiesParsed);
+    return (_gameLibrariesParsed && _gamePropertiesParsed && _gamePlatformsParsed);
 }
 
 bool GameState::parseGameProperties(const QString& json)

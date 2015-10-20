@@ -44,6 +44,7 @@ limitations under the License.
 #include "templateentry.h"
 #include "gamestate.h"
 #include "runmgr.h"
+#include "highlighter.h"
 
 
 constexpr int MainWindow::MAX_RECENT_FILES;
@@ -66,15 +67,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupModels();
 
+    // other setups
+    _highlighter = new Highlighter(ui->plainTextEdit->document());
+
+    ui->plainTextEdit->setReadOnly(true);
     ui->plainTextEdit->appendPlainText(QString("Cocos2d Console GUI v") + APP_VERSION);
     auto cocosPath = PreferencesDialog::findCocosPath();
     if (cocosPath.length() == 0)
-        ui->plainTextEdit->appendHtml(QString("<font color='red'>Error: cocos.py not found. Open Preferences</font>"));
+        ui->plainTextEdit->appendPlainText(QString("Error: cocos.py not found. Open Preferences"));
 
 
     auto sdkboxPath = PreferencesDialog::findSDKBOXPath();
     if (sdkboxPath.length() == 0)
-        ui->plainTextEdit->appendHtml(QString("<font color='red'>Error: sdkbox.py not found. Open Preferences</font>"));
+        ui->plainTextEdit->appendPlainText(QString("Error: sdkbox.py not found. Open Preferences"));
 }
 
 MainWindow::~MainWindow()
@@ -151,9 +156,9 @@ void MainWindow::openFile(const QString& filePath)
 void MainWindow::onProcessFinished(Run* command)
 {
     if (command->getExitStatus() == QProcess::NormalExit)
-        ui->plainTextEdit->appendHtml("<font color='green'>Success: Process finished with exit code:" + QString::number(command->getExitCode()) + "</font>");
+        ui->plainTextEdit->appendPlainText("Success: Process finished with exit code:" + QString::number(command->getExitCode()));
     else
-        ui->plainTextEdit->appendHtml("<font color='red'>Process stopped. Exit code: " + QString::number(command->getExitCode()) + "</font>");
+        ui->plainTextEdit->appendPlainText("Warning: Process stopped. Exit code: " + QString::number(command->getExitCode()));
 
     updateActions();
 }
@@ -400,6 +405,8 @@ void MainWindow::updateActions()
         actions[i]->setEnabled(gameStateReady);
     }
     ui->pushButton_addLibrary->setEnabled(gameStateReady);
+    _comboBoxMode->setEnabled(gameStateReady);
+    _comboBoxPlatforms->setEnabled(gameStateReady);
 
     // progress bar
     bool processRunning = RunMgr::getInstance()->isBusy();

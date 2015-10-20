@@ -29,6 +29,7 @@ QT_END_NAMESPACE
 
 class GameState;
 class Run;
+class Highlighter;
 
 namespace Ui {
 class MainWindow;
@@ -112,4 +113,6 @@ private:
 
     QComboBox* _comboBoxMode;
     QComboBox* _comboBoxPlatforms;
+
+    Highlighter* _highlighter;
 };
