@@ -129,6 +129,13 @@ public:
     explicit RunCocosCompile(GameState *gameState, const QString& platform, const QString& mode, QObject* parent);
 };
 
+class RunCocosRun: public Run
+{
+    Q_OBJECT
+public:
+    explicit RunCocosRun(GameState *gameState, const QString& platform, const QString& mode, QObject* parent);
+};
+
 class RunCocosListPlatforms: public Run
 {
     Q_OBJECT

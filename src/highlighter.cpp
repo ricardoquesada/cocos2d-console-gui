@@ -48,7 +48,6 @@ Highlighter::Highlighter(QTextDocument *parent)
     rule.pattern = QRegExp("\\Running\\b");
     rule.format = _runningFormat;
     _highlightingRules.append(rule);
-
 }
 
 Highlighter::~Highlighter()

@@ -261,6 +261,18 @@ RunCocosCompile::RunCocosCompile(GameState* gameState, const QString& platform, 
     _cwd = gameState->getPath();
 }
 
+
+//
+// RunCocosRun
+//
+RunCocosRun::RunCocosRun(GameState* gameState, const QString& platform, const QString &mode, QObject* parent)
+    : Run(parent)
+{
+    _args << "run" << "-p" << platform << "-m" << mode;
+    _cmd = PreferencesDialog::findCocosPath() + "/cocos";
+    _cwd = gameState->getPath();
+}
+
 //
 // class  RunCocosListPlatforms
 //

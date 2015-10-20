@@ -257,7 +257,20 @@ void MainWindow::on_actionWelcome_triggered()
 
 void MainWindow::on_actionRun_triggered()
 {
-    on_actionBuild_triggered();
+    Q_ASSERT(_gameState);
+
+    if (maybeRunProcess())
+    {
+        auto platform = _comboBoxPlatforms->itemText(_comboBoxPlatforms->currentIndex());
+        auto mode = _comboBoxMode->itemText(_comboBoxMode->currentIndex());
+        auto run = new RunCocosRun(_gameState, platform, mode, this);
+        RunMgr::getInstance()->runSync(run);
+
+        connect(run, &RunCocosCompile::dataAvailable, this, &MainWindow::onProcessDataAvailable);
+        connect(run, &RunCocosCompile::finished, this, &MainWindow::onProcessFinished);
+
+        updateActions();
+    }
 }
 
 bool MainWindow::on_actionStop_triggered()
