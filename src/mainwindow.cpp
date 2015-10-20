@@ -66,15 +66,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupModels();
 
-    ui->textBrowser->append(QString("Cocos2d Console GUI v") + APP_VERSION);
+    ui->plainTextEdit->appendPlainText(QString("Cocos2d Console GUI v") + APP_VERSION);
     auto cocosPath = PreferencesDialog::findCocosPath();
     if (cocosPath.length() == 0)
-        ui->textBrowser->append(QString("<font color='red'>Error: cocos.py not found. Open Preferences</font>"));
+        ui->plainTextEdit->appendHtml(QString("<font color='red'>Error: cocos.py not found. Open Preferences</font>"));
 
 
     auto sdkboxPath = PreferencesDialog::findSDKBOXPath();
     if (sdkboxPath.length() == 0)
-        ui->textBrowser->append(QString("<font color='red'>Error: sdkbox.py not found. Open Preferences</font>"));
+        ui->plainTextEdit->appendHtml(QString("<font color='red'>Error: sdkbox.py not found. Open Preferences</font>"));
 }
 
 MainWindow::~MainWindow()
@@ -151,9 +151,9 @@ void MainWindow::openFile(const QString& filePath)
 void MainWindow::onProcessFinished(Run* command)
 {
     if (command->getExitStatus() == QProcess::NormalExit)
-        ui->textBrowser->append("<font color='green'>Success: Process finished with exit code:" + QString::number(command->getExitCode()) + "</font>");
+        ui->plainTextEdit->appendHtml("<font color='green'>Success: Process finished with exit code:" + QString::number(command->getExitCode()) + "</font>");
     else
-        ui->textBrowser->append("<font color='red'>Process stopped. Exit code: " + QString::number(command->getExitCode()) + "</font>");
+        ui->plainTextEdit->appendHtml("<font color='red'>Process stopped. Exit code: " + QString::number(command->getExitCode()) + "</font>");
 
     updateActions();
 }
@@ -161,7 +161,7 @@ void MainWindow::onProcessFinished(Run* command)
 void MainWindow::onProcessDataAvailable(Run* command, const QString& data)
 {
     Q_UNUSED(command);
-    ui->textBrowser->append(data);
+    ui->plainTextEdit->appendPlainText(data);
 }
 
 //
@@ -245,7 +245,7 @@ bool MainWindow::on_actionStop_triggered()
 {
     if (RunMgr::getInstance()->isBusy())
     {
-        ui->textBrowser->append("Stoping process...");
+        ui->plainTextEdit->appendPlainText("Stoping process...");
         RunMgr::getInstance()->killAll();
     }
 
@@ -300,7 +300,7 @@ void MainWindow::on_actionBuild_triggered()
         auto run = new RunCocosCompile(_gameState, platform, mode, this);
         RunMgr::getInstance()->runSync(run);
 
-        ui->textBrowser->append("<font color='blue' face='verdana'>$ " + run->getCommandLine() + "</font>");
+        ui->plainTextEdit->appendHtml("<font color='blue' face='verdana'>$ " + run->getCommandLine() + "</font>");
 
         connect(run, &RunCocosCompile::dataAvailable, this, &MainWindow::onProcessDataAvailable);
         connect(run, &RunCocosCompile::finished, this, &MainWindow::onProcessFinished);
@@ -328,7 +328,7 @@ void MainWindow::setGameState(GameState* gameState)
         connect(_gameState, &GameState::gamePlatformsUpdated, this, &MainWindow::gameUpdatePlatforms);
 
         updateActions();
-        ui->textBrowser->append("Parsing " + gameState->getFilePath() + "...");
+        ui->plainTextEdit->appendPlainText("Parsing " + gameState->getFilePath() + "...");
 
         auto runMgr = RunMgr::getInstance();
 
@@ -340,7 +340,7 @@ void MainWindow::setGameState(GameState* gameState)
         {
             QString json = command->getOutput().join("");
             _gameState->parseGameLibraries(json);
-            ui->textBrowser->append("Done parsing game libraries.");
+            ui->plainTextEdit->appendPlainText("Done parsing game libraries.");
             updateActions();
         });
 
@@ -348,7 +348,7 @@ void MainWindow::setGameState(GameState* gameState)
         {
             QString json = command->getOutput().join("");
             _gameState->parseGameProperties(json);
-            ui->textBrowser->append("Done parsing game properties.");
+            ui->plainTextEdit->appendPlainText("Done parsing game properties.");
             updateActions();
         });
 
@@ -356,7 +356,7 @@ void MainWindow::setGameState(GameState* gameState)
         {
             QString json = command->getOutput().join("");
             _gameState->parseGamePlatforms(json);
-            ui->textBrowser->append("Done parsing game platforms.");
+            ui->plainTextEdit->appendPlainText("Done parsing game platforms.");
             updateActions();
         });
 
@@ -594,7 +594,7 @@ void MainWindow::on_pushButton_addLibrary_clicked()
             {
                 QString json = command->getOutput().join("");
                 _gameState->parseGameLibraries(json);
-                ui->textBrowser->append("Done parsing game libraries.");
+                ui->plainTextEdit->appendPlainText("Done parsing game libraries.");
             });
             runMgr->runSync(cmdInfo);
         }
@@ -603,5 +603,5 @@ void MainWindow::on_pushButton_addLibrary_clicked()
 
 void MainWindow::on_pushButton_clearConsole_clicked()
 {
-    ui->textBrowser->clear();
+    ui->plainTextEdit->clear();
 }
