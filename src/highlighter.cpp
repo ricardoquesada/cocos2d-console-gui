@@ -30,14 +30,14 @@ Highlighter::Highlighter(QTextDocument *parent)
 
     _warningFormat.setFontWeight(QFont::Bold);
     _warningFormat.setForeground(Qt::darkRed);
-    rule.pattern = QRegExp("\\warning\\b");
+    rule.pattern = QRegExp("\\bwarning\\b");
     rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
     rule.format = _warningFormat;
     _highlightingRules.append(rule);
 
     _successFormat.setFontWeight(QFont::Bold);
     _successFormat.setForeground(Qt::green);
-    rule.pattern = QRegExp("\\success\\b");
+    rule.pattern = QRegExp("\\b(success|succeed)\\b");
     rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
     rule.format = _successFormat;
     _highlightingRules.append(rule);
@@ -45,7 +45,8 @@ Highlighter::Highlighter(QTextDocument *parent)
     _runningFormat.setFontWeight(QFont::Thin);
     _runningFormat.setForeground(Qt::gray);
     _runningFormat.setFontItalic(true);
-    rule.pattern = QRegExp("\\Running\\b");
+    rule.pattern = QRegExp("\\bRunning\\b");
+//    rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
     rule.format = _runningFormat;
     _highlightingRules.append(rule);
 }

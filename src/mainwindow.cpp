@@ -464,6 +464,9 @@ void MainWindow::closeGameState()
     delete _gameState;
     _gameState = nullptr;
 
+    // remove all before adding new, to avoid duplicates
+    _comboBoxPlatforms->clear();
+
     setWindowFilePath("[untitled]");
 }
 
