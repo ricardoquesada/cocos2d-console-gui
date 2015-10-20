@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <QString>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QSettings>
 #include <QStringList>
 #include <QObject>
@@ -35,17 +36,20 @@ public:
     const QString& getFilePath() const;
     const QString& getProjectName() const;
 
-    const QJsonObject &getGameProperties() const;
-    const QJsonObject &getGameLibraries() const;
+    const QJsonObject& getGameProperties() const;
+    const QJsonObject& getGameLibraries() const;
+    const QJsonArray& getGamePlatforms() const;
 
     bool isReady() const;
 
-    bool parseGameProperties(const QString &json);
-    bool parseGameLibraries(const QString &json);
+    bool parseGameProperties(const QString& json);
+    bool parseGameLibraries(const QString& json);
+    bool parseGamePlatforms(const QString& json);
 
 signals:
     void gameLibrariesUpdated();
     void gamePropertiesUpdated();
+    void gamePlatformsUpdated();
 
 private slots:
 
@@ -58,7 +62,9 @@ private:
 
     QJsonObject _gameProperties;
     QJsonObject _gameLibraries;
+    QJsonArray _gamePlatforms;
 
     bool _gamePropertiesParsed;
     bool _gameLibrariesParsed;
+    bool _gamePlatformsParsed;
 };

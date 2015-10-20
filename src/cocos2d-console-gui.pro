@@ -14,6 +14,7 @@ VERSION = 0.0.1
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 CONFIG += c++11
+CONFIG += debug_and_release
 
 SOURCES += main.cpp\
         mainwindow.cpp \

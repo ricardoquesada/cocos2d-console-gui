@@ -90,7 +90,7 @@ void RunMgr::onProcessFinished(Run* cmd)
     disconnect(command, &Run::finished, this, &RunMgr::onProcessFinished);
 
     _syncCommands.removeFirst();
-    if (_syncCommands.length() == 1)
+    if (_syncCommands.length() > 0)
     {
         _syncCommands.first()->run();
     }
@@ -148,6 +148,8 @@ bool Run::run()
     _process->setWorkingDirectory(_cwd);
 
     _process->start(_cmd, _args);
+
+//    qDebug() << "Running: " << _cmd << _args;
 
     connect(_process, &QProcess::readyReadStandardOutput, this, &Run::onProcessStdOutReady);
     connect(_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onProcessFinished(int,QProcess::ExitStatus)));
@@ -245,11 +247,21 @@ RunCocosListTemplates::RunCocosListTemplates(QObject* parent)
 //
 // RunCocosCompile
 //
-RunCocosCompile::RunCocosCompile(GameState* gameState, const QString& platform, QObject* parent)
+RunCocosCompile::RunCocosCompile(GameState* gameState, const QString& platform, const QString &mode, QObject* parent)
     : Run(parent)
 {
-    _args << "compile" << "-p" << platform;
+    _args << "compile" << "-p" << platform << "-m" << mode;
     _cmd = PreferencesDialog::findCocosPath() + "/cocos";
     _cwd = gameState->getPath();
+}
 
+//
+// class  RunCocosListPlatforms
+//
+RunCocosListPlatforms::RunCocosListPlatforms(GameState* gameState, QObject* parent)
+    : Run(parent)
+{
+    _args << "compile" << "--list-platforms";
+    _cmd = PreferencesDialog::findCocosPath() + "/cocos";
+    _cwd = gameState->getPath();
 }

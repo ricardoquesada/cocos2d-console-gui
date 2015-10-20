@@ -32,6 +32,7 @@ GameState::GameState(const QString& filePath)
     , _gameLibraries()
     , _gamePropertiesParsed(false)
     , _gameLibrariesParsed(false)
+    , _gamePlatformsParsed(false)
 {
     QFileInfo fileinfo(filePath);
     _projectName = fileinfo.baseName();
@@ -49,7 +50,7 @@ bool GameState::parseGameProperties(const QString& json)
     QJsonDocument loadDoc(QJsonDocument::fromJson(json.toUtf8(), &error));
     if (error.error != QJsonParseError::NoError)
     {
-        qDebug() << "Error parsing JSON:" << error.errorString();
+        qDebug() << "Error parsing Properties JSON:" << error.errorString();
         return false;
     }
 
@@ -71,12 +72,27 @@ bool GameState::parseGameLibraries(const QString& json)
     QJsonDocument loadDoc(QJsonDocument::fromJson(byteArray, &error));
     if (error.error != QJsonParseError::NoError)
     {
-        qDebug() << "Error parsing JSON:" << error.errorString();
+        qDebug() << "Error parsing Libraries JSON:" << error.errorString();
         return false;
     }
     _gameLibraries = loadDoc.object();
     _gameLibrariesParsed = true;
     emit gameLibrariesUpdated();
+    return true;
+}
+
+bool GameState::parseGamePlatforms(const QString& json)
+{
+    QJsonParseError error;
+    QJsonDocument loadDoc(QJsonDocument::fromJson(json.toUtf8(), &error));
+    if (error.error != QJsonParseError::NoError)
+    {
+        qDebug() << "Error parsing Platforms JSON";
+        return false;
+    }
+    _gamePlatformsParsed = true;
+    _gamePlatforms = loadDoc.object()["platforms"].toArray();
+    emit gamePlatformsUpdated();
     return true;
 }
 
@@ -97,10 +113,18 @@ const QString& GameState::getProjectName() const
 
 const QJsonObject& GameState::getGameProperties() const
 {
+    Q_ASSERT(_gamePropertiesParsed);
     return _gameProperties;
 }
 
 const QJsonObject& GameState::getGameLibraries() const
 {
+    Q_ASSERT(_gameLibrariesParsed);
     return _gameLibraries;
+}
+
+const QJsonArray& GameState::getGamePlatforms() const
+{
+    Q_ASSERT(_gamePlatformsParsed);
+    return _gamePlatforms;
 }

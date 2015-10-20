@@ -24,6 +24,7 @@ limitations under the License.
 QT_BEGIN_NAMESPACE
 class QListWidgetItem;
 class QProgressBar;
+class QComboBox;
 QT_END_NAMESPACE
 
 class GameState;
@@ -61,8 +62,10 @@ signals:
 protected:
 
 private slots:
-    void gamePropertiesUpdated();
-    void gameLibrariesUpdated();
+    void gameUpdateProperties();
+    void gameUpdateLibraries();
+    void gameUpdatePlatforms();
+
     void openRecentFile_triggered();
     void onProcessFinished(Run* command);
     void onProcessDataAvailable(Run* command, const QString& data);
@@ -106,4 +109,7 @@ private:
 
     GameState* _gameState;
     QProgressBar* _progressBar;
+
+    QComboBox* _comboBoxMode;
+    QComboBox* _comboBoxPlatforms;
 };

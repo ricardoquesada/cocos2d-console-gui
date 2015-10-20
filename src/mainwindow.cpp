@@ -29,6 +29,11 @@ limitations under the License.
 #include <QStandardItem>
 #include <QStringListModel>
 #include <QProgressBar>
+#include <QToolBar>
+#include <QComboBox>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonValue>
 
 #include "aboutdialog.h"
 #include "preferencesdialog.h"
@@ -49,6 +54,8 @@ MainWindow::MainWindow(QWidget *parent)
     , _settings("org.cocos2d-x","Cocos2d Console GUI")
     , _lastDir(QDir::homePath())
     , _gameState(nullptr)
+    , _comboBoxMode(nullptr)
+    , _comboBoxPlatforms(nullptr)
 {
     setUnifiedTitleAndToolBarOnMac(true);
 
@@ -80,14 +87,14 @@ MainWindow::~MainWindow()
 //
 // Manual Slots
 //
-void MainWindow::gameLibrariesUpdated()
+void MainWindow::gameUpdateLibraries()
 {
     auto keys = _gameState->getGameLibraries().keys();
     auto model = dynamic_cast<QStringListModel*>(ui->listView_libraries->model());
     model->setStringList(keys);
 }
 
-void MainWindow::gamePropertiesUpdated()
+void MainWindow::gameUpdateProperties()
 {
     Q_ASSERT(_gameState);
 
@@ -116,6 +123,16 @@ void MainWindow::gamePropertiesUpdated()
         model->setItem(i, 1, value);
     }
 }
+
+void MainWindow::gameUpdatePlatforms()
+{
+    auto platforms = _gameState->getGamePlatforms();
+    foreach (const QJsonValue& value , platforms) {
+        auto str = value.toString();
+        _comboBoxPlatforms->addItem(str);
+    }
+}
+
 
 void MainWindow::openFile(const QString& filePath)
 {
@@ -278,7 +295,9 @@ void MainWindow::on_actionBuild_triggered()
 
     if (maybeRunProcess())
     {
-        auto run = new RunCocosCompile(_gameState, "ios", this);
+        auto platform = _comboBoxPlatforms->itemText(_comboBoxPlatforms->currentIndex());
+        auto mode = _comboBoxMode->itemText(_comboBoxMode->currentIndex());
+        auto run = new RunCocosCompile(_gameState, platform, mode, this);
         RunMgr::getInstance()->runSync(run);
 
         ui->textBrowser->append("<font color='blue' face='verdana'>$ " + run->getCommandLine() + "</font>");
@@ -304,17 +323,18 @@ void MainWindow::setGameState(GameState* gameState)
         setWindowFilePath(gameState->getFilePath());
         setRecentFile(gameState->getFilePath());
 
-        connect(_gameState, &GameState::gameLibrariesUpdated, this, &MainWindow::gameLibrariesUpdated);
-        connect(_gameState, &GameState::gamePropertiesUpdated, this, &MainWindow::gamePropertiesUpdated);
+        connect(_gameState, &GameState::gameLibrariesUpdated, this, &MainWindow::gameUpdateLibraries);
+        connect(_gameState, &GameState::gamePropertiesUpdated, this, &MainWindow::gameUpdateProperties);
+        connect(_gameState, &GameState::gamePlatformsUpdated, this, &MainWindow::gameUpdatePlatforms);
 
         updateActions();
         ui->textBrowser->append("Parsing " + gameState->getFilePath() + "...");
 
         auto runMgr = RunMgr::getInstance();
 
-        // FIXME: create an way to queue commands
-        auto cmdInfo = new RunSDKBOXInfo(gameState);
-        auto cmdSymbols = new RunSDKBOXSymbols(gameState);
+        auto cmdInfo = new RunSDKBOXInfo(gameState, this);
+        auto cmdSymbols = new RunSDKBOXSymbols(gameState, this);
+        auto cmdGamePlatforms = new RunCocosListPlatforms(gameState, this);
 
         connect(cmdInfo, &RunSDKBOXInfo::finished, [&](Run* command)
         {
@@ -332,8 +352,17 @@ void MainWindow::setGameState(GameState* gameState)
             updateActions();
         });
 
+        connect(cmdGamePlatforms, &RunCocosListPlatforms::finished, [&](Run* command)
+        {
+            QString json = command->getOutput().join("");
+            _gameState->parseGamePlatforms(json);
+            ui->textBrowser->append("Done parsing game platforms.");
+            updateActions();
+        });
+
         runMgr->runSync(cmdInfo);
         runMgr->runSync(cmdSymbols);
+        runMgr->runSync(cmdGamePlatforms);
     }
     updateActions();
 }
@@ -395,8 +424,9 @@ void MainWindow::closeGameState()
     if (!_gameState)
         return;
 
-    disconnect(_gameState, &GameState::gameLibrariesUpdated, this, &MainWindow::gameLibrariesUpdated);
-    disconnect(_gameState, &GameState::gamePropertiesUpdated, this, &MainWindow::gamePropertiesUpdated);
+    disconnect(_gameState, &GameState::gameLibrariesUpdated, this, &MainWindow::gameUpdateLibraries);
+    disconnect(_gameState, &GameState::gamePropertiesUpdated, this, &MainWindow::gameUpdateProperties);
+    disconnect(_gameState, &GameState::gamePlatformsUpdated, this, &MainWindow::gameUpdatePlatforms);
 
     delete _gameState;
     _gameState = nullptr;
@@ -426,6 +456,23 @@ void MainWindow::createActions()
 #endif
 
     connect(RunMgr::getInstance(), &RunMgr::ready, this, &MainWindow::updateActions);
+
+    // toolbar actions
+    auto toolbars = findChildren<QToolBar *>();
+    if (toolbars.count() == 1)
+    {
+        auto toolbar = toolbars.at(0);
+
+        // debug / release
+        _comboBoxMode = new QComboBox;
+        _comboBoxMode->addItem(tr("Debug"));
+        _comboBoxMode->addItem(tr("Release"));
+        toolbar->addWidget(_comboBoxMode);
+
+        // supported platforms. Empty by default. Will be filled once it is parsed
+        _comboBoxPlatforms = new QComboBox;
+        toolbar->addWidget(_comboBoxPlatforms);
+    }
 }
 
 void MainWindow::setupStatusBar()
