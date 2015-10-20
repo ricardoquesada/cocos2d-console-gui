@@ -170,9 +170,9 @@ void MainWindow::openFile(const QString& filePath)
 void MainWindow::onProcessFinished(Run* command)
 {
     if (command->getExitStatus() == QProcess::NormalExit)
-        ui->plainTextEdit->appendPlainText("Success: Process finished with exit code:" + QString::number(command->getExitCode()));
+        ui->plainTextEdit->appendPlainText("Process finished with exit code:" + QString::number(command->getExitCode()));
     else
-        ui->plainTextEdit->appendPlainText("Warning: Process stopped. Exit code: " + QString::number(command->getExitCode()));
+        ui->plainTextEdit->appendPlainText("Process stopped with exit code: " + QString::number(command->getExitCode()));
 
     updateActions();
 }

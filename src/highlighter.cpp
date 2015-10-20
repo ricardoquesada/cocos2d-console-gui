@@ -23,7 +23,7 @@ Highlighter::Highlighter(QTextDocument *parent)
 
     _errorFormat.setFontWeight(QFont::Bold);
     _errorFormat.setForeground(Qt::red);
-    rule.pattern = QRegExp("\\berror\\b");
+    rule.pattern = QRegExp("\\b(error|failed)\\b");
     rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
     rule.format = _errorFormat;
     _highlightingRules.append(rule);
