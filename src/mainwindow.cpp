@@ -361,8 +361,6 @@ void MainWindow::on_pushButton_addLibrary_clicked()
 
             auto cmdInstall = new RunSDKBOXImport(_gameState, selected, this);
             connect(cmdInstall, &RunSDKBOXImport::dataAvailable, this, &MainWindow::onProcessDataAvailable);
-            connect(cmdInstall, &RunSDKBOXImport::finished, this, &MainWindow::onProcessFinished);
-
 
             auto cmdInfo = new RunSDKBOXInfo(_gameState, this);
             connect(cmdInfo, &RunSDKBOXInfo::finished, [&](Run* command)
@@ -370,6 +368,8 @@ void MainWindow::on_pushButton_addLibrary_clicked()
                 QString json = command->getOutput().join("");
                 _gameState->parseGameLibraries(json);
                 ui->plainTextEdit->appendPlainText("Done parsing game libraries.");
+
+                updateAction();
             });
             runMgr->runSync(cmdInstall);
             runMgr->runSync(cmdInfo);
