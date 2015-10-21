@@ -74,12 +74,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->plainTextEdit->appendPlainText(QString("Cocos2d Console GUI v") + APP_VERSION);
     auto cocosPath = PreferencesDialog::findCocosPath();
     if (cocosPath.length() == 0)
-        ui->plainTextEdit->appendPlainText(QString("Error: cocos.py not found. Open Preferences"));
+        ui->plainTextEdit->appendPlainText(QString("Error: 'cocos' not found. Open Preferences"));
 
 
     auto sdkboxPath = PreferencesDialog::findSDKBOXPath();
     if (sdkboxPath.length() == 0)
-        ui->plainTextEdit->appendPlainText(QString("Error: sdkbox.py not found. Open Preferences"));
+        ui->plainTextEdit->appendPlainText(QString("Error: 'sdkbox' not found. Open Preferences"));
 }
 
 MainWindow::~MainWindow()
@@ -230,7 +230,7 @@ void MainWindow::on_actionOpen_triggered()
                                                _lastDir,
                                                tr(
                                                    "All files (*);;" \
-                                                   "Cocos2d Project (*.cocos2dproj);;"
+                                                   "Cocos2d Project (*.cocosproj);;"
                                                ),
                                                &filter
                                                /*,QFileDialog::DontUseNativeDialog*/
@@ -563,16 +563,11 @@ void MainWindow::setRecentFile(const QString& fileName)
     updateRecentFiles();
 }
 
-bool MainWindow::validatePath(const QString &dir) const
+bool MainWindow::validatePath(const QString &filePath) const
 {
-    // FIXME: must validate that the cocos2dproj is valid...
-    // in the meantime, check for ./cocos-project.json existance.
-
-    // file .cocos-project.json must exist, but this check is very fragile
-    QFileInfo fileinfo(dir);
-    QString path = fileinfo.canonicalPath() + "/.cocos-project.json";
-    QFile file(path);
-    return file.exists();
+    // FIXME: must validate that the cocosproj is valid...
+    QFileInfo fileinfo(filePath);
+    return fileinfo.isFile();
 }
 
 bool MainWindow::maybeSave()

@@ -34,9 +34,9 @@ TemplateEntry TemplateEntry::createFromJson(const QJsonObject& jsonObject)
         Language value;
     } languages[] =
     {
-        {"c++", Language::CPP},
+        {"cpp", Language::CPP},
         {"lua", Language::LUA},
-        {"javascript", Language::JAVASCRIPT}
+        {"js", Language::JAVASCRIPT}
     };
     static const int TOTAL_LANGUAGES = sizeof(languages)/sizeof(languages[0]);
 

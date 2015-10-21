@@ -140,7 +140,7 @@ void NewGameDialog::copyFiles(const TemplateWizard& wizard, const TemplateEntry&
             if (dynamic_cast<MainWindow*>(widget))
             {
                 const QString gameName = wizard.field("gameName").toString();
-                const QString filePath = path + "/" + gameName + "/" + gameName + ".cocos2dproj";
+                const QString filePath = path + "/" + gameName + "/" + gameName + ".cocosproj";
                 static_cast<MainWindow*>(widget)->openFile(filePath);
                 found = true;
             }
