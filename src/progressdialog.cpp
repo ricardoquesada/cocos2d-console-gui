@@ -19,6 +19,7 @@ limitations under the License.
 #include "progressdialog.h"
 #include "ui_progressdialog.h"
 #include "runmgr.h"
+#include "highlighter.h"
 
 ProgressDialog::ProgressDialog(QWidget *parent) :
     QDialog(parent),
@@ -26,6 +27,9 @@ ProgressDialog::ProgressDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+
+    ui->plainTextEdit->setReadOnly(true);
+    new Highlighter(ui->plainTextEdit->document());
 }
 
 ProgressDialog::~ProgressDialog()
@@ -35,7 +39,7 @@ ProgressDialog::~ProgressDialog()
 
 void ProgressDialog::appendData(const QString& str)
 {
-    ui->textBrowser->append(str);
+    ui->plainTextEdit->appendPlainText(str);
 }
 
 void ProgressDialog::processFinished(Run* command)

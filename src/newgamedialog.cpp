@@ -122,8 +122,7 @@ void NewGameDialog::copyFiles(const TemplateWizard& wizard, const TemplateEntry&
 
     _progressDialog = new ProgressDialog(this);
     _progressDialog->setModal(true);
-    _progressDialog->appendData(tr("Running:"));
-    _progressDialog->appendData("<font color='blue'>" + cocosNew->getCommandLine() + "</font>");
+    _progressDialog->appendData("Running: " + cocosNew->getCommandLine());
 
     RunMgr::getInstance()->runSync(cocosNew);
 
@@ -147,7 +146,6 @@ void NewGameDialog::copyFiles(const TemplateWizard& wizard, const TemplateEntry&
         }
         if (!found)
             qDebug() << "MainWindow not found";
-
     }
 }
 

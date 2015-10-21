@@ -20,14 +20,7 @@
       <enum>QLayout::SetMinimumSize</enum>
      </property>
      <item>
-      <widget class="QTextBrowser" name="textBrowser">
-       <property name="minimumSize">
-        <size>
-         <width>360</width>
-         <height>230</height>
-        </size>
-       </property>
-      </widget>
+      <widget class="QPlainTextEdit" name="plainTextEdit"/>
      </item>
      <item>
       <widget class="QProgressBar" name="progressBar">
