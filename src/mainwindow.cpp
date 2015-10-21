@@ -358,15 +358,23 @@ void MainWindow::on_pushButton_addLibrary_clicked()
         auto selected = dialog.getSelectedString();
         if (selected.length() > 0) {
             auto runMgr = RunMgr::getInstance();
-            auto cmdInfo = new RunSDKBOXInfo(_gameState);
 
+            auto cmdInstall = new RunSDKBOXImport(_gameState, selected, this);
+            connect(cmdInstall, &RunSDKBOXImport::dataAvailable, this, &MainWindow::onProcessDataAvailable);
+            connect(cmdInstall, &RunSDKBOXImport::finished, this, &MainWindow::onProcessFinished);
+
+
+            auto cmdInfo = new RunSDKBOXInfo(_gameState, this);
             connect(cmdInfo, &RunSDKBOXInfo::finished, [&](Run* command)
             {
                 QString json = command->getOutput().join("");
                 _gameState->parseGameLibraries(json);
                 ui->plainTextEdit->appendPlainText("Done parsing game libraries.");
             });
+            runMgr->runSync(cmdInstall);
             runMgr->runSync(cmdInfo);
+
+            updateActions();
         }
     }
 }

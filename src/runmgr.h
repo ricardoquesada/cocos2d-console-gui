@@ -101,6 +101,13 @@ public:
     explicit RunSDKBOXSymbols(GameState* gameState, QObject* parent = nullptr);
 };
 
+class RunSDKBOXImport : public Run
+{
+    Q_OBJECT
+public:
+    explicit RunSDKBOXImport(GameState* gameState, const QString& library, QObject* parent = nullptr);
+};
+
 class RunSDKBOXLibraries : public Run
 {
     Q_OBJECT
