@@ -85,7 +85,6 @@ void NewGameDialog::populateTemplateList(const QString& title, QList<TemplateEnt
             item->setData(Qt::UserRole,v);
         }
     }
-
 }
 
 void NewGameDialog::on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
@@ -110,7 +109,17 @@ void NewGameDialog::on_buttonBox_accepted()
 
     // 1: Done, 0: Cancel
     if (wizard.exec())
+    {
+        // save defaults
+        QSettings settings("org.cocos2d-x","Cocos2d Console GUI");
+
+        auto saveLocation = wizard.field("locationCheckBox").toBool();
+        settings.setValue("wizard/savePath", saveLocation);
+        if (saveLocation)
+            settings.setValue("wizard/defaultPath", wizard.field("gamePath").toString());
+
         copyFiles(wizard, *entry);
+    }
 }
 
 void NewGameDialog::copyFiles(const TemplateWizard& wizard, const TemplateEntry& templateEntry)

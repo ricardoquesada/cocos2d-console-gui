@@ -54,7 +54,6 @@ public:
     LocationPage(QWidget *parent = 0);
 
     bool isComplete() const Q_DECL_OVERRIDE;
-    virtual bool validatePage() Q_DECL_OVERRIDE;
 
 private:
     QLineEdit* _createEdit;
@@ -69,7 +68,6 @@ public:
 
 protected:
     void initializePage() Q_DECL_OVERRIDE;
-    virtual bool validatePage() Q_DECL_OVERRIDE;
 
 private:
     QListWidget* _listWidget;
@@ -85,7 +83,6 @@ public:
 
 protected:
     void initializePage() Q_DECL_OVERRIDE;
-    virtual bool validatePage() Q_DECL_OVERRIDE;
 
 private:
     QTextBrowser* _textBrowser;

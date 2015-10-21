@@ -34,6 +34,7 @@ limitations under the License.
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonValue>
+#include <QStandardPaths>
 
 #include "aboutdialog.h"
 #include "preferencesdialog.h"
@@ -53,7 +54,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , _settings("org.cocos2d-x","Cocos2d Console GUI")
-    , _lastDir(QDir::homePath())
     , _gameState(nullptr)
     , _comboBoxMode(nullptr)
     , _comboBoxPlatforms(nullptr)
@@ -69,6 +69,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     // other setups
     _highlighter = new Highlighter(ui->plainTextEdit->document());
+
+    QString defaultDir = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).at(0);
+    _lastDir = _settings.value("dir/lastProjectdDir", defaultDir).toString();
 
     ui->plainTextEdit->setReadOnly(true);
     ui->plainTextEdit->appendPlainText(QString("Cocos2d Console GUI v") + APP_VERSION);
@@ -204,8 +207,11 @@ void MainWindow::openRecentFile_triggered()
 
 void MainWindow::on_actionNew_Game_triggered()
 {
-    NewGameDialog dialog(this);
-    dialog.exec();
+    if (maybeRunProcess() && maybeSave())
+    {
+        NewGameDialog dialog(this);
+        dialog.exec();
+    }
 }
 
 void MainWindow::on_actionPreferences_triggered()
@@ -222,9 +228,9 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    if (maybeSave())
+    if (maybeRunProcess() && maybeSave())
     {
-        QString filter = _settings.value("dir/lastUsedOpenFilter", "Cocos2d Project").toString();
+        QString filter = "Cocos2d Project";
         auto fn = QFileDialog::getOpenFileName(this,
                                                tr("Select File"),
                                                _lastDir,
@@ -237,7 +243,7 @@ void MainWindow::on_actionOpen_triggered()
                                                );
 
         if (fn.length()> 0) {
-            _settings.setValue("dir/lastUsedOpenFilter", filter);
+            _settings.setValue("dir/lastProjectdDir", QFileInfo(fn).canonicalPath());
             openFile(fn);
         }
     }
@@ -317,8 +323,11 @@ void MainWindow::on_actionOpen_File_Browser_triggered()
 
 void MainWindow::on_actionClose_Game_triggered()
 {
-    setGameState(nullptr);
-    setupModels();
+    if (maybeRunProcess() && maybeSave())
+    {
+        setGameState(nullptr);
+        setupModels();
+    }
 }
 
 void MainWindow::on_actionBuild_triggered()

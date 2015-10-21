@@ -28,8 +28,8 @@ Highlighter::Highlighter(QTextDocument *parent)
     rule.format = _errorFormat;
     _highlightingRules.append(rule);
 
-    _warningFormat.setFontWeight(QFont::Bold);
-    _warningFormat.setForeground(Qt::darkRed);
+    _warningFormat.setFontWeight(QFont::Normal);
+    _warningFormat.setForeground(QColor(255,165,0));            // oragne
     rule.pattern = QRegExp("\\bwarning\\b");
     rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
     rule.format = _warningFormat;

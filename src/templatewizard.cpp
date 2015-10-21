@@ -15,6 +15,7 @@ limitations under the License.
 ****************************************************************************/
 
 #include <QtWidgets>
+#include <QStandardPaths>
 
 #include "templatewizard.h"
 #include "templateentry.h"
@@ -69,7 +70,7 @@ LocationPage::LocationPage(QWidget *parent)
     nameLabel->setBuddy(nameEdit);
 
     auto createLabel = new QLabel(tr("&Create in:"));
-    _createEdit = new QLineEdit(QDir::homePath()+"/MyGames", this);
+    _createEdit = new QLineEdit("");
     createLabel->setBuddy(_createEdit);
 
     auto createChooseButton = new QPushButton("Choose...");
@@ -108,6 +109,14 @@ LocationPage::LocationPage(QWidget *parent)
     vLayout->addWidget(groupBox);
 
     setLayout(vLayout);
+
+    // load defaults
+    QSettings settings("org.cocos2d-x","Cocos2d Console GUI");
+    bool enabled = settings.value("wizard/savePath", true).toBool();
+    QString dir = settings.value("wizard/defaultPath", QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).at(0)).toString();
+
+    locationCheckBox->setChecked(enabled);
+    _createEdit->setText(dir);
 }
 
 bool LocationPage::isComplete() const
@@ -115,12 +124,9 @@ bool LocationPage::isComplete() const
     auto name = field("gameName").toString();
     auto create = field("gamePath").toString();
 
-    return (name.length() && create.length());
-}
+    QFileInfo fi(create);
 
-bool LocationPage::validatePage()
-{
-    return true;
+    return (name.length() && fi.isDir());
 }
 
 // ----
@@ -200,11 +206,6 @@ void SDKPage::initializePage()
     QString className = field("gameName").toString();
 }
 
-bool SDKPage::validatePage()
-{
-    return true;
-}
-
 
 // ----
 
@@ -249,9 +250,4 @@ void ConclusionPage::initializePage()
     _textBrowser->append("");
     _textBrowser->append("<span>Press 'Done'.</span>");
     _textBrowser->setReadOnly(true);
-}
-
-bool ConclusionPage::validatePage()
-{
-    return true;
 }
