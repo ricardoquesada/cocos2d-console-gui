@@ -83,6 +83,8 @@ MainWindow::MainWindow(QWidget *parent)
     auto sdkboxPath = PreferencesDialog::findSDKBOXPath();
     if (sdkboxPath.length() == 0)
         ui->plainTextEdit->appendPlainText(QString("Error: 'sdkbox' not found. Open Preferences"));
+
+    readSettings();
 }
 
 MainWindow::~MainWindow()
@@ -345,6 +347,56 @@ void MainWindow::on_actionBuild_triggered()
         connect(run, &RunCocosCompile::finished, this, &MainWindow::onProcessFinished);
 
         updateActions();
+    }
+}
+
+void MainWindow::on_pushButton_addLibrary_clicked()
+{
+    LibrariesDialog dialog(_gameState, this);
+    if (dialog.exec())
+    {
+        auto selected = dialog.getSelectedString();
+        if (selected.length() > 0) {
+            auto runMgr = RunMgr::getInstance();
+            auto cmdInfo = new RunSDKBOXInfo(_gameState);
+
+            connect(cmdInfo, &RunSDKBOXInfo::finished, [&](Run* command)
+            {
+                QString json = command->getOutput().join("");
+                _gameState->parseGameLibraries(json);
+                ui->plainTextEdit->appendPlainText("Done parsing game libraries.");
+            });
+            runMgr->runSync(cmdInfo);
+        }
+    }
+}
+
+void MainWindow::on_pushButton_clearConsole_clicked()
+{
+    ui->plainTextEdit->clear();
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+    if (maybeRunProcess() && maybeSave())
+    {
+        saveSettings();
+        QApplication::exit();
+    }
+}
+
+//
+// Overrides
+//
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    if (maybeRunProcess() && maybeSave()) {
+        event->accept();
+
+        saveSettings();
+        QMainWindow::closeEvent(event);
+    } else {
+        event->ignore();
     }
 }
 
@@ -621,28 +673,17 @@ void MainWindow::setupModels()
     ui->listView_libraries->setModel(model2);
 }
 
-void MainWindow::on_pushButton_addLibrary_clicked()
+void MainWindow::readSettings()
 {
-    LibrariesDialog dialog(_gameState, this);
-    if (dialog.exec())
-    {
-        auto selected = dialog.getSelectedString();
-        if (selected.length() > 0) {
-            auto runMgr = RunMgr::getInstance();
-            auto cmdInfo = new RunSDKBOXInfo(_gameState);
+    auto geom = _settings.value("MainWindow/geometry").toByteArray();
+    auto state = _settings.value("MainWindow/windowState").toByteArray();
 
-            connect(cmdInfo, &RunSDKBOXInfo::finished, [&](Run* command)
-            {
-                QString json = command->getOutput().join("");
-                _gameState->parseGameLibraries(json);
-                ui->plainTextEdit->appendPlainText("Done parsing game libraries.");
-            });
-            runMgr->runSync(cmdInfo);
-        }
-    }
+    restoreState(state);
+    restoreGeometry(geom);
 }
 
-void MainWindow::on_pushButton_clearConsole_clicked()
+void MainWindow::saveSettings()
 {
-    ui->plainTextEdit->clear();
+    _settings.setValue("MainWindow/geometry", saveGeometry());
+    _settings.setValue("MainWindow/windowState", saveState());
 }

@@ -61,6 +61,7 @@ signals:
     void processFinished();
 
 protected:
+    void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 
 private slots:
     void gameUpdateProperties();
@@ -92,6 +93,8 @@ private slots:
 
     void on_pushButton_clearConsole_clicked();
 
+    void on_actionExit_triggered();
+
 private:
     void updateActions();
     void updateRecentFiles();
@@ -104,6 +107,9 @@ private:
     bool maybeRunProcess();
     void setupModels();
     void setupStatusBar();
+
+    void readSettings();
+    void saveSettings();
 
     Ui::MainWindow *ui;
     QSettings _settings;

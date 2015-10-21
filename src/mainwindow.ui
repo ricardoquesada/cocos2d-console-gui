@@ -107,6 +107,8 @@
     <addaction name="menuRecentGames"/>
     <addaction name="separator"/>
     <addaction name="actionClose_Game"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuProduct">
     <property name="title">
@@ -321,6 +323,14 @@
   <action name="actionWelcome">
    <property name="text">
     <string>Welcome</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="icon">
+    <iconset theme="document-exit"/>
+   </property>
+   <property name="text">
+    <string>Exit</string>
    </property>
   </action>
  </widget>
