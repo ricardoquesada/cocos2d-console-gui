@@ -265,9 +265,8 @@
         <translation>Bienvenido</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="335"/>
         <source>Exit</source>
-        <translation>Salir</translation>
+        <translation type="vanished">Salir</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="340"/>

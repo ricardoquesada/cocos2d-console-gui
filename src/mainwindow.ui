@@ -332,7 +332,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Exit</string>
+    <string notr="true">Exit</string>
    </property>
   </action>
   <action name="actionImport_Game">
