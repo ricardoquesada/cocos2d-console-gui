@@ -52,7 +52,6 @@ private:
     void updateRecentFiles();
     void setRecentFile(const QString& fileName);
     QStringList recentFiles() const;
-    bool validatePath(const QString& path) const;
     void createActions();
 
     Ui::WelcomeDialog *ui;

@@ -95,6 +95,8 @@ private slots:
 
     void on_actionExit_triggered();
 
+    void on_actionImport_Game_triggered();
+
 private:
     void updateActions();
     void updateRecentFiles();

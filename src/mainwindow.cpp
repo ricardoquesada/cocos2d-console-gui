@@ -18,6 +18,8 @@ limitations under the License.
 #include "ui_mainwindow.h"
 
 #include <QFileDialog>
+#include <QFile>
+#include <QFileInfo>
 #include <QDebug>
 #include <QSettings>
 #include <QListWidgetItem>
@@ -168,6 +170,7 @@ void MainWindow::openFile(const QString& filePath)
     }
     else
     {
+        ui->plainTextEdit->appendPlainText(QString("Error: Could not open file'%1'").arg(filePath));
         qDebug() << "Invalid path: " << filePath;
     }
 }
@@ -245,8 +248,59 @@ void MainWindow::on_actionOpen_triggered()
                                                );
 
         if (fn.length()> 0) {
-            _settings.setValue("dir/lastProjectdDir", QFileInfo(fn).canonicalPath());
+            _lastDir = QFileInfo(fn).canonicalPath();
+            _settings.setValue("dir/lastProjectdDir", _lastDir);
             openFile(fn);
+        }
+    }
+}
+
+void MainWindow::on_actionImport_Game_triggered()
+{
+    if (maybeRunProcess() && maybeSave())
+    {
+        QString filter = "Cocos2d Project";
+        auto fn = QFileDialog::getExistingDirectory(this,
+                                               tr("Select Game Root Directory"),
+                                               _lastDir
+                                               );
+
+        if (fn.length()> 0) {
+
+            QFileInfo cocosProjPath(fn + "/.cocos-project.json");
+            if (cocosProjPath.exists())
+            {
+                _lastDir = fn;
+                _settings.setValue("dir/lastProjectdDir", _lastDir);
+
+                // rename the file:
+                auto newName = fn + "/" + QFileInfo(fn).fileName() + ".cocosproj";
+                if (QFile::rename(cocosProjPath.canonicalFilePath(), newName))
+                {
+                    // create symlink
+                    QFile::link(newName, cocosProjPath.canonicalFilePath());
+
+                    ui->plainTextEdit->appendHtml(QString("<font color='blue'>Renamed file: %1 -> %2</font>")
+                                                  .arg(QFileInfo(cocosProjPath).fileName())
+                                                  .arg(QFileInfo(newName).fileName()));
+
+                    openFile(newName);
+                }
+                else
+                {
+                    QMessageBox::StandardButton ret;
+                    ret = QMessageBox::warning(this, tr("Application"),
+                                 tr("Error import file"),
+                                 QMessageBox::Ok);
+                }
+            }
+            else
+            {
+                QMessageBox::StandardButton ret;
+                ret = QMessageBox::warning(this, tr("Application"),
+                             tr("Invalid directory. File '.cocos-proj.json' not found'"),
+                             QMessageBox::Ok);
+            }
         }
     }
 }
@@ -369,7 +423,7 @@ void MainWindow::on_pushButton_addLibrary_clicked()
                 _gameState->parseGameLibraries(json);
                 ui->plainTextEdit->appendPlainText("Done parsing game libraries.");
 
-                updateAction();
+                updateActions();
             });
             runMgr->runSync(cmdInstall);
             runMgr->runSync(cmdInfo);
@@ -636,7 +690,7 @@ bool MainWindow::validatePath(const QString &filePath) const
 {
     // FIXME: must validate that the cocosproj is valid...
     QFileInfo fileinfo(filePath);
-    return fileinfo.isFile();
+    return (fileinfo.isFile() && fileinfo.exists());
 }
 
 bool MainWindow::maybeSave()

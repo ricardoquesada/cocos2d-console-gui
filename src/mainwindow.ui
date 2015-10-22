@@ -104,6 +104,7 @@
     </widget>
     <addaction name="actionNew_Game"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionImport_Game"/>
     <addaction name="menuRecentGames"/>
     <addaction name="separator"/>
     <addaction name="actionClose_Game"/>
@@ -331,6 +332,11 @@
    </property>
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionImport_Game">
+   <property name="text">
+    <string>Import Old Game...</string>
    </property>
   </action>
  </widget>

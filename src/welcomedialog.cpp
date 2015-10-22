@@ -62,8 +62,7 @@ void WelcomeDialog::itemDoubleClicked(QListWidgetItem* item)
         {
             if (dynamic_cast<MainWindow*>(widget))
             {
-                auto gameState = new GameState(path);
-                static_cast<MainWindow*>(widget)->setGameState(gameState);
+                static_cast<MainWindow*>(widget)->openFile(path);
                 found = true;
                 close();
             }
@@ -161,15 +160,6 @@ void WelcomeDialog::setRecentFile(const QString& fileName)
     _settings.setValue(QLatin1String("recentFiles/fileNames"), files);
     updateRecentFiles();
 }
-
-bool WelcomeDialog::validatePath(const QString &dir) const
-{
-    // file .cocos-project.json must exist, but this check is very fragile
-    QString path = dir + "/.cocos-project.json";
-    QFile file(path);
-    return file.exists();
-}
-
 
 void WelcomeDialog::on_checkBox_clicked()
 {
