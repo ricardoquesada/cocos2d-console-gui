@@ -50,16 +50,16 @@ NewGameDialog::NewGameDialog(QWidget *parent)
     // parse templates
     if (parseTemplates())
     {
-        populateTemplateList("C++ Templates", &_entriesCpp, listWidget);
-        populateTemplateList("JavaScript Templates", &_entriesJavaScript, listWidget);
-        populateTemplateList("Lua Templates", &_entriesLua, listWidget);
+        populateTemplateList(tr("C++ Templates"), &_entriesCpp, listWidget);
+        populateTemplateList(tr("JavaScript Templates"), &_entriesJavaScript, listWidget);
+        populateTemplateList(tr("Lua Templates"), &_entriesLua, listWidget);
 
         if (listWidget->count()>1)
             listWidget->item(1)->setSelected(true);
     }
 
     // populate text browser
-    ui->textBrowser->setDocumentTitle("hello");
+//    ui->textBrowser->setDocumentTitle("hello");
 }
 
 NewGameDialog::~NewGameDialog()
@@ -89,8 +89,7 @@ void NewGameDialog::populateTemplateList(const QString& title, QList<TemplateEnt
 
 void NewGameDialog::on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
-    // unused
-    (void)previous;
+    Q_UNUSED(previous);
 
     auto variant = current->data(Qt::UserRole);
     auto entry = variant.value<const TemplateEntry*>();

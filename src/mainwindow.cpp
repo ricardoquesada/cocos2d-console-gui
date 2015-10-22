@@ -79,12 +79,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->plainTextEdit->appendPlainText(QString("Cocos2d Console GUI v") + APP_VERSION);
     auto cocosPath = PreferencesDialog::findCocosPath();
     if (cocosPath.length() == 0)
-        ui->plainTextEdit->appendPlainText(QString("Error: 'cocos' not found. Open Preferences"));
+        ui->plainTextEdit->appendPlainText(tr("Error: 'cocos' not found. Open Preferences"));
 
 
     auto sdkboxPath = PreferencesDialog::findSDKBOXPath();
     if (sdkboxPath.length() == 0)
-        ui->plainTextEdit->appendPlainText(QString("Error: 'sdkbox' not found. Open Preferences"));
+        ui->plainTextEdit->appendPlainText(tr("Error: 'sdkbox' not found. Open Preferences"));
 
     readSettings();
 

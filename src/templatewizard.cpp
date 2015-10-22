@@ -73,7 +73,7 @@ LocationPage::LocationPage(QWidget *parent)
     _createEdit = new QLineEdit("");
     createLabel->setBuddy(_createEdit);
 
-    auto createChooseButton = new QPushButton("Choose...");
+    auto createChooseButton = new QPushButton(tr("Choose..."));
 
     connect(createChooseButton, &QPushButton::pressed, [&]()
     {
@@ -242,12 +242,12 @@ ConclusionPage::ConclusionPage(QWidget *parent)
 void ConclusionPage::initializePage()
 {
     _textBrowser->append("<html>");
-    _textBrowser->append(QString("<span>Game Name: %1</span>").arg(field("gameName").toString()));
+    _textBrowser->append(tr("<span>Game Name: %1</span>").arg(field("gameName").toString()));
     _textBrowser->append("<p>");
-    _textBrowser->append("<span>Files to be created in:</span>");
+    _textBrowser->append(tr("<span>Files to be created in:</span>"));
     _textBrowser->append("<p>");
-    _textBrowser->append(QString("<code>%1</code>").arg(field("gamePath").toString()));
+    _textBrowser->append(tr("<code>%1</code>").arg(field("gamePath").toString()));
     _textBrowser->append("");
-    _textBrowser->append("<span>Press 'Done'.</span>");
+    _textBrowser->append(tr("<span>Press 'Done'.</span>"));
     _textBrowser->setReadOnly(true);
 }

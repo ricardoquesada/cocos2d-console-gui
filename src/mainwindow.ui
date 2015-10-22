@@ -204,7 +204,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>About</string>
+    <string notr="true">About</string>
    </property>
   </action>
   <action name="actionPreferences">
@@ -328,7 +328,8 @@
   </action>
   <action name="actionExit">
    <property name="icon">
-    <iconset theme="document-exit"/>
+    <iconset theme="document-exit">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Exit</string>

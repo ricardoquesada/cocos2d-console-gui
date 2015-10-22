@@ -192,7 +192,7 @@ PreferencesDialog::~PreferencesDialog()
 void PreferencesDialog::on_directoryButton_cocos_clicked()
 {
     auto filename = QFileDialog::getExistingDirectory(this,
-                                                 "Cocos2D Console Path",
+                                                 tr("Cocos2D Console Path"),
                                                  ui->lineEdit_cocos->text());
 
     if (!filename.isEmpty())
@@ -211,7 +211,7 @@ void PreferencesDialog::on_lineEdit_cocos_editingFinished()
     auto cocos_path = ui->lineEdit_cocos->text();
     QFileInfo fi(cocos_path + "/cocos");
     if (!fi.exists())
-        ui->label_error->setText("<font color='red'>Invalid path. 'cocos' not found</font>");
+        ui->label_error->setText(tr("<font color='red'>Invalid path. 'cocos' not found</font>"));
     else
         ui->label_error->setText("");
 }
@@ -219,7 +219,7 @@ void PreferencesDialog::on_lineEdit_cocos_editingFinished()
 void PreferencesDialog::on_directoryButton_sdkbox_clicked()
 {
     auto filename = QFileDialog::getExistingDirectory(this,
-                                                 "SDKBOX Path",
+                                                 tr("SDKBOX Path"),
                                                  ui->lineEdit_sdkbox->text());
 
     if (!filename.isEmpty())
@@ -232,7 +232,7 @@ void PreferencesDialog::on_lineEdit_sdkbox_editingFinished()
     auto sdkbox_path = ui->lineEdit_sdkbox->text();
     QFileInfo fi(sdkbox_path + "/sdkbox");
     if (!fi.exists())
-        ui->label_error->setText("<font color='red'>Invalid path. 'sdkbox' not found</font>");
+        ui->label_error->setText(tr("<font color='red'>Invalid path. 'sdkbox' not found</font>"));
     else
         ui->label_error->setText("");
 }
