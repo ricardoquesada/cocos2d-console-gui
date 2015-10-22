@@ -19,6 +19,9 @@ limitations under the License.
 #include <QIcon>
 #include <QSettings>
 #include <QDebug>
+#include <QTranslator>
+#include <QCoreApplication>
+#include <QLibraryInfo>
 
 #include "welcomedialog.h"
 #include "cocos2dguiapplication.h"
@@ -32,6 +35,27 @@ int main(int argc, char *argv[])
     app.setApplicationVersion(QLatin1String(APP_VERSION));
     app.setApplicationName(QLatin1String("Cocos2d Console GUI"));
     app.setApplicationDisplayName(QLatin1String("Cocos2d Console GUI"));
+
+    // translation code
+    QTranslator qtTranslator;
+    qtTranslator.load("qt_" + QLocale::system().name(),
+                      QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    app.installTranslator(&qtTranslator);
+
+
+    auto translationDir = QCoreApplication::applicationDirPath();
+#ifdef Q_OS_WIN32
+    translationDir += QLatin1String("/translations");
+#elif defined(Q_OS_MAC)
+    translationDir += QLatin1String("/../Translations");
+#else
+    translationDir += QLatin1String("/../share/tiled/translations");
+#endif
+
+    QTranslator myappTranslator;
+    myappTranslator.load("cc_console_gui" + QLocale::system().name(),
+                         translationDir);
+    app.installTranslator(&myappTranslator);
 
 
 #ifdef Q_OS_MAC

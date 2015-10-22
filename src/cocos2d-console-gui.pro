@@ -60,6 +60,9 @@ RESOURCES += \
 
 QMAKE_CXXFLAGS += -Werror
 
+TRANSLATIONS = translations/cc_console_gui_es.ts \
+     translations/cc_console_gui_cn.ts
+
 macx {
     TARGET = Cocos2d-Console-GUI
     ICON = res/cocosproj-icon-mac.icns
