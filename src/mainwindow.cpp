@@ -43,11 +43,11 @@ limitations under the License.
 #include "welcomedialog.h"
 #include "librariesdialog.h"
 #include "newgamedialog.h"
-
 #include "templateentry.h"
 #include "gamestate.h"
 #include "runmgr.h"
 #include "highlighter.h"
+#include "systemstate.h"
 
 
 constexpr int MainWindow::MAX_RECENT_FILES;
@@ -87,6 +87,11 @@ MainWindow::MainWindow(QWidget *parent)
         ui->plainTextEdit->appendPlainText(QString("Error: 'sdkbox' not found. Open Preferences"));
 
     readSettings();
+
+    connect(SystemState::getInstance(), &SystemState::systemTemplatesUpdated, [&](){
+        ui->actionNew_Game->setEnabled(true);
+    }
+    );
 }
 
 MainWindow::~MainWindow()
@@ -573,6 +578,8 @@ void MainWindow::updateActions()
 
         ui->pushButton_addLibrary->setEnabled(!processRunning);
     }
+
+    ui->actionNew_Game->setEnabled(SystemState::getInstance()->systemLibrariesParsed());
 }
 
 void MainWindow::closeGameState()
