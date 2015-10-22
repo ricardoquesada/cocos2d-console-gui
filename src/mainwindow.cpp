@@ -240,7 +240,7 @@ void MainWindow::on_actionOpen_triggered()
 {
     if (maybeRunProcess() && maybeSave())
     {
-        QString filter = "Cocos2d Project";
+        QString filter = tr("Cocos2d Project");
         auto fn = QFileDialog::getOpenFileName(this,
                                                tr("Select File"),
                                                _lastDir,
@@ -264,7 +264,6 @@ void MainWindow::on_actionImport_Game_triggered()
 {
     if (maybeRunProcess() && maybeSave())
     {
-        QString filter = "Cocos2d Project";
         auto fn = QFileDialog::getExistingDirectory(this,
                                                tr("Select Game Root Directory"),
                                                _lastDir

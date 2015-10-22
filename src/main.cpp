@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 #endif
 
     QTranslator myappTranslator;
-    myappTranslator.load("cc_console_gui" + QLocale::system().name(),
+    myappTranslator.load("cc_console_gui_" + QLocale::system().name(),
                          translationDir);
     app.installTranslator(&myappTranslator);
 

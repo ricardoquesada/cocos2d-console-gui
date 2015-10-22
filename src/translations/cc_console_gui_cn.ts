@@ -41,6 +41,26 @@
         <source>Git</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../templatewizard.cpp" line="245"/>
+        <source>&lt;span&gt;Game Name: %1&lt;/span&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../templatewizard.cpp" line="247"/>
+        <source>&lt;span&gt;Files to be created in:&lt;/span&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../templatewizard.cpp" line="249"/>
+        <source>&lt;code&gt;%1&lt;/code&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../templatewizard.cpp" line="251"/>
+        <source>&lt;span&gt;Press &apos;Done&apos;.&lt;/span&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LibrariesDialog</name>
@@ -80,6 +100,11 @@
     <message>
         <location filename="../templatewizard.cpp" line="72"/>
         <source>&amp;Create in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../templatewizard.cpp" line="76"/>
+        <source>Choose...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -133,16 +158,6 @@
     <message>
         <location filename="../mainwindow.ui" line="150"/>
         <source>Console Output</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.ui" line="207"/>
-        <source>About</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.ui" line="212"/>
-        <source>Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -246,59 +261,74 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="334"/>
+        <location filename="../mainwindow.ui" line="335"/>
         <source>Exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="339"/>
+        <location filename="../mainwindow.ui" line="340"/>
         <source>Import Old Game...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="240"/>
+        <location filename="../mainwindow.cpp" line="82"/>
+        <source>Error: &apos;cocos&apos; not found. Open Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="87"/>
+        <source>Error: &apos;sdkbox&apos; not found. Open Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="243"/>
+        <source>Cocos2d Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="245"/>
         <source>Select File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="242"/>
+        <location filename="../mainwindow.cpp" line="247"/>
         <source>All files (*);;Cocos2d Project (*.cocosproj);;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="264"/>
+        <location filename="../mainwindow.cpp" line="268"/>
         <source>Select Game Root Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="292"/>
-        <location filename="../mainwindow.cpp" line="300"/>
-        <location filename="../mainwindow.cpp" line="706"/>
+        <location filename="../mainwindow.cpp" line="296"/>
+        <location filename="../mainwindow.cpp" line="304"/>
+        <location filename="../mainwindow.cpp" line="712"/>
         <source>Application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="293"/>
+        <location filename="../mainwindow.cpp" line="297"/>
         <source>Error import file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="301"/>
+        <location filename="../mainwindow.cpp" line="305"/>
         <source>Invalid directory. File &apos;.cocos-proj.json&apos; not found&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="628"/>
+        <location filename="../mainwindow.cpp" line="634"/>
         <source>Debug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="629"/>
+        <location filename="../mainwindow.cpp" line="635"/>
         <source>Release</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="707"/>
+        <location filename="../mainwindow.cpp" line="713"/>
         <source>There is another process running.
 Stop current process?</source>
         <translation type="unfinished"></translation>
@@ -314,6 +344,21 @@ Stop current process?</source>
     <message>
         <location filename="../newgamedialog.ui" line="34"/>
         <source>Choose a template:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../newgamedialog.cpp" line="53"/>
+        <source>C++ Templates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../newgamedialog.cpp" line="54"/>
+        <source>JavaScript Templates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../newgamedialog.cpp" line="55"/>
+        <source>Lua Templates</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -338,6 +383,26 @@ Stop current process?</source>
     <message>
         <location filename="../preferencesdialog.ui" line="46"/>
         <source>SDKBOX CLI path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.cpp" line="195"/>
+        <source>Cocos2D Console Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.cpp" line="214"/>
+        <source>&lt;font color=&apos;red&apos;&gt;Invalid path. &apos;cocos&apos; not found&lt;/font&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.cpp" line="222"/>
+        <source>SDKBOX Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.cpp" line="235"/>
+        <source>&lt;font color=&apos;red&apos;&gt;Invalid path. &apos;sdkbox&apos; not found&lt;/font&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
