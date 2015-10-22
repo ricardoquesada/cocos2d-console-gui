@@ -328,8 +328,8 @@ void MainWindow::on_actionRun_triggered()
         auto run = new RunCocosRun(_gameState, platform, mode, this);
         RunMgr::getInstance()->runSync(run);
 
-        connect(run, &RunCocosCompile::dataAvailable, this, &MainWindow::onProcessDataAvailable);
-        connect(run, &RunCocosCompile::finished, this, &MainWindow::onProcessFinished);
+        connect(run, &RunCocosRun::dataAvailable, this, &MainWindow::onProcessDataAvailable);
+        connect(run, &RunCocosRun::finished, this, &MainWindow::onProcessFinished);
 
         updateActions();
     }

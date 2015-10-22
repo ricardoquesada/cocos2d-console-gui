@@ -83,6 +83,7 @@ int main(int argc, char *argv[])
     if (show_welcome && !app.triggeredByFileOpenEvent())
     {
         WelcomeDialog dialog(&w);
+        QObject::connect(SystemState::getInstance(), &SystemState::systemTemplatesUpdated, &dialog, &WelcomeDialog::enableNewButton);
         dialog.exec();
     }
     w.show();

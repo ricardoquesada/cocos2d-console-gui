@@ -28,6 +28,9 @@ public:
     const QJsonObject& getSystemLibraries() const;
     const QJsonObject& getSystemTemplates() const;
 
+    bool systemLibrariesParsed() const;
+    bool systemTemplatesParsed() const;
+
 signals:
     void systemLibrariesUpdated();
     void systemTemplatesUpdated();

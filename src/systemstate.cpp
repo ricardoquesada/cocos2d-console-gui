@@ -49,6 +49,16 @@ SystemState::SystemState(QObject *parent) : QObject(parent)
 
 }
 
+bool SystemState::systemLibrariesParsed() const
+{
+    return _systemLibrariesParsed;
+}
+
+bool SystemState::systemTemplatesParsed() const
+{
+    return _systemTemplatesParsed;
+}
+
 const QJsonObject& SystemState::getSystemLibraries() const
 {
     if (!_systemLibrariesParsed)

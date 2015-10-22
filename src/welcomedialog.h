@@ -39,6 +39,9 @@ public:
     explicit WelcomeDialog(QWidget *parent = 0);
     ~WelcomeDialog();
 
+public slots:
+    void enableNewButton();
+
 private slots:
     void itemDoubleClicked(QListWidgetItem* item);
 

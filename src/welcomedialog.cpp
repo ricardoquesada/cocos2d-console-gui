@@ -29,6 +29,7 @@ limitations under the License.
 #include "preferencesdialog.h"
 #include "gamestate.h"
 #include "mainwindow.h"
+#include "systemstate.h"
 
 constexpr int WelcomeDialog::MAX_RECENT_FILES;
 
@@ -42,6 +43,10 @@ WelcomeDialog::WelcomeDialog(QWidget *parent) :
     ui->label_icon->setText("<img height='128' width='128' src=':/logo.png'>");
 
     createActions();
+
+    // disable button if template not parsed yet. Will be enabled later once
+    // the "enableNewButton" slot is received
+    ui->pushButton_NewGame->setEnabled(SystemState::getInstance()->systemTemplatesParsed());
 }
 
 WelcomeDialog::~WelcomeDialog()
@@ -52,6 +57,11 @@ WelcomeDialog::~WelcomeDialog()
 //
 // Manual Callback events
 //
+void WelcomeDialog::enableNewButton()
+{
+    ui->pushButton_NewGame->setEnabled(true);
+}
+
 void WelcomeDialog::itemDoubleClicked(QListWidgetItem* item)
 {
     auto path = item->data(Qt::UserRole).toString();
