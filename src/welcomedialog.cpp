@@ -47,6 +47,8 @@ WelcomeDialog::WelcomeDialog(QWidget *parent) :
     // disable button if template not parsed yet. Will be enabled later once
     // the "enableNewButton" slot is received
     ui->pushButton_NewGame->setEnabled(SystemState::getInstance()->systemTemplatesParsed());
+
+    ui->checkBox->setChecked(_settings.value("show_welcome_dialog", true).toBool());
 }
 
 WelcomeDialog::~WelcomeDialog()
