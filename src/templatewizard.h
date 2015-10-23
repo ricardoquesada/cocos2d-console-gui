@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <QWizard>
 #include <QSettings>
+#include <QVariantMap>
 
 QT_BEGIN_NAMESPACE
 class QCheckBox;
@@ -41,9 +42,13 @@ public:
 
     void accept() Q_DECL_OVERRIDE;
 
+    const QVariantMap& getSelectedLibraries() const;
+    void setSelectedLibraries(const QVariantMap& libraries);
+
 protected:
     const TemplateEntry& _templateEntry;
     QSettings _settings;
+    QVariantMap _selectedLibraries;
 };
 
 class LocationPage: public QWizardPage
@@ -64,12 +69,12 @@ class SDKPage: public QWizardPage
     Q_OBJECT
 
 public:
-       SDKPage(QWidget *parent = 0);
+       SDKPage(const QVariantMap &libraries, QWidget *parent = 0);
 
 protected:
     void initializePage() Q_DECL_OVERRIDE;
+    bool validatePage() Q_DECL_OVERRIDE;
 
-private:
     QListWidget* _listWidget;
 };
 

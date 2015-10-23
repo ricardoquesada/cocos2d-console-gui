@@ -20,6 +20,7 @@ limitations under the License.
 #include <QString>
 #include <QFile>
 #include <QJsonObject>
+#include <QVariantMap>
 
 class TemplateEntry
 {
@@ -36,7 +37,7 @@ public:
     const QString& name() const { return _name; }
     const QString& key() const { return _key; }
     const Language& language() const { return _language; }
-    const QJsonObject& options() const { return _options; }
+    const QVariantMap& libraries() const { return _libraries; }
     const QString& description() const { return _description; }
 
 protected:
@@ -44,7 +45,7 @@ protected:
     QString _description;
     QString _key;
     Language _language;
-    QJsonObject _options;
+    QVariantMap _libraries;
 };
 
 // needed to use it in a qvariant

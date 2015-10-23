@@ -25,24 +25,16 @@ TemplateWizard::TemplateWizard(const TemplateEntry& templateEntry, QWidget *pare
     : QWizard(parent)
     , _templateEntry(templateEntry)
     , _settings("org.cocos2d-x","Cocos2d Console GUI")
-
 {
-    auto options = _templateEntry.options();
+    auto libraries = _templateEntry.libraries();
 
-    bool sdkboxPage = false;
-    if (options.contains("sdkbox"))
-    {
-        if (options["sdkbox"].toBool())
-            sdkboxPage = true;
-    }
+    addPage(new LocationPage(this));
 
-    addPage(new LocationPage);
-    if (sdkboxPage)
-        addPage(new SDKPage);
-    addPage(new ConclusionPage);
+    // only display the SDKPage if 'libraries' is not empty
+    if (libraries.size() > 0)
+        addPage(new SDKPage(libraries, this));
 
-//    setPixmap(QWizard::BannerPixmap, QPixmap(":/images/banner.png"));
-//    setPixmap(QWizard::BackgroundPixmap, QPixmap(":/images/background.png"));
+    addPage(new ConclusionPage(this));
 
     setWindowTitle(tr("Template Wizard"));
 }
@@ -52,8 +44,18 @@ void TemplateWizard::accept()
     QDialog::accept();
 }
 
+void TemplateWizard::setSelectedLibraries(const QVariantMap &libraries)
+{
+    _selectedLibraries = libraries;
+}
+
+const QVariantMap& TemplateWizard::getSelectedLibraries() const
+{
+    return _selectedLibraries;
+}
+
 //
-// ----
+// LocationPage
 //
 
 LocationPage::LocationPage(QWidget *parent)
@@ -61,7 +63,6 @@ LocationPage::LocationPage(QWidget *parent)
 {
     setTitle(tr("Introduction and Project Location"));
     setSubTitle(tr("This wizard generates a Cocos2d-x game project."));
-//    setPixmap(QWizard::LogoPixmap, QPixmap(":/images/logo1.png"));
 
     auto groupBox = new QGroupBox();
 
@@ -129,74 +130,44 @@ bool LocationPage::isComplete() const
     return (name.length() && fi.isDir());
 }
 
-// ----
-
-
-SDKPage::SDKPage(QWidget *parent)
+//
+// SDKPage
+//
+SDKPage::SDKPage(const QVariantMap& libraries, QWidget *parent)
     : QWizardPage(parent)
 {
     setTitle(tr("SDK Selection"));
     setSubTitle(tr("Select the SDKs that you want to have installed in your game"));
-//    setPixmap(QWizard::LogoPixmap, QPixmap(":/images/logo2.png"));
 
-    // --
-    _listWidget = new QListWidget;
-
-    QListWidgetItem *item;
-    item = new QListWidgetItem(tr("Cocos2d-x v3.8"), _listWidget);
-    item->setCheckState(Qt::CheckState::Checked);
-    item->setFlags(Qt::NoItemFlags);
-
-    item = new QListWidgetItem(tr("SDKBOX core"), _listWidget);
-    item->setCheckState(Qt::CheckState::Checked);
-    item->setFlags(Qt::NoItemFlags);
-
-    item = new QListWidgetItem(tr("SDKBOX AdMob"), _listWidget);
-    item->setCheckState(Qt::CheckState::Checked);
-
-    item = new QListWidgetItem(tr("SDKBOX Facebook"), _listWidget);
-    item->setCheckState(Qt::CheckState::Checked);
-
-    item = new QListWidgetItem(tr("SDKBOX Kochava"), _listWidget);
-    item->setCheckState(Qt::CheckState::Checked);
-
-    item = new QListWidgetItem(tr("SDKBOX Vungle"), _listWidget);
-    item->setCheckState(Qt::CheckState::Unchecked);
-
-
-    // ---
     auto sdkCheckBox = new QCheckBox(tr("&Select all SDKs"));
     sdkCheckBox->setChecked(true);
 
+    _listWidget = new QListWidget;
+    for (auto it=libraries.begin(); it != libraries.end(); ++it)
+    {
+        QListWidgetItem* item = new QListWidgetItem(it.value().toString(), _listWidget);
+        item->setCheckState(Qt::CheckState::Checked);
+        item->setData(Qt::UserRole, it.key());
+    }
+
+
     connect(sdkCheckBox, &QCheckBox::toggled, [&](bool enabled)
         {
-            // skip cocos2d
-            for(int row = 1; row < _listWidget->count(); row++)
+            for(int row = 0; row < _listWidget->count(); row++)
             {
                 QListWidgetItem *w = _listWidget->item(row);
-                w->setCheckState(enabled?Qt::CheckState::Checked: Qt::CheckState::Unchecked);
+                w->setCheckState(enabled ? Qt::CheckState::Checked
+                                         : Qt::CheckState::Unchecked);
             }
     }
     );
 
 
-    // ----
 
-    auto cocosSDK = new QLabel(tr("&Cocos2D-x SDK library type:"));
-    QComboBox *comboBox = new QComboBox;
-    comboBox->addItem(tr("binary"));
-    comboBox->addItem(tr("source code"));
-    cocosSDK->setBuddy(comboBox);
-    auto hbox = new QHBoxLayout;
-    hbox->addWidget(cocosSDK);
-    hbox->addWidget(comboBox);
-
-    // ----
 
     auto vblayout = new QVBoxLayout;
     vblayout->addWidget(sdkCheckBox);
     vblayout->addWidget(_listWidget);
-    vblayout->addLayout(hbox);
 
     setLayout(vblayout);
 }
@@ -206,17 +177,31 @@ void SDKPage::initializePage()
     QString className = field("gameName").toString();
 }
 
+bool SDKPage::validatePage()
+{
+    QVariantMap map;
 
-// ----
+    for(int row = 0; row < _listWidget->count(); row++)
+    {
+        QListWidgetItem* w = _listWidget->item(row);
+        if (w->checkState() == Qt::Checked)
+            map[w->data(Qt::UserRole).toString()] = w->text();
+    }
 
+    static_cast<TemplateWizard*>(wizard())->setSelectedLibraries(map);
+
+    return true;
+}
+
+//
+// ConclusionPage
+//
 ConclusionPage::ConclusionPage(QWidget *parent)
     : QWizardPage(parent)
 {
     setTitle(tr("Project Management"));
     setSubTitle(tr("Specify where you want the wizard to put the generated "
                    "skeleton code."));
-//    setPixmap(QWizard::LogoPixmap, QPixmap(":/images/logo3.png"));
-
 
     // --
 
@@ -241,13 +226,31 @@ ConclusionPage::ConclusionPage(QWidget *parent)
 
 void ConclusionPage::initializePage()
 {
-    _textBrowser->append("<html>");
-    _textBrowser->append(tr("<span>Game Name: %1</span>").arg(field("gameName").toString()));
-    _textBrowser->append("<p>");
-    _textBrowser->append(tr("<span>Files to be created in:</span>"));
-    _textBrowser->append("<p>");
-    _textBrowser->append(tr("<code>%1</code>").arg(field("gamePath").toString()));
-    _textBrowser->append("");
-    _textBrowser->append(tr("<span>Press 'Done'.</span>"));
     _textBrowser->setReadOnly(true);
+
+    QString html;
+
+    html.append("<html>");
+    html.append(tr("<span>Game Name: %1</span>").arg(field("gameName").toString()));
+    html.append("<p>");
+    html.append(tr("<span>Files to be created in:</span>"));
+    html.append("<p>");
+    html.append(QString("<code>%1</code>").arg(field("gamePath").toString()));
+    html.append("<p>");
+
+    auto selectedLibraries = static_cast<TemplateWizard*>(wizard())->getSelectedLibraries();
+    if (selectedLibraries.count() > 0)
+    {
+        html.append(tr("<span>Libraries to add:</span>"));
+        html.append("<ul>");
+        for(const auto description: selectedLibraries)
+        {
+            html.append("<li>");
+            html.append(description.toString());
+            html.append("</li>");
+        }
+        html.append("</ul>");
+    }
+    html.append(tr("<span>Press 'Done'.</span></html>"));
+    _textBrowser->setHtml(html);
 }

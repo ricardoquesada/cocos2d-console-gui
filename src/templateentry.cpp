@@ -43,8 +43,13 @@ TemplateEntry TemplateEntry::createFromJson(const QJsonObject& jsonObject)
 
     auto language = jsonObject["language"].toString();
     entry._name = jsonObject["name"].toString();
-    entry._options = jsonObject["options"].toObject();
     entry._key = jsonObject["key"].toString();
+
+    if (jsonObject.contains("libraries"))
+    {
+        auto libraries = jsonObject["libraries"].toObject();
+        entry._libraries = libraries.toVariantMap();
+    }
 
     // description: append path
     auto path = jsonObject["path"].toString();

@@ -106,6 +106,7 @@ class RunSDKBOXImport : public Run
     Q_OBJECT
 public:
     explicit RunSDKBOXImport(GameState* gameState, const QString& library, QObject* parent = nullptr);
+    explicit RunSDKBOXImport(const QString& gamePath, const QString& library, QObject* parent = nullptr);
 };
 
 class RunSDKBOXLibraries : public Run

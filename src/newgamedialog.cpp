@@ -123,20 +123,41 @@ void NewGameDialog::on_buttonBox_accepted()
 
 void NewGameDialog::copyFiles(const TemplateWizard& wizard, const TemplateEntry& templateEntry)
 {
-    auto cocosNew = new RunCocosNew(wizard.field("gameName").toString(),
-                                    wizard.field("gamePath").toString(),
+    Run* lastQueuedCommand = nullptr;
+    auto gamePath = wizard.field("gamePath").toString();
+    auto gameName = wizard.field("gameName").toString();
+
+    auto cocosNew = new RunCocosNew(gameName,
+                                    gamePath,
                                     templateEntry.key(),
                                     this);
 
+    lastQueuedCommand = cocosNew;
+
     _progressDialog = new ProgressDialog(this);
     _progressDialog->setModal(true);
-    _progressDialog->appendData("Running: " + cocosNew->getCommandLine());
 
     RunMgr::getInstance()->runSync(cocosNew);
 
     connect(cocosNew, &RunCocosNew::dataAvailable, this, &NewGameDialog::processOutputReady);
-    connect(cocosNew, &RunCocosNew::finished, this, &NewGameDialog::processFinished);
-    connect(cocosNew, &RunCocosNew::finished, _progressDialog, &ProgressDialog::processFinished);
+
+    auto selectedLibraries = wizard.getSelectedLibraries();
+    if (selectedLibraries.count() > 0)
+    {
+        auto keys = selectedLibraries.keys();
+        for (const auto& key: keys)
+        {
+            auto sdkboxImport = new RunSDKBOXImport(gamePath + "/" + gameName, key, this);
+            RunMgr::getInstance()->runSync(sdkboxImport);
+            connect(sdkboxImport, &RunSDKBOXImport::dataAvailable, this, &NewGameDialog::processOutputReady);
+
+            lastQueuedCommand = sdkboxImport;
+        }
+    }
+
+    // only care for the last queued command's "finished" event
+    connect(lastQueuedCommand, &Run::finished, this, &NewGameDialog::processFinished);
+    connect(lastQueuedCommand, &Run::finished, _progressDialog, &ProgressDialog::processFinished);
 
     if (_progressDialog->exec())
     {

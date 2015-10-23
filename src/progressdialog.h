@@ -32,6 +32,7 @@ public:
     ~ProgressDialog();
 
     void appendData(const QString& str);
+    void appendCLI(const QString& str);
 
 public slots:
     void processFinished(Run *command);

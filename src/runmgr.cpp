@@ -239,6 +239,14 @@ RunSDKBOXImport::RunSDKBOXImport(GameState* gameState, const QString& library, Q
     _cwd = gameState->getPath();
 }
 
+RunSDKBOXImport::RunSDKBOXImport(const QString& gamePath, const QString& library, QObject* parent)
+    : Run(parent)
+{
+    _args << "--noupdate" << "--jsonapi" << "import" << library;
+    _cmd = PreferencesDialog::findSDKBOXPath() + "/sdkbox";
+    _cwd = gamePath;
+}
+
 //
 // class  RunCocosNew
 //
