@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     Cocos2dGUIApplication app(argc, argv);
 
     app.setOrganizationDomain(QLatin1String("cocos2d-x.org"));
-    app.setApplicationVersion(QLatin1String(APP_VERSION));
+    app.setApplicationVersion(QLatin1String(GIT_VERSION));
     app.setApplicationName(QLatin1String("Cocos2d Console GUI"));
     app.setApplicationDisplayName(QLatin1String("Cocos2d Console GUI"));
 

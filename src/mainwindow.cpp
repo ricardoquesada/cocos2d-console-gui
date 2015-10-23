@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent)
     _lastDir = _settings.value("dir/lastProjectdDir", defaultDir).toString();
 
     ui->plainTextEdit->setReadOnly(true);
-    ui->plainTextEdit->appendPlainText(QString("Cocos2d Console GUI v") + APP_VERSION);
+    ui->plainTextEdit->appendPlainText(tr("Cocos2d Console GUI ") + GIT_VERSION);
     auto cocosPath = PreferencesDialog::findCocosPath();
     if (cocosPath.length() == 0)
         ui->plainTextEdit->appendPlainText(tr("Error: 'cocos' not found. Open Preferences"));

@@ -10,14 +10,16 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = cocos2d-console-gui
 TEMPLATE = app
-VERSION = $$system(git describe --abbrev=4 --dirty --always --tags)
+VERSION = 0.0.3
+GIT_VERSION = $$system(git describe --abbrev=4 --dirty --always --tags)
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+DEFINES += GIT_VERSION=\\\"$$GIT_VERSION\\\"
 
 CONFIG += c++11
 CONFIG += debug_and_release
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     templatewizard.cpp \
     templateentry.cpp \
     aboutdialog.cpp \
