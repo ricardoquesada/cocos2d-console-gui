@@ -17,49 +17,53 @@
 <context>
     <name>ConclusionPage</name>
     <message>
-        <location filename="../templatewizard.cpp" line="215"/>
+        <location filename="../templatewizard.cpp" line="202"/>
         <source>Project Management</source>
         <translation>Administración del proyecto</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="216"/>
+        <location filename="../templatewizard.cpp" line="203"/>
         <source>Specify where you want the wizard to put the generated skeleton code.</source>
         <translation>Especifica donde quieres que el Wizard ponga el código generado.</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="225"/>
+        <location filename="../templatewizard.cpp" line="210"/>
         <source>&amp;Add to version control:</source>
         <translation>&amp;Agregar a revisión de control:</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="227"/>
+        <location filename="../templatewizard.cpp" line="212"/>
         <source>&lt;None&gt;</source>
         <translation>&lt;Nada&gt;</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="228"/>
+        <location filename="../templatewizard.cpp" line="213"/>
         <source>Git</source>
         <translation>Git</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="245"/>
+        <location filename="../templatewizard.cpp" line="234"/>
         <source>&lt;span&gt;Game Name: %1&lt;/span&gt;</source>
         <translation>&lt;span&gt;Nombre del Juego: %1&lt;/span&gt;</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="247"/>
+        <location filename="../templatewizard.cpp" line="236"/>
         <source>&lt;span&gt;Files to be created in:&lt;/span&gt;</source>
         <translation>&lt;span&gt;Donde crear los archivos: &lt;/span&gt;</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="249"/>
-        <source>&lt;code&gt;%1&lt;/code&gt;</source>
-        <translation></translation>
+        <location filename="../templatewizard.cpp" line="244"/>
+        <source>&lt;span&gt;Libraries to add:&lt;/span&gt;</source>
+        <translation>&lt;span&gt;Bibliotecas a agregar:&lt;/span&gt;</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="251"/>
+        <location filename="../templatewizard.cpp" line="254"/>
+        <source>&lt;span&gt;Press &apos;Done&apos;.&lt;/span&gt;&lt;/html&gt;</source>
+        <translation>&lt;span&gt;Presione &apos;Listo&apos;.&lt;/span&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
         <source>&lt;span&gt;Press &apos;Done&apos;.&lt;/span&gt;</source>
-        <translation>&lt;span&gt;Apreta &apos;Listo&apos;&lt;/span&gt;</translation>
+        <translation type="vanished">&lt;span&gt;Apreta &apos;Listo&apos;&lt;/span&gt;</translation>
     </message>
 </context>
 <context>
@@ -78,42 +82,42 @@
 <context>
     <name>LocationPage</name>
     <message>
-        <location filename="../templatewizard.cpp" line="62"/>
+        <location filename="../templatewizard.cpp" line="64"/>
         <source>Introduction and Project Location</source>
         <translation>Introducción y Hubicación del proyecto</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="63"/>
+        <location filename="../templatewizard.cpp" line="65"/>
         <source>This wizard generates a Cocos2d-x game project.</source>
         <translation>Este Wizard crea un proyecto de juego de Ccoos2d-X.</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="68"/>
+        <location filename="../templatewizard.cpp" line="69"/>
         <source>Game &amp;Name:</source>
         <translation>&amp;Nombre del Juego:</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="69"/>
+        <location filename="../templatewizard.cpp" line="70"/>
         <source>untitled</source>
         <translation>sin_titulo</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="72"/>
+        <location filename="../templatewizard.cpp" line="73"/>
         <source>&amp;Create in:</source>
         <translation>&amp;Crear en:</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="76"/>
+        <location filename="../templatewizard.cpp" line="77"/>
         <source>Choose...</source>
         <translation>Elegir...</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="81"/>
+        <location filename="../templatewizard.cpp" line="82"/>
         <source>Choose Directory</source>
         <translation>Elegir Directorio</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="92"/>
+        <location filename="../templatewizard.cpp" line="93"/>
         <source>&amp;Use as default project location</source>
         <translation>&amp;Usar como ubicación por defecto para siguientes juegos</translation>
     </message>
@@ -421,70 +425,37 @@ Stop current process?</source>
 <context>
     <name>SDKPage</name>
     <message>
-        <location filename="../templatewizard.cpp" line="138"/>
+        <location filename="../templatewizard.cpp" line="139"/>
         <source>SDK Selection</source>
         <translation>Selección de SDKs</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="139"/>
+        <location filename="../templatewizard.cpp" line="140"/>
         <source>Select the SDKs that you want to have installed in your game</source>
         <translation>Selecciona las SDKs que quieres tener instaladas en tu juego</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="146"/>
-        <source>Cocos2d-x v3.8</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../templatewizard.cpp" line="150"/>
-        <source>SDKBOX core</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../templatewizard.cpp" line="154"/>
-        <source>SDKBOX AdMob</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../templatewizard.cpp" line="157"/>
-        <source>SDKBOX Facebook</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../templatewizard.cpp" line="160"/>
-        <source>SDKBOX Kochava</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../templatewizard.cpp" line="163"/>
-        <source>SDKBOX Vungle</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../templatewizard.cpp" line="168"/>
+        <location filename="../templatewizard.cpp" line="142"/>
         <source>&amp;Select all SDKs</source>
         <translation>&amp;Seleccionar todas las SDKs</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="185"/>
         <source>&amp;Cocos2D-x SDK library type:</source>
-        <translation>Tipo de biblioteca para &amp;Cocos2d-x:</translation>
+        <translation type="vanished">Tipo de biblioteca para &amp;Cocos2d-x:</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="187"/>
         <source>binary</source>
-        <translation>pre-compilado</translation>
+        <translation type="vanished">pre-compilado</translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="188"/>
         <source>source code</source>
-        <translation>código fuente</translation>
+        <translation type="vanished">código fuente</translation>
     </message>
 </context>
 <context>
     <name>TemplateWizard</name>
     <message>
-        <location filename="../templatewizard.cpp" line="47"/>
+        <location filename="../templatewizard.cpp" line="39"/>
         <source>Template Wizard</source>
         <translation>Wizard de Templates</translation>
     </message>

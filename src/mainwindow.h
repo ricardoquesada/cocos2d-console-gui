@@ -45,7 +45,7 @@ public:
         SDKBOX_COMMAND
     };
 
-    static constexpr int MAX_RECENT_FILES=8;
+    static constexpr int MAX_RECENT_FILES=15;
 
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
