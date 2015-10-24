@@ -48,7 +48,7 @@ WelcomeDialog::WelcomeDialog(QWidget *parent) :
     // the "enableNewButton" slot is received
     ui->pushButton_NewGame->setEnabled(SystemState::getInstance()->systemTemplatesParsed());
 
-    ui->checkBox->setChecked(_settings.value("show_welcome_dialog", true).toBool());
+    ui->checkBox->setChecked(_settings.value(QLatin1String("show_welcome_dialog"), true).toBool());
 }
 
 WelcomeDialog::~WelcomeDialog()
@@ -175,5 +175,5 @@ void WelcomeDialog::setRecentFile(const QString& fileName)
 
 void WelcomeDialog::on_checkBox_clicked()
 {
-    _settings.setValue("show_welcome_dialog", (ui->checkBox->checkState() == Qt::Checked));
+    _settings.setValue(QLatin1String("show_welcome_dialog"), (ui->checkBox->checkState() == Qt::Checked));
 }

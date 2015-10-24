@@ -302,3 +302,14 @@ RunCocosListPlatforms::RunCocosListPlatforms(GameState* gameState, QObject* pare
     _cmd = PreferencesDialog::findCocosPath() + "/cocos";
     _cwd = gameState->getPath();
 }
+
+//
+// class  RunGeneric
+//
+RunGeneric::RunGeneric(const QString& exe, const QStringList& args, const QString& cwd, QObject* parent)
+    : Run(parent)
+{
+    _args << args;
+    _cmd = exe;
+    _cwd = cwd;
+}

@@ -150,3 +150,10 @@ class RunCocosListPlatforms: public Run
 public:
     explicit RunCocosListPlatforms(GameState *gameState, QObject* parent);
 };
+
+class RunGeneric: public Run
+{
+    Q_OBJECT
+public:
+    explicit RunGeneric(const QString& exe, const QStringList& args, const QString& cwd, QObject *parent);
+};

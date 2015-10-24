@@ -357,10 +357,8 @@ void MainWindow::on_actionClean_triggered()
 void MainWindow::on_actionOpen_Xcode_triggered()
 {
     Q_ASSERT(_gameState);
-
-    QFileInfo fileInfo(_gameState->getFilePath());
-    QString xcodefile = fileInfo.canonicalPath() + "/proj.ios_mac/" + _gameState->getProjectName() + ".xcodeproj";
-    QDesktopServices::openUrl(QUrl("file://" + xcodefile));
+    auto pbxfile = _gameState->getGameProperties()["XCODE_PROJECT"].toString();
+    QDesktopServices::openUrl(QUrl("file://" + QFileInfo(pbxfile).canonicalPath()));
 }
 
 void MainWindow::on_actionOpen_in_Visual_Studio_triggered()
@@ -370,7 +368,14 @@ void MainWindow::on_actionOpen_in_Visual_Studio_triggered()
 
 void MainWindow::on_actionOpen_in_Android_Studio_triggered()
 {
-
+    Q_ASSERT(_gameState);
+    auto androidStudioDir = _gameState->getGameProperties()["ANDROID_STUDIO_PROJECT_DIR"].toString();
+    auto exe = "open";
+    auto cwd = _gameState->getPath();
+    QStringList args;
+    args << "-a" << "Android Studio" << androidStudioDir;
+    auto cmd = new RunGeneric(exe, args, cwd, this);
+    RunMgr::getInstance()->runAsync(cmd);
 }
 
 void MainWindow::on_actionOpen_File_Browser_triggered()
