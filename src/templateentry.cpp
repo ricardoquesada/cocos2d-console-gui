@@ -53,7 +53,7 @@ TemplateEntry TemplateEntry::createFromJson(const QJsonObject& jsonObject)
 
     // description: append path
     auto path = jsonObject["path"].toString();
-    entry._description = path + "/" + "template_metadata" + "/" + jsonObject["description_file"].toString();
+    entry._description = path + "/" + "metadata" + "/" + jsonObject["description_file"].toString();
 
     // language
     bool found = false;
