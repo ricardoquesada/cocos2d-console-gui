@@ -16,6 +16,7 @@ limitations under the License.
 
 #include <QtWidgets>
 #include <QStandardPaths>
+#include <QSpacerItem>
 
 #include "templatewizard.h"
 #include "templateentry.h"
@@ -106,8 +107,12 @@ LocationPage::LocationPage(QWidget *parent)
 
     groupBox->setLayout(gridLayout);
 
+    _label = new QLabel(this);
+
     auto vLayout = new QVBoxLayout;
     vLayout->addWidget(groupBox);
+    vLayout->addStretch();
+    vLayout->addWidget(_label);
 
     setLayout(vLayout);
 
@@ -123,11 +128,22 @@ LocationPage::LocationPage(QWidget *parent)
 bool LocationPage::isComplete() const
 {
     auto name = field("gameName").toString();
-    auto create = field("gamePath").toString();
+    auto path = field("gamePath").toString();
 
-    QFileInfo fi(create);
+    QFileInfo fi(path);
+    QFileInfo fullpath(QString(path) + name);
 
-    return (name.length() && fi.isDir());
+    bool ret = (name.length() && fi.isDir() && !fullpath.exists());
+
+    if (name.length() > 0 && fi.isDir())
+    {
+         if (fullpath.exists())
+            _label->setText(tr("<font color='red'>Diretory '%1' already exists</font>").arg(fullpath.canonicalPath()));
+         else
+             _label->setText("");
+    }
+
+    return ret;
 }
 
 //

@@ -62,6 +62,7 @@ public:
 
 private:
     QLineEdit* _createEdit;
+    QLabel* _label;
 };
 
 class SDKPage: public QWizardPage
