@@ -292,18 +292,16 @@ void MainWindow::on_actionImport_Game_triggered()
                 }
                 else
                 {
-                    QMessageBox::StandardButton ret;
-                    ret = QMessageBox::warning(this, tr("Application"),
-                                 tr("Error import file"),
-                                 QMessageBox::Ok);
+                    QMessageBox::warning(this, tr("Application"),
+                                         tr("Error import file"),
+                                         QMessageBox::Ok);
                 }
             }
             else
             {
-                QMessageBox::StandardButton ret;
-                ret = QMessageBox::warning(this, tr("Application"),
-                             tr("Invalid directory. File '.cocos-proj.json' not found'"),
-                             QMessageBox::Ok);
+                QMessageBox::warning(this, tr("Application"),
+                                     tr("Invalid directory. File '.cocos-proj.json' not found'"),
+                                     QMessageBox::Ok);
             }
         }
     }
