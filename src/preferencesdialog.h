@@ -31,8 +31,12 @@ public:
     explicit PreferencesDialog(QWidget *parent = 0);
     ~PreferencesDialog();
 
-    static QString findCocosPath();
-    static QString findSDKBOXPath();
+    static QString getCmdFilepath(const QString& cmd);
+    static QString getCocosFilepath();
+    static QString getSDKBOXFilepath();
+
+    static QString getCocosPath();
+    static QString getSDKBOXPath();
 
 private slots:
     void on_buttonBox_accepted();

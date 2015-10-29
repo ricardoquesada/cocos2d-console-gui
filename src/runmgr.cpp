@@ -200,7 +200,7 @@ RunSDKBOXInfo::RunSDKBOXInfo(GameState* gameState, QObject* parent)
     Q_ASSERT(gameState);
 
     _args << "--noupdate" << "--jsonapi" << "info";
-    _cmd = PreferencesDialog::findSDKBOXPath() + "/sdkbox";
+    _cmd = PreferencesDialog::getSDKBOXFilepath();
     _cwd = gameState->getPath();
 }
 
@@ -213,7 +213,7 @@ RunSDKBOXSymbols::RunSDKBOXSymbols(GameState* gameState, QObject* parent)
     Q_ASSERT(gameState);
 
     _args << "--noupdate" << "--jsonapi" << "symbols";
-    _cmd = PreferencesDialog::findSDKBOXPath() + "/sdkbox";
+    _cmd = PreferencesDialog::getSDKBOXFilepath();
     _cwd = gameState->getPath();
 }
 
@@ -224,7 +224,7 @@ RunSDKBOXLibraries::RunSDKBOXLibraries(QObject* parent)
     : Run(parent)
 {
     _args << "--noupdate" << "--jsonapi" << "list";
-    _cmd = PreferencesDialog::findSDKBOXPath() + "/sdkbox";
+    _cmd = PreferencesDialog::getSDKBOXFilepath();
     _cwd = QDir::homePath();
 }
 
@@ -235,7 +235,7 @@ RunSDKBOXImport::RunSDKBOXImport(GameState* gameState, const QString& library, Q
     : Run(parent)
 {
     _args << "--noupdate" << "--jsonapi" << "import" << library;
-    _cmd = PreferencesDialog::findSDKBOXPath() + "/sdkbox";
+    _cmd = PreferencesDialog::getSDKBOXFilepath();
     _cwd = gameState->getPath();
 }
 
@@ -243,7 +243,7 @@ RunSDKBOXImport::RunSDKBOXImport(const QString& gamePath, const QString& library
     : Run(parent)
 {
     _args << "--noupdate" << "--jsonapi" << "import" << library;
-    _cmd = PreferencesDialog::findSDKBOXPath() + "/sdkbox";
+    _cmd = PreferencesDialog::getSDKBOXFilepath();
     _cwd = gamePath;
 }
 
@@ -254,7 +254,7 @@ RunCocosNew::RunCocosNew(const QString& gameName, const QString& gamePath, const
     : Run(parent)
 {
     _args << "new" << gameName << "-k" << templateName;
-    _cmd = PreferencesDialog::findCocosPath() + "/cocos";
+    _cmd = PreferencesDialog::getCocosFilepath();
     _cwd = gamePath;
 }
 
@@ -265,7 +265,7 @@ RunCocosListTemplates::RunCocosListTemplates(QObject* parent)
     : Run(parent)
 {
     _args << "new" << "--list-templates";
-    _cmd = PreferencesDialog::findCocosPath() + "/cocos";
+    _cmd = PreferencesDialog::getCocosFilepath();
     _cwd = QDir::homePath();
 }
 
@@ -276,7 +276,7 @@ RunCocosCompile::RunCocosCompile(GameState* gameState, const QString& platform, 
     : Run(parent)
 {
     _args << "compile" << "-p" << platform << "-m" << mode;
-    _cmd = PreferencesDialog::findCocosPath() + "/cocos";
+    _cmd = PreferencesDialog::getCocosFilepath();
     _cwd = gameState->getPath();
 }
 
@@ -288,7 +288,7 @@ RunCocosRun::RunCocosRun(GameState* gameState, const QString& platform, const QS
     : Run(parent)
 {
     _args << "run" << "-p" << platform << "-m" << mode;
-    _cmd = PreferencesDialog::findCocosPath() + "/cocos";
+    _cmd = PreferencesDialog::getCocosFilepath();
     _cwd = gameState->getPath();
 }
 
@@ -299,7 +299,7 @@ RunCocosListPlatforms::RunCocosListPlatforms(GameState* gameState, QObject* pare
     : Run(parent)
 {
     _args << "compile" << "--list-platforms";
-    _cmd = PreferencesDialog::findCocosPath() + "/cocos";
+    _cmd = PreferencesDialog::getCocosFilepath();
     _cwd = gameState->getPath();
 }
 
