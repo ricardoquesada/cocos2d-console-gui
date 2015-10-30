@@ -23,11 +23,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QTableView" name="tableView_gameProperties">
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-         </widget>
+         <widget class="QTableWidget" name="tableWidget_gameProperties"/>
         </item>
        </layout>
       </widget>
@@ -123,9 +119,6 @@
     <addaction name="separator"/>
     <addaction name="actionOpen_File_Browser"/>
     <addaction name="separator"/>
-    <addaction name="actionOpen_Xcode"/>
-    <addaction name="actionOpen_in_Visual_Studio"/>
-    <addaction name="actionOpen_in_Android_Studio"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuProduct"/>
@@ -294,11 +287,6 @@
     <string>Show in File Browser</string>
    </property>
   </action>
-  <action name="actionOpen_Xcode">
-   <property name="text">
-    <string>Open in Xcode</string>
-   </property>
-  </action>
   <action name="actionClose_Game">
    <property name="icon">
     <iconset theme="window-close">
@@ -309,16 +297,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
-   </property>
-  </action>
-  <action name="actionOpen_in_Visual_Studio">
-   <property name="text">
-    <string>Open in Visual Studio</string>
-   </property>
-  </action>
-  <action name="actionOpen_in_Android_Studio">
-   <property name="text">
-    <string>Open in Android Studio</string>
    </property>
   </action>
   <action name="actionWelcome">

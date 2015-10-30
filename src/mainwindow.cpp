@@ -125,25 +125,77 @@ void MainWindow::gameUpdateProperties()
         QString description;
     } values[] = {
         { "COCOS_2DX_VERSION", "Cocos2d-x Version" },
-        { "COCOS_PROJECT_TYPE", "Language" },
-        { "XCODE_PROJECT", "Xcode Project File" },
-        { "ANDROID_STUDIO_PROJECT_DIR", "Android Studio Project Path" },
-        { "VISUAL_STUDIO_WIN32_PROJECT", "Visual Studio Win32 Project" },
-        { "VISUAL_STUDIO_UNIVERSAL_PROJECT", "Visual Studio Universal Project" },
+        { "COCOS_PROJECT_TYPE", "Language" }
     };
     const int MAX_VALUES = sizeof(values) / sizeof(values[0]);
 
+    enum flags {
+        MAC = 1,
+        WIN = 2,
+    };
+
+    struct _buttons {
+        QString key;
+        QString description;
+        int flags;
+        std::function<void()> fn;
+    } buttons[] = {
+        { "XCODE_PROJECT", "Xcode Project", MAC, std::bind(&MainWindow::onOpenXcode, this) },
+        { "ANDROID_STUDIO_PROJECT_DIR", "Android Studio Project", MAC | WIN, std::bind(&MainWindow::onOpenAndroidStudio, this) },
+        { "VISUAL_STUDIO_WIN32_PROJECT", "Visual Studio Win32", WIN, std::bind(&MainWindow::onOpenVSWin32, this) },
+        { "VISUAL_STUDIO_UNIVERSAL_PROJECT", "Visual Studio Universal", WIN, std::bind(&MainWindow::onOpenVSUniversal, this) },
+    };
+    const int MAX_BUTTON = sizeof(buttons) / sizeof(buttons[0]);
+
+
+    // upper properties
     for (int i=0; i<MAX_VALUES; i++)
     {
-        auto name = new QStandardItem(values[i].description);
-        auto value = new QStandardItem(properties[values[i].key].toString());
-        name->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-        value->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        int row = ui->tableWidget_gameProperties->rowCount();
+        ui->tableWidget_gameProperties->insertRow(row);
 
-        auto model = dynamic_cast<QStandardItemModel*>(ui->tableView_gameProperties->model());
-        model->setItem(i, 0, name);
-        model->setItem(i, 1, value);
+        auto name = new QTableWidgetItem(values[i].description);
+        name->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        ui->tableWidget_gameProperties->setItem(row, 0, name);
+
+        auto value = new QTableWidgetItem(properties[values[i].key].toString());
+        value->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        ui->tableWidget_gameProperties->setItem(row, 1, value);
     }
+
+    // separator
+    int row = ui->tableWidget_gameProperties->rowCount();
+    ui->tableWidget_gameProperties->insertRow(row);
+    ui->tableWidget_gameProperties->verticalHeader()->resizeSection(row, 10);
+
+    for (int col = 0; col < ui->tableWidget_gameProperties->columnCount(); col++)
+    {
+        ui->tableWidget_gameProperties->setItem(row, col, new QTableWidgetItem());
+        ui->tableWidget_gameProperties->item(row, col)->setBackground(QWidget::palette().color(QWidget::backgroundRole()));
+    }
+
+
+    // buttons
+    for (int i=0; i<MAX_BUTTON; i++)
+    {
+        int row = ui->tableWidget_gameProperties->rowCount();
+        ui->tableWidget_gameProperties->insertRow(row);
+
+        auto button = new QPushButton(buttons[i].description, this);
+        connect(button, &QPushButton::clicked, buttons[i].fn);
+        ui->tableWidget_gameProperties->setCellWidget(row, 0, button);
+#if defined(Q_OS_OSX)
+        button->setEnabled(buttons[i].flags & MAC);
+#elif defined(Q_OS_WIN32)
+        button->setEnabled(buttons[i].flags & WIN);
+#endif
+
+        auto value = new QTableWidgetItem(properties[buttons[i].key].toString());
+        value->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        ui->tableWidget_gameProperties->setItem(row, 1, value);
+    }
+
+    ui->tableWidget_gameProperties->resizeColumnsToContents();
 
     if (_gameState->isReady())
         statusBar()->showMessage("Ready", 3000);
@@ -354,14 +406,14 @@ void MainWindow::on_actionClean_triggered()
 {
 }
 
-void MainWindow::on_actionOpen_Xcode_triggered()
+void MainWindow::onOpenXcode()
 {
     Q_ASSERT(_gameState);
     auto pbxfile = _gameState->getGameProperties()["XCODE_PROJECT"].toString();
     QDesktopServices::openUrl(QUrl("file://" + QFileInfo(pbxfile).canonicalPath()));
 }
 
-void MainWindow::on_actionOpen_in_Visual_Studio_triggered()
+void MainWindow::onOpenVSUniversal()
 {
 #if 0
     auto projectfile = _gameState->getGameProperties()["VISUAL_STUDIO_UNIVERSAL_PROJECT"].toString();
@@ -376,7 +428,22 @@ void MainWindow::on_actionOpen_in_Visual_Studio_triggered()
 #endif
 }
 
-void MainWindow::on_actionOpen_in_Android_Studio_triggered()
+void MainWindow::onOpenVSWin32()
+{
+#if 0
+    auto projectfile = _gameState->getGameProperties()["VISUAL_STUDIO_UNIVERSAL_PROJECT"].toString();
+    QDesktopServices::openUrl(QUrl("file://" + QFileInfo(projectfile).canonicalPath()));
+#else
+    auto exe = "cmd.exe";
+    auto cwd = _gameState->getPath();
+    QStringList args;
+    args << "/c" << "start" << _gameState->getGameProperties()["VISUAL_STUDIO_WIN32_PROJECT"].toString();
+    auto cmd = new RunGeneric(exe, args, cwd, this);
+    RunMgr::getInstance()->runAsync(cmd);
+#endif
+}
+
+void MainWindow::onOpenAndroidStudio()
 {
     Q_ASSERT(_gameState);
     auto androidStudioDir = _gameState->getGameProperties()["ANDROID_STUDIO_PROJECT_DIR"].toString();
@@ -575,12 +642,6 @@ void MainWindow::updateActions()
     QAction* actions[] = {
         ui->actionClose_Game,
         ui->actionOpen_File_Browser,
-        ui->actionOpen_in_Android_Studio,
-#ifdef Q_OS_OSX
-        ui->actionOpen_Xcode,
-#elif defined(Q_OS_WIN)
-        ui->actionOpen_in_Visual_Studio,
-#endif
         ui->actionRun,
         ui->actionStop,
         ui->actionBuild,
@@ -650,12 +711,6 @@ void MainWindow::createActions()
     }
     ui->menuRecentGames->insertSeparator(ui->actionClear_Recent_Games);
     updateRecentFiles();
-
-#ifdef Q_OS_OSX
-    ui->actionOpen_in_Visual_Studio->setEnabled(false);
-#elif defined (Q_OS_WIN)
-    ui->actionOpen_Xcode->setEnabled(false);
-#endif
 
     connect(RunMgr::getInstance(), &RunMgr::isReady, this, &MainWindow::updateActions);
     connect(RunMgr::getInstance(), &RunMgr::commandRun, this, &MainWindow::displayCommand);
@@ -763,15 +818,15 @@ bool MainWindow::maybeRunProcess()
 void MainWindow::setupModels()
 {
     // Game Properties
+    ui->tableWidget_gameProperties->setColumnCount(2);
+    QStringList labels;
+    labels << tr("Description") << tr("Value");
+    ui->tableWidget_gameProperties->setHorizontalHeaderLabels(labels);
+//    ui->tableWidget_gameProperties->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Interactive);
+    ui->tableWidget_gameProperties->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    ui->tableWidget_gameProperties->verticalHeader()->hide();
+    ui->tableWidget_gameProperties->setShowGrid(false);
 
-    // 2 Rows and 2 Columns
-    auto model = new QStandardItemModel(0, 2, this);
-    model->setHorizontalHeaderItem(0, new QStandardItem("Description"));
-    model->setHorizontalHeaderItem(1, new QStandardItem("Value"));
-    ui->tableView_gameProperties->setModel(model);
-
-    ui->tableView_gameProperties->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-    ui->tableView_gameProperties->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
     //
     auto model2 = new QStringListModel(this);

@@ -68,6 +68,11 @@ private slots:
     void gameUpdateLibraries();
     void gameUpdatePlatforms();
 
+    void onOpenXcode();
+    void onOpenVSWin32();
+    void onOpenVSUniversal();
+    void onOpenAndroidStudio();
+
     void displayCommand(const QString& commandLine);
 
     void openRecentFile_triggered();
@@ -81,9 +86,6 @@ private slots:
     void on_actionRun_triggered();
     bool on_actionStop_triggered();
     void on_actionClean_triggered();
-    void on_actionOpen_Xcode_triggered();
-    void on_actionOpen_in_Visual_Studio_triggered();
-    void on_actionOpen_in_Android_Studio_triggered();
     void on_actionOpen_File_Browser_triggered();
     void on_actionWelcome_triggered();
     void on_actionClose_Game_triggered();
