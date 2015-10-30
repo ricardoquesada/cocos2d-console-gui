@@ -17,6 +17,8 @@ limitations under the License.
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <functional>
+
 #include <QFileDialog>
 #include <QFile>
 #include <QFileInfo>

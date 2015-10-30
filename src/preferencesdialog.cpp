@@ -85,7 +85,7 @@ QString PreferencesDialog::getCmdFilepath(const QString& cmd)
 
         QStringList stringList;
         stringList << cmd;
-        process.start("c:/Windows/System32/where.exe", stringList);
+        process.start("where.exe", stringList);
 
         if (process.waitForFinished(5000))
         {
