@@ -155,8 +155,6 @@ bool Run::run()
 
     _process->start(_cmd, _args);
 
-    qDebug() << "Running: " << _cmd << _args;
-
     connect(_process, &QProcess::readyReadStandardOutput, this, &Run::onProcessStdOutReady);
     connect(_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onProcessFinished(int,QProcess::ExitStatus)));
 
@@ -179,8 +177,6 @@ void Run::onProcessStdOutReady()
     _output.append(available);
 
     emit dataAvailable(this, available);
-
-    qDebug() << available;
 }
 
 void Run::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)

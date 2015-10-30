@@ -26,8 +26,13 @@ limitations under the License.
 #include <QProcess>
 #include <QProcessEnvironment>
 
+#if defined(Q_OS_WIN32)
+static const char* COCOS_EXE = "cocos.bat";
+static const char* SDKBOX_EXE = "sdkbox.bat";
+#else
 static const char* COCOS_EXE = "cocos";
 static const char* SDKBOX_EXE = "sdkbox";
+#endif
 
 // function taken from here:
 // http://stackoverflow.com/a/26991243/1119460
@@ -68,7 +73,29 @@ QString PreferencesDialog::getCmdFilepath(const QString& cmd)
             }
         }
     }
-#endif // Q_OS_OSX
+#elif defined(Q_OS_WIN32)
+    {
+        QProcess process;
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        process.setProcessEnvironment(env);
+
+        process.setProcessChannelMode(QProcess::MergedChannels);
+
+        QStringList stringList;
+        stringList << cmd;
+        process.start("c:/Windows/System32/where.exe", stringList);
+
+        if (process.waitForFinished(5000))
+        {
+            auto filepath = process.readAllStandardOutput();
+            filepath = filepath.simplified();
+            if (fileExists(filepath))
+            {
+                ret = filepath;
+            }
+        }
+    }
+#endif // Q_OS_WIN32
 
     if (ret.length() == 0)
     {
@@ -103,7 +130,7 @@ QString PreferencesDialog::getCmdFilepath(const QString& cmd)
 
     if (!ret.isEmpty())
     {
-        ret = QFileInfo(ret).canonicalFilePath();
+        ret = QFileInfo(ret).canonicalPath();
         settings.setValue(cmd + "_path", ret);
         return ret + "/" + cmd;
     }
