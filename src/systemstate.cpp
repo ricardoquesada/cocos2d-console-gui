@@ -64,9 +64,7 @@ const QJsonObject& SystemState::getSystemLibraries() const
     if (!_systemLibrariesParsed)
     {
         // FIXME:
-        qDebug() << "System Libraries not parsed";
-        while(!_systemLibrariesParsed)
-            ;
+        qDebug() << "System Libraries not parsed yet. Try again later";
     }
 
     return _systemLibraries;
@@ -77,9 +75,7 @@ const QJsonObject& SystemState::getSystemTemplates() const
     if (!_systemTemplatesParsed)
     {
         // FIXME:
-        qDebug() << "System Templates not parsed";
-        while(!_systemTemplatesParsed)
-            ;
+        qDebug() << "System Templates not parsed yet. Try again later";
     }
 
     return _systemTemplates;

@@ -55,6 +55,20 @@ bool GameState::parseGameProperties(const QString& json)
     }
 
     _gameProperties = loadDoc.object();
+
+    {
+        // FIXME. SDKBOX Does not report VS project.
+        // Use Android Studio project dir as reference. XCODE_PROJECT is not defined on Windows SDKBOX.
+        auto androidStudio = _gameProperties["ANDROID_STUDIO_PROJECT_DIR"].toString();
+        // remove last dir
+        QFileInfo fi(androidStudio);
+        auto base = fi.canonicalPath();
+        auto win32 = base + "/proj.win32/" + _projectName + ".sln";
+        auto universal = base + "/proj.win8.1-universal/" + _projectName + ".sln";
+        _gameProperties["VISUAL_STUDIO_WIN32_PROJECT"] = win32;
+        _gameProperties["VISUAL_STUDIO_UNIVERSAL_PROJECT"] = universal;
+    }
+
     _gamePropertiesParsed = true;
     emit gamePropertiesUpdated();
     return true;

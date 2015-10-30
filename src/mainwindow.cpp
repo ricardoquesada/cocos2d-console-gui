@@ -128,6 +128,8 @@ void MainWindow::gameUpdateProperties()
         { "COCOS_PROJECT_TYPE", "Language" },
         { "XCODE_PROJECT", "Xcode Project File" },
         { "ANDROID_STUDIO_PROJECT_DIR", "Android Studio Project Path" },
+        { "VISUAL_STUDIO_WIN32_PROJECT", "Visual Studio Win32 Project" },
+        { "VISUAL_STUDIO_UNIVERSAL_PROJECT", "Visual Studio Universal Project" },
     };
     const int MAX_VALUES = sizeof(values) / sizeof(values[0]);
 
@@ -361,17 +363,40 @@ void MainWindow::on_actionOpen_Xcode_triggered()
 
 void MainWindow::on_actionOpen_in_Visual_Studio_triggered()
 {
-
+#if 0
+    auto projectfile = _gameState->getGameProperties()["VISUAL_STUDIO_UNIVERSAL_PROJECT"].toString();
+    QDesktopServices::openUrl(QUrl("file://" + QFileInfo(projectfile).canonicalPath()));
+#else
+    auto exe = "cmd.exe";
+    auto cwd = _gameState->getPath();
+    QStringList args;
+    args << "/c" << "start" << _gameState->getGameProperties()["VISUAL_STUDIO_UNIVERSAL_PROJECT"].toString();
+    auto cmd = new RunGeneric(exe, args, cwd, this);
+    RunMgr::getInstance()->runAsync(cmd);
+#endif
 }
 
 void MainWindow::on_actionOpen_in_Android_Studio_triggered()
 {
     Q_ASSERT(_gameState);
     auto androidStudioDir = _gameState->getGameProperties()["ANDROID_STUDIO_PROJECT_DIR"].toString();
+
+#if defined(Q_OS_OSX)
     auto exe = "open";
     auto cwd = _gameState->getPath();
     QStringList args;
     args << "-a" << "Android Studio" << androidStudioDir;
+#elif defined(Q_OS_WIN32)
+    auto exe = "studio64.exe";
+    auto cwd = _gameState->getPath();
+    QStringList args;
+    args << androidStudioDir;
+#else
+    auto exe = "";
+    auto cwd = _gameState->getPath();
+    QStringList args;
+    args << "-a" << "Android Studio" << androidStudioDir;
+#endif
     auto cmd = new RunGeneric(exe, args, cwd, this);
     RunMgr::getInstance()->runAsync(cmd);
 }
@@ -380,8 +405,17 @@ void MainWindow::on_actionOpen_File_Browser_triggered()
 {
     Q_ASSERT(_gameState);
 
+#if defined(Q_OS_WIN32)
+    auto exe = "cmd.exe";
+    auto cwd = _gameState->getPath();
+    QStringList args;
+    args << "/c" << "start" << ".";
+    auto cmd = new RunGeneric(exe, args, cwd, this);
+    RunMgr::getInstance()->runAsync(cmd);
+#else
     QFileInfo fileInfo(_gameState->getFilePath());
     QDesktopServices::openUrl(QUrl("file://" + fileInfo.canonicalPath()));
+#endif
 }
 
 void MainWindow::on_actionClose_Game_triggered()
