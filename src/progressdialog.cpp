@@ -33,11 +33,14 @@ ProgressDialog::ProgressDialog(QWidget *parent) :
     new Highlighter(ui->plainTextEdit->document());
 
     connect(RunMgr::getInstance(), &RunMgr::commandRun, this, &ProgressDialog::appendCLI);
+    connect(RunMgr::getInstance(), &RunMgr::commandError, this, &ProgressDialog::appendCLI);
+
 }
 
 ProgressDialog::~ProgressDialog()
 {
     disconnect(RunMgr::getInstance(), &RunMgr::commandRun, this, &ProgressDialog::appendCLI);
+    disconnect(RunMgr::getInstance(), &RunMgr::commandError, this, &ProgressDialog::appendCLI);
     delete ui;
 }
 
@@ -48,9 +51,8 @@ void ProgressDialog::appendData(const QString& str)
 
 void ProgressDialog::appendCLI(const QString& str)
 {
-    ui->plainTextEdit->appendPlainText(QString("Running: ") + str);
+    ui->plainTextEdit->appendPlainText(str);
 }
-
 
 void ProgressDialog::processFinished(Run* command)
 {

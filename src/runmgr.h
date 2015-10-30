@@ -39,9 +39,14 @@ public:
 signals:
     void isReady();
     void commandRun(const QString& commandLine);
+    void commandError(const QString& errorMsg);
 
 private slots:
     void onProcessFinished(Run* command);
+    void onProcessError(Run* command);
+
+    void onProcessAsyncFinished(Run* command);
+    void onProcessAsyncError(Run* command);
 
 private:
     explicit RunMgr(QObject *parent = 0);
@@ -69,9 +74,11 @@ public:
 signals:
     void dataAvailable(Run* command, const QByteArray& available);
     void finished(Run* command);
+    void error(Run* command);
 
 public slots:
     void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void onProcessError(QProcess::ProcessError error);
     void onProcessStdOutReady();
 
 protected:

@@ -80,12 +80,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->plainTextEdit->setReadOnly(true);
     ui->plainTextEdit->appendPlainText(tr("Cocos2d Console GUI v") + GIT_VERSION);
     auto cocosPath = PreferencesDialog::getCocosPath();
-    if (cocosPath.length() == 0)
+    if (cocosPath.length() <= 1)
         ui->plainTextEdit->appendPlainText(tr("Error: 'cocos' not found. Open Preferences"));
 
 
     auto sdkboxPath = PreferencesDialog::getSDKBOXPath();
-    if (sdkboxPath.length() == 0)
+    if (sdkboxPath.length() <= 1)
         ui->plainTextEdit->appendPlainText(tr("Error: 'sdkbox' not found. Open Preferences"));
 
     readSettings();
@@ -217,7 +217,7 @@ void MainWindow::gameUpdatePlatforms()
 
 void MainWindow::displayCommand(const QString& commandLine)
 {
-    ui->plainTextEdit->appendPlainText("Running: " + commandLine);
+    ui->plainTextEdit->appendPlainText(commandLine);
 }
 
 
@@ -716,6 +716,7 @@ void MainWindow::createActions()
 
     connect(RunMgr::getInstance(), &RunMgr::isReady, this, &MainWindow::updateActions);
     connect(RunMgr::getInstance(), &RunMgr::commandRun, this, &MainWindow::displayCommand);
+    connect(RunMgr::getInstance(), &RunMgr::commandError, this, &MainWindow::displayCommand);
 
     // toolbar actions
     auto toolbars = findChildren<QToolBar *>();

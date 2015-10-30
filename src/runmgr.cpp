@@ -63,22 +63,26 @@ bool RunMgr::isBusy() const
 
 bool RunMgr::runAsync(Run* runCommand)
 {
+    connect(runCommand, &Run::finished, this, &RunMgr::onProcessAsyncFinished);
+    connect(runCommand, &Run::error, this, &RunMgr::onProcessAsyncError);
+
+    emit commandRun(tr("Running: ") + runCommand->getCommandLine());
     runCommand->run();
-    emit commandRun(runCommand->getCommandLine());
     return true;
 }
 
 bool RunMgr::runSync(Run* runCommand)
 {
-    if (_syncCommands.isEmpty())
-    {
-        runCommand->run();
-        emit commandRun(runCommand->getCommandLine());
-    }
-
-    _syncCommands.append(runCommand);
     connect(runCommand, &Run::finished, this, &RunMgr::onProcessFinished);
+    connect(runCommand, &Run::error, this, &RunMgr::onProcessError);
+    _syncCommands.append(runCommand);
 
+    // only self?
+    if (_syncCommands.length() == 1)
+    {
+        emit commandRun(tr("Running: ") + runCommand->getCommandLine());
+        runCommand->run();
+    }
     return true;
 }
 
@@ -98,6 +102,23 @@ void RunMgr::onProcessFinished(Run* cmd)
     if (_syncCommands.length() > 0)
     {
         _syncCommands.first()->run();
+        emit commandRun(tr("Running: ") + _syncCommands.first()->getCommandLine());
+    }
+
+    if (_syncCommands.isEmpty())
+        emit isReady();
+}
+
+void RunMgr::onProcessError(Run* command)
+{
+    emit commandError(tr("Error: ") + command->getProcess()->errorString());
+
+    disconnect(command, &Run::error, this, &RunMgr::onProcessError);
+
+    _syncCommands.removeFirst();
+    if (_syncCommands.length() > 0)
+    {
+        _syncCommands.first()->run();
         emit commandRun(_syncCommands.first()->getCommandLine());
     }
 
@@ -105,6 +126,17 @@ void RunMgr::onProcessFinished(Run* cmd)
         emit isReady();
 }
 
+void RunMgr::onProcessAsyncFinished(Run* cmd)
+{
+    disconnect(cmd, &Run::finished, this, &RunMgr::onProcessAsyncFinished);
+}
+
+
+void RunMgr::onProcessAsyncError(Run* cmd)
+{
+    emit commandError(tr("Error: ") + cmd->getProcess()->errorString());
+    disconnect(cmd, &Run::error, this, &RunMgr::onProcessAsyncError);
+}
 
 //
 // class Run
@@ -154,10 +186,11 @@ bool Run::run()
     _process->setReadChannel(QProcess::StandardOutput);
     _process->setWorkingDirectory(_cwd);
 
-    _process->start(_cmd, _args);
-
     connect(_process, &QProcess::readyReadStandardOutput, this, &Run::onProcessStdOutReady);
     connect(_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onProcessFinished(int,QProcess::ExitStatus)));
+    connect(_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(onProcessError(QProcess::ProcessError)));
+
+    _process->start(_cmd, _args);
 
     return true;
 }
@@ -187,6 +220,13 @@ void Run::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 
     emit finished(this);
 
+    deleteLater();
+}
+
+void Run::onProcessError(QProcess::ProcessError err)
+{
+    Q_UNUSED(err);
+    emit error(this);
     deleteLater();
 }
 
