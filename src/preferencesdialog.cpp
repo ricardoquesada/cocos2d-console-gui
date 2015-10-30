@@ -108,7 +108,7 @@ QString PreferencesDialog::getCmdFilepath(const QString& cmd)
         return ret + "/" + cmd;
     }
 
-    return "cocos";
+    return cmd;
 }
 
 QString PreferencesDialog::getCocosFilepath()
@@ -164,15 +164,15 @@ void PreferencesDialog::on_directoryButton_cocos_clicked()
 
 void PreferencesDialog::on_buttonBox_accepted()
 {
-    _settings.setValue("cocos_console_path", ui->lineEdit_cocos->text());
-    _settings.setValue("sdkbox_path", ui->lineEdit_sdkbox->text());
+    _settings.setValue(QString(COCOS_EXE)+ "_path", ui->lineEdit_cocos->text());
+    _settings.setValue(QString(SDKBOX_EXE) + "_path", ui->lineEdit_sdkbox->text());
 }
 
 void PreferencesDialog::on_lineEdit_cocos_editingFinished()
 {
     // try to find "cocos". If not, report it as red
     auto cocos_path = ui->lineEdit_cocos->text();
-    QFileInfo fi(cocos_path + "/cocos");
+    QFileInfo fi(cocos_path + "/" + COCOS_EXE);
     if (!fi.exists())
         ui->label_error->setText(tr("<font color='red'>Invalid path. 'cocos' not found</font>"));
     else
@@ -193,7 +193,7 @@ void PreferencesDialog::on_lineEdit_sdkbox_editingFinished()
 {
     // try to find "sdkbox". If not, report it as red
     auto sdkbox_path = ui->lineEdit_sdkbox->text();
-    QFileInfo fi(sdkbox_path + "/sdkbox");
+    QFileInfo fi(sdkbox_path + "/" + SDKBOX_EXE);
     if (!fi.exists())
         ui->label_error->setText(tr("<font color='red'>Invalid path. 'sdkbox' not found</font>"));
     else
