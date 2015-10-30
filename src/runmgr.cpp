@@ -150,7 +150,8 @@ bool Run::run()
     env.insert("LANG", QLocale::system().name());
     _process->setProcessEnvironment(env);
 
-    _process->setProcessChannelMode(QProcess::MergedChannels);
+    _process->setProcessChannelMode(QProcess::SeparateChannels);
+    _process->setReadChannel(QProcess::StandardOutput);
     _process->setWorkingDirectory(_cwd);
 
     _process->start(_cmd, _args);

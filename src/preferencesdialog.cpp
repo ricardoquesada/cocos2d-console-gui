@@ -58,7 +58,8 @@ QString PreferencesDialog::getCmdFilepath(const QString& cmd)
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         process.setProcessEnvironment(env);
 
-        process.setProcessChannelMode(QProcess::MergedChannels);
+        process.setProcessChannelMode(QProcess::SeparateChannels);
+        process.setReadChannel(QProcess::StandardOutput);
 
         QStringList stringList;
         stringList << "-l" << "-c" << "which " + cmd;
@@ -79,7 +80,8 @@ QString PreferencesDialog::getCmdFilepath(const QString& cmd)
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         process.setProcessEnvironment(env);
 
-        process.setProcessChannelMode(QProcess::MergedChannels);
+        process.setProcessChannelMode(QProcess::SeparateChannels);
+        process.setReadChannel(QProcess::StandardOutput);
 
         QStringList stringList;
         stringList << cmd;

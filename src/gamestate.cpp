@@ -73,6 +73,7 @@ bool GameState::parseGameLibraries(const QString& json)
     if (error.error != QJsonParseError::NoError)
     {
         qDebug() << "Error parsing Libraries JSON:" << error.errorString();
+        qDebug() << json;
         return false;
     }
     _gameLibraries = loadDoc.object();

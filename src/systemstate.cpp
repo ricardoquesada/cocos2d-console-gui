@@ -92,6 +92,7 @@ bool SystemState::parseSystemLibraries(const QString &json)
     if (error.error != QJsonParseError::NoError)
     {
         qDebug() << "Error parsing System Libraries JSON:" << error.errorString();
+        qDebug() << json.simplified();
         return false;
     }
     _systemLibraries = loadDoc.object();
