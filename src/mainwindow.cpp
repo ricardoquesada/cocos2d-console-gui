@@ -456,7 +456,8 @@ void MainWindow::onOpenAndroidStudio()
     QStringList args;
     args << "-a" << "Android Studio" << androidStudioDir;
 #elif defined(Q_OS_WIN32)
-    auto exe = "studio64.exe";
+    // FIXME: Path is harcoded... argh.
+    auto exe = "\"C:/Program Files/Android/Android Studio/bin/studio64.exe\"";
     auto cwd = _gameState->getPath();
     QStringList args;
     args << androidStudioDir;
