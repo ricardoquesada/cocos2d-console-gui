@@ -723,6 +723,8 @@ void MainWindow::closeGameState()
     // remove all before adding new, to avoid duplicates
     _comboBoxPlatforms->clear();
 
+    setupModels();
+
     setWindowFilePath("[untitled]");
 }
 
@@ -848,7 +850,9 @@ bool MainWindow::maybeRunProcess()
 void MainWindow::setupModels()
 {
     // Game Properties
+    ui->tableWidget_gameProperties->clear();
     ui->tableWidget_gameProperties->setColumnCount(2);
+    ui->tableWidget_gameProperties->setRowCount(0);
     QStringList labels;
     labels << tr("Description") << tr("Value");
     ui->tableWidget_gameProperties->setHorizontalHeaderLabels(labels);
