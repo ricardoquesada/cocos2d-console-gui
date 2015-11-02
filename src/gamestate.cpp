@@ -57,16 +57,32 @@ bool GameState::parseGameProperties(const QString& json)
     _gameProperties = loadDoc.object();
 
     {
+        struct _win_versions
+        {
+            const char* path;
+            const char* prop;
+        } win_versions[] = {
+            {"/proj.win32/", "VISUAL_STUDIO_WIN32_PROJECT"},
+            {"/proj.win8.1-universal/", "VISUAL_STUDIO_UNIVERSAL_PROJECT"},
+            {"/proj.win10/", "VISUAL_STUDIO_WIN10_PROJECT"},
+        };
+
+        const int COUNT_VERSIONS = sizeof(win_versions) / sizeof(win_versions[0]);
+
         // FIXME. SDKBOX Does not report VS project.
         // Use Android Studio project dir as reference. XCODE_PROJECT is not defined on Windows SDKBOX.
         auto androidStudio = _gameProperties["ANDROID_STUDIO_PROJECT_DIR"].toString();
         // remove last dir
         QFileInfo fi(androidStudio);
         auto base = fi.canonicalPath();
-        auto win32 = base + "/proj.win32/" + _projectName + ".sln";
-        auto universal = base + "/proj.win8.1-universal/" + _projectName + ".sln";
-        _gameProperties["VISUAL_STUDIO_WIN32_PROJECT"] = win32;
-        _gameProperties["VISUAL_STUDIO_UNIVERSAL_PROJECT"] = universal;
+
+        for (int i=0; i < COUNT_VERSIONS; ++i)
+        {
+            QString winpath = base + win_versions[i].path + _projectName + ".sln";
+            QFileInfo fi(winpath);
+            if (fi.exists())
+                _gameProperties[win_versions[i].prop] = winpath;
+        }
     }
 
     _gamePropertiesParsed = true;

@@ -70,6 +70,7 @@ private slots:
 
     void onOpenXcode();
     void onOpenVSWin32();
+    void onOpenVS10();
     void onOpenVSUniversal();
     void onOpenAndroidStudio();
 

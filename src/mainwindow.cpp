@@ -146,7 +146,8 @@ void MainWindow::gameUpdateProperties()
         { "ANDROID_STUDIO_PROJECT_DIR", "Android Studio Project", MAC | WIN, std::bind(&MainWindow::onOpenAndroidStudio, this) },
         { "VISUAL_STUDIO_WIN32_PROJECT", "Visual Studio Win32", WIN, std::bind(&MainWindow::onOpenVSWin32, this) },
         { "VISUAL_STUDIO_UNIVERSAL_PROJECT", "Visual Studio Universal", WIN, std::bind(&MainWindow::onOpenVSUniversal, this) },
-    };
+        { "VISUAL_STUDIO_WIN10_PROJECT", "Visual Studio Win 10", WIN, std::bind(&MainWindow::onOpenVS10, this) },
+};
     const int MAX_BUTTON = sizeof(buttons) / sizeof(buttons[0]);
 
 
@@ -180,21 +181,24 @@ void MainWindow::gameUpdateProperties()
     // buttons
     for (int i=0; i<MAX_BUTTON; i++)
     {
-        int row = ui->tableWidget_gameProperties->rowCount();
-        ui->tableWidget_gameProperties->insertRow(row);
+        if (properties.contains(buttons[i].key))
+        {
+            int row = ui->tableWidget_gameProperties->rowCount();
+            ui->tableWidget_gameProperties->insertRow(row);
 
-        auto button = new QPushButton(buttons[i].description, this);
-        connect(button, &QPushButton::clicked, buttons[i].fn);
-        ui->tableWidget_gameProperties->setCellWidget(row, 0, button);
+            auto button = new QPushButton(buttons[i].description, this);
+            connect(button, &QPushButton::clicked, buttons[i].fn);
+            ui->tableWidget_gameProperties->setCellWidget(row, 0, button);
 #if defined(Q_OS_OSX)
-        button->setEnabled(buttons[i].flags & MAC);
+            button->setEnabled(buttons[i].flags & MAC);
 #elif defined(Q_OS_WIN32)
-        button->setEnabled(buttons[i].flags & WIN);
+            button->setEnabled(buttons[i].flags & WIN);
 #endif
 
-        auto value = new QTableWidgetItem(properties[buttons[i].key].toString());
-        value->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-        ui->tableWidget_gameProperties->setItem(row, 1, value);
+            auto value = new QTableWidgetItem(properties[buttons[i].key].toString());
+            value->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+            ui->tableWidget_gameProperties->setItem(row, 1, value);
+        }
     }
 
     ui->tableWidget_gameProperties->resizeColumnsToContents();
@@ -430,6 +434,21 @@ void MainWindow::onOpenVSUniversal()
 #endif
 }
 
+void MainWindow::onOpenVS10()
+{
+#if 0
+    auto projectfile = _gameState->getGameProperties()["VISUAL_STUDIO_UNIVERSAL_PROJECT"].toString();
+    QDesktopServices::openUrl(QUrl("file://" + QFileInfo(projectfile).canonicalPath()));
+#else
+    auto exe = "cmd.exe";
+    auto cwd = _gameState->getPath();
+    QStringList args;
+    args << "/c" << "start" << _gameState->getGameProperties()["VISUAL_STUDIO_WIN10_PROJECT"].toString();
+    auto cmd = new RunGeneric(exe, args, cwd, this);
+    RunMgr::getInstance()->runAsync(cmd);
+#endif
+}
+
 void MainWindow::onOpenVSWin32()
 {
 #if 0
@@ -458,6 +477,13 @@ void MainWindow::onOpenAndroidStudio()
 #elif defined(Q_OS_WIN32)
     // FIXME: Path is harcoded... argh.
     auto exe = "\"C:/Program Files/Android/Android Studio/bin/studio64.exe\"";
+    QFileInfo fi(exe);
+    if (!fi.exists(exe))
+    {
+        statusBar()->showMessage(tr("Error: Android Studio not found", 3000));
+        ui->plainTextEdit->appendPlainText(tr("Error: Android Studio not found"));
+        return;
+    }
     auto cwd = _gameState->getPath();
     QStringList args;
     args << androidStudioDir;
