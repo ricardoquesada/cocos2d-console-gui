@@ -146,8 +146,8 @@ void MainWindow::gameUpdateProperties()
         { "ANDROID_STUDIO_PROJECT_DIR", "Android Studio Project", MAC | WIN, std::bind(&MainWindow::onOpenAndroidStudio, this) },
         { "VISUAL_STUDIO_WIN32_PROJECT", "Visual Studio Win32", WIN, std::bind(&MainWindow::onOpenVSWin32, this) },
         { "VISUAL_STUDIO_UNIVERSAL_PROJECT", "Visual Studio Universal", WIN, std::bind(&MainWindow::onOpenVSUniversal, this) },
-        { "VISUAL_STUDIO_WIN10_PROJECT", "Visual Studio Win 10", WIN, std::bind(&MainWindow::onOpenVS10, this) },
-};
+        { "VISUAL_STUDIO_WIN10_PROJECT", "Visual Studio Win 10", WIN, std::bind(&MainWindow::onOpenVS10, this) }
+    };
     const int MAX_BUTTON = sizeof(buttons) / sizeof(buttons[0]);
 
 
@@ -480,7 +480,7 @@ void MainWindow::onOpenAndroidStudio()
     QFileInfo fi(exe);
     if (!fi.exists(exe))
     {
-        statusBar()->showMessage(tr("Error: Android Studio not found", 3000));
+        statusBar()->showMessage(tr("Error: Android Studio not found"),3000);
         ui->plainTextEdit->appendPlainText(tr("Error: Android Studio not found"));
         return;
     }
