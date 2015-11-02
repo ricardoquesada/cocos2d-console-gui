@@ -131,7 +131,7 @@ bool LocationPage::isComplete() const
     auto path = field("gamePath").toString();
 
     QFileInfo fi(path);
-    QFileInfo fullpath(QString(path) + name);
+    QFileInfo fullpath(QString(path) + "/" + name);
 
     bool ret = (name.length() && fi.isDir() && !fullpath.exists());
 

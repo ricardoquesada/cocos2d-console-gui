@@ -104,6 +104,7 @@ bool SystemState::parseSystemTemplates(const QString &json)
     if (error.error != QJsonParseError::NoError)
     {
         qDebug() << "Error parsing System Templates JSON:" << error.errorString();
+        qDebug() << json.simplified();
         return false;
     }
     _systemTemplates = loadDoc.object();

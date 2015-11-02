@@ -51,6 +51,7 @@ bool GameState::parseGameProperties(const QString& json)
     if (error.error != QJsonParseError::NoError)
     {
         qDebug() << "Error parsing Properties JSON:" << error.errorString();
+        qDebug() << json.simplified();
         return false;
     }
 
@@ -103,7 +104,7 @@ bool GameState::parseGameLibraries(const QString& json)
     if (error.error != QJsonParseError::NoError)
     {
         qDebug() << "Error parsing Libraries JSON:" << error.errorString();
-        qDebug() << json;
+        qDebug() << json.simplified();
         return false;
     }
     _gameLibraries = loadDoc.object();
@@ -119,6 +120,7 @@ bool GameState::parseGamePlatforms(const QString& json)
     if (error.error != QJsonParseError::NoError)
     {
         qDebug() << "Error parsing Platforms JSON";
+        qDebug() << json.simplified();
         return false;
     }
     _gamePlatformsParsed = true;
