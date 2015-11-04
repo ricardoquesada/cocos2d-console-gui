@@ -159,11 +159,11 @@ void MainWindow::gameUpdateProperties()
         ui->tableWidget_gameProperties->insertRow(row);
 
         auto name = new QTableWidgetItem(values[i].description);
-        name->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        name->setFlags(Qt::ItemIsEnabled);
         ui->tableWidget_gameProperties->setItem(row, 0, name);
 
         auto value = new QTableWidgetItem(properties[values[i].key].toString());
-        value->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        value->setFlags(Qt::ItemIsEnabled);
         ui->tableWidget_gameProperties->setItem(row, 1, value);
     }
 
@@ -197,7 +197,7 @@ void MainWindow::gameUpdateProperties()
 #endif
 
             auto value = new QTableWidgetItem(FileUtils::getShortNativePath(properties[buttons[i].key].toString()));
-            value->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+            value->setFlags(Qt::ItemIsEnabled);
             ui->tableWidget_gameProperties->setItem(row, 1, value);
         }
     }
