@@ -50,6 +50,7 @@ limitations under the License.
 #include "runmgr.h"
 #include "highlighter.h"
 #include "systemstate.h"
+#include "fileutils.h"
 
 
 constexpr int MainWindow::MAX_RECENT_FILES;
@@ -195,7 +196,7 @@ void MainWindow::gameUpdateProperties()
             button->setEnabled(buttons[i].flags & WIN);
 #endif
 
-            auto value = new QTableWidgetItem(properties[buttons[i].key].toString());
+            auto value = new QTableWidgetItem(FileUtils::getShortNativePath(properties[buttons[i].key].toString()));
             value->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
             ui->tableWidget_gameProperties->setItem(row, 1, value);
         }

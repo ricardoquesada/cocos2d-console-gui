@@ -30,6 +30,7 @@ limitations under the License.
 #include "gamestate.h"
 #include "mainwindow.h"
 #include "systemstate.h"
+#include "fileutils.h"
 
 constexpr int WelcomeDialog::MAX_RECENT_FILES;
 
@@ -148,20 +149,6 @@ QStringList WelcomeDialog::recentFiles() const
     return v.toStringList();
 }
 
-static QString shortNativePath(const QString& filename)
-{
-#ifdef Q_OS_UNIX
-    auto filepath = QFileInfo(filename).canonicalFilePath();
-    auto homepath = QDir::cleanPath(QDir::homePath());
-    if (filepath.startsWith(homepath))
-    {
-        filepath.remove(homepath);
-        return QLatin1Char('~') + QDir::toNativeSeparators(filepath);
-    }
-#endif
-    return filename;
-}
-
 void WelcomeDialog::updateRecentFiles()
 {
     QStringList files = recentFiles();
@@ -169,7 +156,7 @@ void WelcomeDialog::updateRecentFiles()
 
     for (int i = 0; i < numRecentFiles; ++i)
     {
-        _recentFilesWidget[i]->setText(shortNativePath(files[i]));
+        _recentFilesWidget[i]->setText(FileUtils::getShortNativePath(files[i]));
         _recentFilesWidget[i]->setHidden(false);
         _recentFilesWidget[i]->setData(Qt::UserRole, files[i]);
     }

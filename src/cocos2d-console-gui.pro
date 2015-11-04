@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     librariesdialog.cpp \
     systemstate.cpp \
     runmgr.cpp \
-    highlighter.cpp
+    highlighter.cpp \
+    fileutils.cpp
 
 HEADERS  += mainwindow.h \
     templatewizard.h \
@@ -47,7 +48,8 @@ HEADERS  += mainwindow.h \
     librariesdialog.h \
     systemstate.h \
     runmgr.h \
-    highlighter.h
+    highlighter.h \
+    fileutils.h
 
 FORMS    += mainwindow.ui \
     aboutdialog.ui \

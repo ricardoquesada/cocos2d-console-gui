@@ -156,13 +156,13 @@ SDKPage::SDKPage(const QVariantMap& libraries, QWidget *parent)
     setSubTitle(tr("Select the SDKs that you want to have installed in your game"));
 
     auto sdkCheckBox = new QCheckBox(tr("&Select all SDKs"));
-    sdkCheckBox->setChecked(true);
+    sdkCheckBox->setChecked(false);
 
     _listWidget = new QListWidget;
     for (auto it=libraries.begin(); it != libraries.end(); ++it)
     {
         QListWidgetItem* item = new QListWidgetItem(it.value().toString(), _listWidget);
-        item->setCheckState(Qt::CheckState::Checked);
+        item->setCheckState(Qt::CheckState::Unchecked);
         item->setData(Qt::UserRole, it.key());
     }
 
@@ -177,8 +177,6 @@ SDKPage::SDKPage(const QVariantMap& libraries, QWidget *parent)
             }
     }
     );
-
-
 
 
     auto vblayout = new QVBoxLayout;
