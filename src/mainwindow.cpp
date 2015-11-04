@@ -127,8 +127,8 @@ void MainWindow::gameUpdateProperties()
         QString key;
         QString description;
     } values[] = {
-        { "COCOS_2DX_VERSION", "Cocos2d-x Version" },
-        { "COCOS_PROJECT_TYPE", "Language" }
+        { "COCOS_2DX_VERSION", tr("Cocos2d-x Version") },
+        { "COCOS_PROJECT_TYPE", tr("Language") }
     };
     const int MAX_VALUES = sizeof(values) / sizeof(values[0]);
 
@@ -143,11 +143,11 @@ void MainWindow::gameUpdateProperties()
         int flags;
         std::function<void()> fn;
     } buttons[] = {
-        { "XCODE_PROJECT", "Xcode Project", MAC, std::bind(&MainWindow::onOpenXcode, this) },
-        { "ANDROID_STUDIO_PROJECT_DIR", "Android Studio Project", MAC | WIN, std::bind(&MainWindow::onOpenAndroidStudio, this) },
-        { "VISUAL_STUDIO_WIN32_PROJECT", "Visual Studio Win32", WIN, std::bind(&MainWindow::onOpenVSWin32, this) },
-        { "VISUAL_STUDIO_UNIVERSAL_PROJECT", "Visual Studio Universal", WIN, std::bind(&MainWindow::onOpenVSUniversal, this) },
-        { "VISUAL_STUDIO_WIN10_PROJECT", "Visual Studio Win 10", WIN, std::bind(&MainWindow::onOpenVS10, this) }
+        { "XCODE_PROJECT", tr("Xcode Project"), MAC, std::bind(&MainWindow::onOpenXcode, this) },
+        { "ANDROID_STUDIO_PROJECT_DIR", tr("Android Studio Project"), MAC | WIN, std::bind(&MainWindow::onOpenAndroidStudio, this) },
+        { "VISUAL_STUDIO_WIN32_PROJECT", tr("Visual Studio Win32"), WIN, std::bind(&MainWindow::onOpenVSWin32, this) },
+        { "VISUAL_STUDIO_UNIVERSAL_PROJECT", tr("Visual Studio Universal"), WIN, std::bind(&MainWindow::onOpenVSUniversal, this) },
+        { "VISUAL_STUDIO_WIN10_PROJECT", tr("Visual Studio Win 10"), WIN, std::bind(&MainWindow::onOpenVS10, this) }
     };
     const int MAX_BUTTON = sizeof(buttons) / sizeof(buttons[0]);
 
@@ -729,12 +729,12 @@ void MainWindow::closeGameState()
 
     setupModels();
 
-    setWindowFilePath("[untitled]");
+    setWindowFilePath(tr("[untitled]"));
 }
 
 void MainWindow::createActions()
 {
-    setWindowFilePath("[untitled]");
+    setWindowFilePath(tr("[untitled]"));
 
     // Add recent file actions to the recent files menu and widgetList
     for (int i=0; i < MAX_RECENT_FILES; ++i)
