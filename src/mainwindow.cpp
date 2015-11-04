@@ -791,7 +791,7 @@ void MainWindow::updateRecentFiles()
 
     for (int i = 0; i < numRecentFiles; ++i)
     {
-        _recentFilesAction[i]->setText(QFileInfo(files[i]).fileName());
+        _recentFilesAction[i]->setText(FileUtils::getShortNativePath(files[i]));
         _recentFilesAction[i]->setData(files[i]);
         _recentFilesAction[i]->setVisible(true);
     }
