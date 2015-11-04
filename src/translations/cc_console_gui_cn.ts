@@ -17,47 +17,47 @@
 <context>
     <name>ConclusionPage</name>
     <message>
-        <location filename="../templatewizard.cpp" line="202"/>
+        <location filename="../templatewizard.cpp" line="216"/>
         <source>Project Management</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="203"/>
+        <location filename="../templatewizard.cpp" line="217"/>
         <source>Specify where you want the wizard to put the generated skeleton code.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="210"/>
+        <location filename="../templatewizard.cpp" line="224"/>
         <source>&amp;Add to version control:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="212"/>
+        <location filename="../templatewizard.cpp" line="226"/>
         <source>&lt;None&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="213"/>
+        <location filename="../templatewizard.cpp" line="227"/>
         <source>Git</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="234"/>
+        <location filename="../templatewizard.cpp" line="248"/>
         <source>&lt;span&gt;Game Name: %1&lt;/span&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="236"/>
+        <location filename="../templatewizard.cpp" line="250"/>
         <source>&lt;span&gt;Files to be created in:&lt;/span&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="244"/>
+        <location filename="../templatewizard.cpp" line="258"/>
         <source>&lt;span&gt;Libraries to add:&lt;/span&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="254"/>
+        <location filename="../templatewizard.cpp" line="268"/>
         <source>&lt;span&gt;Press &apos;Done&apos;.&lt;/span&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -78,43 +78,48 @@
 <context>
     <name>LocationPage</name>
     <message>
-        <location filename="../templatewizard.cpp" line="64"/>
+        <location filename="../templatewizard.cpp" line="65"/>
         <source>Introduction and Project Location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="65"/>
+        <location filename="../templatewizard.cpp" line="66"/>
         <source>This wizard generates a Cocos2d-x game project.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="69"/>
+        <location filename="../templatewizard.cpp" line="70"/>
         <source>Game &amp;Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="70"/>
+        <location filename="../templatewizard.cpp" line="71"/>
         <source>untitled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="73"/>
+        <location filename="../templatewizard.cpp" line="74"/>
         <source>&amp;Create in:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="77"/>
+        <location filename="../templatewizard.cpp" line="78"/>
         <source>Choose...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="82"/>
+        <location filename="../templatewizard.cpp" line="83"/>
         <source>Choose Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="93"/>
+        <location filename="../templatewizard.cpp" line="94"/>
         <source>&amp;Use as default project location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../templatewizard.cpp" line="141"/>
+        <source>&lt;font color=&apos;red&apos;&gt;Diretory &apos;%1&apos; already exists&lt;/font&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -126,206 +131,212 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="36"/>
+        <location filename="../mainwindow.ui" line="32"/>
         <source>Libraries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="64"/>
+        <location filename="../mainwindow.ui" line="60"/>
         <source>Add library...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="87"/>
+        <location filename="../mainwindow.ui" line="83"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="96"/>
+        <location filename="../mainwindow.ui" line="92"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="100"/>
+        <location filename="../mainwindow.ui" line="96"/>
         <source>Recent Games</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="116"/>
+        <location filename="../mainwindow.ui" line="112"/>
         <source>Product</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="150"/>
+        <location filename="../mainwindow.ui" line="143"/>
         <source>Console Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="221"/>
+        <location filename="../mainwindow.ui" line="214"/>
         <source>Open Game...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="224"/>
+        <location filename="../mainwindow.ui" line="217"/>
         <source>Ctrl+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="233"/>
+        <location filename="../mainwindow.ui" line="226"/>
         <source>Clear Recent Games</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="242"/>
+        <location filename="../mainwindow.ui" line="235"/>
         <source>New Game...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="245"/>
+        <location filename="../mainwindow.ui" line="238"/>
         <source>Ctrl+N</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="250"/>
+        <location filename="../mainwindow.ui" line="243"/>
         <source>Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="253"/>
+        <location filename="../mainwindow.ui" line="246"/>
         <source>Ctrl+B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="262"/>
+        <location filename="../mainwindow.ui" line="255"/>
         <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="265"/>
+        <location filename="../mainwindow.ui" line="258"/>
         <source>Ctrl+R</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="274"/>
+        <location filename="../mainwindow.ui" line="267"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="277"/>
+        <location filename="../mainwindow.ui" line="270"/>
         <source>Ctrl+.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="282"/>
+        <location filename="../mainwindow.ui" line="275"/>
         <source>Clean</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="285"/>
+        <location filename="../mainwindow.ui" line="278"/>
         <source>Ctrl+Shift+K</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="294"/>
+        <location filename="../mainwindow.ui" line="287"/>
         <source>Show in File Browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="299"/>
-        <source>Open in Xcode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.ui" line="308"/>
+        <location filename="../mainwindow.ui" line="296"/>
         <source>Close Game</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="311"/>
+        <location filename="../mainwindow.ui" line="299"/>
         <source>Ctrl+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="316"/>
-        <source>Open in Visual Studio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.ui" line="321"/>
-        <source>Open in Android Studio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.ui" line="326"/>
+        <location filename="../mainwindow.ui" line="304"/>
         <source>Welcome</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="340"/>
+        <location filename="../mainwindow.ui" line="318"/>
         <source>Import Old Game...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="82"/>
+        <source>Cocos2d Console GUI v</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="85"/>
         <source>Error: &apos;cocos&apos; not found. Open Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="87"/>
+        <location filename="../mainwindow.cpp" line="90"/>
         <source>Error: &apos;sdkbox&apos; not found. Open Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="243"/>
+        <location filename="../mainwindow.cpp" line="307"/>
         <source>Cocos2d Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="245"/>
+        <location filename="../mainwindow.cpp" line="309"/>
         <source>Select File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="247"/>
+        <location filename="../mainwindow.cpp" line="311"/>
         <source>All files (*);;Cocos2d Project (*.cocosproj);;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="268"/>
+        <location filename="../mainwindow.cpp" line="332"/>
         <source>Select Game Root Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="296"/>
-        <location filename="../mainwindow.cpp" line="304"/>
-        <location filename="../mainwindow.cpp" line="712"/>
+        <location filename="../mainwindow.cpp" line="359"/>
+        <location filename="../mainwindow.cpp" line="366"/>
+        <location filename="../mainwindow.cpp" line="840"/>
         <source>Application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="297"/>
+        <location filename="../mainwindow.cpp" line="360"/>
         <source>Error import file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="305"/>
+        <location filename="../mainwindow.cpp" line="367"/>
         <source>Invalid directory. File &apos;.cocos-proj.json&apos; not found&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="634"/>
+        <location filename="../mainwindow.cpp" line="487"/>
+        <location filename="../mainwindow.cpp" line="488"/>
+        <source>Error: Android Studio not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="762"/>
         <source>Debug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="635"/>
+        <location filename="../mainwindow.cpp" line="763"/>
         <source>Release</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="713"/>
+        <location filename="../mainwindow.cpp" line="841"/>
         <source>There is another process running.
 Stop current process?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="861"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="861"/>
+        <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -337,7 +348,7 @@ Stop current process?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../newgamedialog.ui" line="34"/>
+        <location filename="../newgamedialog.ui" line="25"/>
         <source>Choose a template:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -381,22 +392,22 @@ Stop current process?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../preferencesdialog.cpp" line="195"/>
+        <location filename="../preferencesdialog.cpp" line="187"/>
         <source>Cocos2D Console Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../preferencesdialog.cpp" line="214"/>
+        <location filename="../preferencesdialog.cpp" line="206"/>
         <source>&lt;font color=&apos;red&apos;&gt;Invalid path. &apos;cocos&apos; not found&lt;/font&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../preferencesdialog.cpp" line="222"/>
+        <location filename="../preferencesdialog.cpp" line="214"/>
         <source>SDKBOX Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../preferencesdialog.cpp" line="235"/>
+        <location filename="../preferencesdialog.cpp" line="227"/>
         <source>&lt;font color=&apos;red&apos;&gt;Invalid path. &apos;sdkbox&apos; not found&lt;/font&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -410,19 +421,35 @@ Stop current process?</source>
     </message>
 </context>
 <context>
+    <name>RunMgr</name>
+    <message>
+        <location filename="../runmgr.cpp" line="69"/>
+        <location filename="../runmgr.cpp" line="83"/>
+        <location filename="../runmgr.cpp" line="105"/>
+        <source>Running: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../runmgr.cpp" line="114"/>
+        <location filename="../runmgr.cpp" line="137"/>
+        <source>Error: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SDKPage</name>
     <message>
-        <location filename="../templatewizard.cpp" line="139"/>
+        <location filename="../templatewizard.cpp" line="155"/>
         <source>SDK Selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="140"/>
+        <location filename="../templatewizard.cpp" line="156"/>
         <source>Select the SDKs that you want to have installed in your game</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../templatewizard.cpp" line="142"/>
+        <location filename="../templatewizard.cpp" line="158"/>
         <source>&amp;Select all SDKs</source>
         <translation type="unfinished"></translation>
     </message>
@@ -430,7 +457,7 @@ Stop current process?</source>
 <context>
     <name>TemplateWizard</name>
     <message>
-        <location filename="../templatewizard.cpp" line="39"/>
+        <location filename="../templatewizard.cpp" line="40"/>
         <source>Template Wizard</source>
         <translation type="unfinished"></translation>
     </message>
