@@ -74,7 +74,17 @@ void WelcomeDialog::itemDoubleClicked(QListWidgetItem* item)
         {
             if (dynamic_cast<MainWindow*>(widget))
             {
-                static_cast<MainWindow*>(widget)->openFile(path);
+                if (!static_cast<MainWindow*>(widget)->openFile(path))
+                {
+                    // remove broken link
+                    QStringList files = recentFiles();
+                    files.removeAll(path);
+                    _settings.setValue(QLatin1String("recentFiles/fileNames"), files);
+                    updateRecentFiles();
+
+                    qDebug() << "Error opening file" << path;
+                }
+
                 found = true;
                 close();
             }
@@ -138,6 +148,20 @@ QStringList WelcomeDialog::recentFiles() const
     return v.toStringList();
 }
 
+static QString shortNativePath(const QString& filename)
+{
+#ifdef Q_OS_UNIX
+    auto filepath = QFileInfo(filename).canonicalFilePath();
+    auto homepath = QDir::cleanPath(QDir::homePath());
+    if (filepath.startsWith(homepath))
+    {
+        filepath.remove(homepath);
+        return QLatin1Char('~') + QDir::toNativeSeparators(filepath);
+    }
+#endif
+    return filename;
+}
+
 void WelcomeDialog::updateRecentFiles()
 {
     QStringList files = recentFiles();
@@ -145,7 +169,7 @@ void WelcomeDialog::updateRecentFiles()
 
     for (int i = 0; i < numRecentFiles; ++i)
     {
-        _recentFilesWidget[i]->setText(QFileInfo(files[i]).fileName());
+        _recentFilesWidget[i]->setText(shortNativePath(files[i]));
         _recentFilesWidget[i]->setHidden(false);
         _recentFilesWidget[i]->setData(Qt::UserRole, files[i]);
     }

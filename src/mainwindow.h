@@ -54,7 +54,7 @@ public:
     GameState* getGameState() const;
 
 public slots:
-    void openFile(const QString& path);
+    bool openFile(const QString& path);
     void on_actionOpen_triggered();
 
 signals:

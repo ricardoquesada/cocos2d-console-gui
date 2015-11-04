@@ -225,19 +225,22 @@ void MainWindow::displayCommand(const QString& commandLine)
 }
 
 
-void MainWindow::openFile(const QString& filePath)
+bool MainWindow::openFile(const QString& filePath)
 {
+    bool ret = false;
     if (filePath.length() > 0 && validatePath(filePath))
     {
         setRecentFile(filePath);
         auto gameState = new GameState(filePath);
         setGameState(gameState);
+        ret = true;
     }
     else
     {
         ui->plainTextEdit->appendPlainText(QString("Error: Could not open file'%1'").arg(filePath));
         qDebug() << "Invalid path: " << filePath;
     }
+    return ret;
 }
 
 void MainWindow::onProcessFinished(Run* command)
