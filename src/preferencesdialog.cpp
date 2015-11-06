@@ -40,7 +40,11 @@ static bool fileExists(const QString& path)
 {
     QFileInfo checkFile(path);
     // check if file exists and if yes: Is it really a file and no directory?
-    return checkFile.exists() && checkFile.isFile();
+    auto exists = checkFile.exists() && checkFile.isFile();
+
+//    qDebug() << path << exists;
+
+    return exists;
 }
 
 QString PreferencesDialog::getCmdFilepath(const QString& cmd)
@@ -67,10 +71,10 @@ QString PreferencesDialog::getCmdFilepath(const QString& cmd)
 
         if (process.waitForFinished(5000))
         {
-            auto filepath = process.readAllStandardOutput();
+            auto filepath = process.readAllStandardOutput().trimmed();
             if (fileExists(filepath))
             {
-                ret = filepath;
+                ret = QFileInfo(filepath).absolutePath();
             }
         }
     }
@@ -107,7 +111,7 @@ QString PreferencesDialog::getCmdFilepath(const QString& cmd)
             ret = cwd;
 
         else if (fileExists(cwd + "/../../" + cmd))
-            ret = cwd + "/../../";
+            ret = cwd + "/../..";
 
        // Some wild guesses
         else if (fileExists(QDir::homePath() + "/cocos2d-x/tools/cocos2d-console/bin/" + cmd))
@@ -123,7 +127,7 @@ QString PreferencesDialog::getCmdFilepath(const QString& cmd)
             {
                 if (fileExists(element + "/Cocos/bin/" + cmd))
                 {
-                    ret = element + "/Cocos/bin/" + cmd;
+                    ret = element + "/Cocos/bin";
                     break;
                 }
             }
@@ -132,7 +136,6 @@ QString PreferencesDialog::getCmdFilepath(const QString& cmd)
 
     if (!ret.isEmpty())
     {
-        ret = QFileInfo(ret).canonicalPath();
         settings.setValue(cmd + "_path", ret);
         return ret + "/" + cmd;
     }

@@ -93,20 +93,25 @@ void RunMgr::onProcessFinished(Run* cmd)
 {
     Q_UNUSED(cmd);
 
-    auto command = _syncCommands.at(0);
-    Q_ASSERT(command == cmd);
-
-    disconnect(command, &Run::finished, this, &RunMgr::onProcessFinished);
-
-    _syncCommands.removeFirst();
-    if (_syncCommands.length() > 0)
+    // FIXME: if not, then probably the
+    // process was cancelled ?
+    if ( _syncCommands.size() > 0)
     {
-        _syncCommands.first()->run();
-        emit commandRun(tr("Running: ") + _syncCommands.first()->getCommandLine());
-    }
+        auto command = _syncCommands.at(0);
+        Q_ASSERT(command == cmd);
 
-    if (_syncCommands.isEmpty())
-        emit isReady();
+        disconnect(command, &Run::finished, this, &RunMgr::onProcessFinished);
+
+        _syncCommands.removeFirst();
+        if (_syncCommands.length() > 0)
+        {
+            _syncCommands.first()->run();
+            emit commandRun(tr("Running: ") + _syncCommands.first()->getCommandLine());
+        }
+
+        if (_syncCommands.isEmpty())
+            emit isReady();
+    }
 }
 
 void RunMgr::onProcessError(Run* command)
@@ -190,7 +195,16 @@ bool Run::run()
     connect(_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onProcessFinished(int,QProcess::ExitStatus)));
     connect(_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(onProcessError(QProcess::ProcessError)));
 
+#if defined(Q_OS_WIN32)
     _process->start(_cmd, _args);
+#elif defined(Q_OS_UNIX)
+    QString cmd = "/bin/bash";
+    QStringList args;
+    args << _cmd << _args;
+    QStringList args2;
+    args2 << "-l" << "-c" << args.join(" ");
+    _process->start(cmd, args2);
+#endif
 
     return true;
 }
