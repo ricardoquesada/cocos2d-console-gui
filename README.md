@@ -2,7 +2,7 @@
 
 # How to test it
 
-0. Download [`ricardoquesada's templates_fix`](https://github.com/ricardoquesada/cocos2d-x/tree/template_2) cocos2d-x branch and make sure that `cocos` is the path
+0. Download [`ricardoquesada's template_2`](https://github.com/ricardoquesada/cocos2d-x/tree/template_2) cocos2d-x branch and make sure that `cocos` is the path
 1. Download and compile the Cocos2d-Console-GUI source code or download the precompiled binaries (see below)
 2. Copy cocos2d-console-gui to the `cocos2d-x/tools/cocos2d-console/bin` directory
 3. Use [`ricardoquesada's cocos2dproj`](https://github.com/ricardoquesada/cocos2d-console/tree/cocos2dproj) cocos-console branch
