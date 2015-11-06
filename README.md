@@ -88,7 +88,9 @@ $ cocos gui
   * Debug/Release supported
   * Mac/iOS/Web/Android/Win32/Win81Universal/Win10 supported
 * Allows you to stop the compilation (press the stop button) 
-* Allows you to import old games (File -> Import old game)
+* Allows you to open existing games:
+  *  File -> Open game (for games created with cocos.py v2.1)
+  *  File -> Import old game (for games created with cocos.py v2.0 or older)
   * Allows you to open existing games by double clicking on the `.cocosproj` extension (Mac only)
 * Allows you to add SDKBOX libraries to the game
 * In Preferences you can set the `cocos` and `sdkbox` path.
