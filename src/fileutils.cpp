@@ -29,7 +29,10 @@ QString FileUtils::getShortNativePath(const QString& filename)
         filepath.remove(homepath);
         return QLatin1Char('~') + QDir::toNativeSeparators(filepath);
     }
-#endif
     return QDir::toNativeSeparators(QDir::cleanPath(filepath));
+#else
+    return QDir::toNativeSeparators(QDir::cleanPath(filename));
+#endif
+
 }
 

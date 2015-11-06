@@ -42,7 +42,7 @@ Highlighter::Highlighter(QTextDocument *parent)
     rule.format = _successFormat;
     _highlightingRules.append(rule);
 
-    _runningFormat.setFontWeight(QFont::Thin);
+    _runningFormat.setFontWeight(QFont::Light);
     _runningFormat.setForeground(Qt::gray);
     _runningFormat.setFontItalic(true);
     rule.pattern = QRegExp("\\bRunning\\b");

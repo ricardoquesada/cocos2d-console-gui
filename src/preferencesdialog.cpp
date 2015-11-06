@@ -65,9 +65,14 @@ QString PreferencesDialog::getCmdFilepath(const QString& cmd)
         process.setProcessChannelMode(QProcess::SeparateChannels);
         process.setReadChannel(QProcess::StandardOutput);
 
-        QStringList stringList;
-        stringList << "-l" << "-c" << "which " + cmd;
-        process.start("/bin/bash", stringList);
+#if defined(Q_OS_OSX)
+        process.start("/bin/bash", QStringList() << "-l" << "-c" << "which " + cmd);
+#else
+        // FIXME: cocos modifies ~/.bashrc (interactive shell) and not ~/.bash_profile (login shell)
+        // so we have to invoke "bash -i" instead of "bash -l"
+//        process.start("/home/riq/progs/cocos2d-x/tools/cocos2d-console/bin/cocos", QStringList() << "new" << "--list-templates");
+        process.start("/bin/bash", QStringList() << "-i" << "-c" << "which " + cmd);
+#endif
 
         if (process.waitForFinished(5000))
         {
