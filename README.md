@@ -91,3 +91,4 @@ $ cocos gui
 * Allows you to import old games (File -> Import old game)
   * Allows you to open existing games by double clicking on the `.cocosproj` extension (Mac only)
 * Allows you to add SDKBOX libraries to the game
+* In Preferences you can set the `cocos` and `sdkbox` path.
