@@ -24,8 +24,8 @@ $ git checkout template_2
 
 ## ... or Download pre-compiled binaries
 
-. [Mac: Cocos2d-Console-GUI v0.0.5.dmg](https://www.dropbox.com/s/8hxyhyibm6bitmv/cocos2d-console-gui-v0.0.5.dmg?dl=1)
-. [Win32: Cocos2d-Console-GUI v0.0.5.zip](https://www.dropbox.com/s/b8oavs231bnm03i/cocos2d-console-gui-v0.0.5.zip?dl=1)
+* [Mac: Cocos2d-Console-GUI v0.0.5.dmg](https://www.dropbox.com/s/8hxyhyibm6bitmv/cocos2d-console-gui-v0.0.5.dmg?dl=1)
+* [Win32: Cocos2d-Console-GUI v0.0.5.zip](https://www.dropbox.com/s/b8oavs231bnm03i/cocos2d-console-gui-v0.0.5.zip?dl=1)
 
 ## Copy Cocos-console-gui to bin
 
@@ -58,14 +58,14 @@ $ cocos gui
 
 ## Known bugs
 
-. "Stop" button doesn't actually stop the compilation of Mac/iOS builds. The compilation keeps running as a background process. This bug, actually belongs to cocos.py
-. ".cocosproj" files are not associated with "cocos2d-cocos2d-gui" on Windows. But they are on Mac
+* "Stop" button doesn't actually stop the compilation of Mac/iOS builds. The compilation keeps running as a background process. This bug, actually belongs to cocos.py
+* ".cocosproj" files are not associated with "cocos2d-cocos2d-gui" on Windows. But they are on Mac
 
 
 ## How to add Chinese translations
 
-. Download Qt Linguist, which is part of [Qt](http://www.qt.io/download/)
-. edit the file [translations.pro](https://github.com/ricardoquesada/cocos2d-console-gui/blob/master/translations/translations.pro)
-. ... and add the `cn` in `LANGUAGES`, right after `es`
-. Then copy `cc_console_gui_es.ts` to `cc_console_gui_cn.ts` and edit it with Linguist
-. Then send me a PR with those changes... done.
+* Download Qt Linguist, which is part of [Qt](http://www.qt.io/download/)
+* edit the file [translations.pro](https://github.com/ricardoquesada/cocos2d-console-gui/blob/master/translations/translations.pro)
+* ... and add the `cn` in `LANGUAGES`, right after `es`
+* Then copy `cc_console_gui_es.ts` to `cc_console_gui_cn.ts` and edit it with Linguist
+* Then send me a PR with those changes... done.
