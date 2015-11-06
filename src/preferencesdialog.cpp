@@ -69,7 +69,7 @@ QString PreferencesDialog::getCmdFilepath(const QString& cmd)
     }
 #elif defined(Q_OS_WIN32)
     {
-        process.start("where.exe", QStringlist() << cmd);
+        process.start("where.exe", QStringList() << cmd);
     }
 #else
     {
