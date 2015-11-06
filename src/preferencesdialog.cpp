@@ -56,57 +56,42 @@ QString PreferencesDialog::getCmdFilepath(const QString& cmd)
         return settingsPath + "/" + cmd;
 
     QString ret = "";
-#if defined(Q_OS_OSX) || defined(Q_OS_UNIX)
-    {
-        QProcess process;
-        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        process.setProcessEnvironment(env);
+    QProcess process;
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    process.setProcessEnvironment(env);
 
-        process.setProcessChannelMode(QProcess::SeparateChannels);
-        process.setReadChannel(QProcess::StandardOutput);
+    process.setProcessChannelMode(QProcess::SeparateChannels);
+    process.setReadChannel(QProcess::StandardOutput);
 
 #if defined(Q_OS_OSX)
+    {
         process.start("/bin/bash", QStringList() << "-l" << "-c" << "which " + cmd);
+    }
+#elif defined(Q_OS_WIN32)
+    {
+        process.start("where.exe", QStringlist() << cmd);
+    }
 #else
+    {
+        // Linux code not supported yet
+    #error "OS not supported"
         // FIXME: cocos modifies ~/.bashrc (interactive shell) and not ~/.bash_profile (login shell)
         // so we have to invoke "bash -i" instead of "bash -l"
 //        process.start("/home/riq/progs/cocos2d-x/tools/cocos2d-console/bin/cocos", QStringList() << "new" << "--list-templates");
         process.start("/bin/bash", QStringList() << "-i" << "-c" << "which " + cmd);
+    }
 #endif
 
-        if (process.waitForFinished(5000))
-        {
-            auto filepath = process.readAllStandardOutput().trimmed();
-            if (fileExists(filepath))
-            {
-                ret = QFileInfo(filepath).absolutePath();
-            }
-        }
-    }
-#elif defined(Q_OS_WIN32)
+    if (process.waitForFinished(5000))
     {
-        QProcess process;
-        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        process.setProcessEnvironment(env);
-
-        process.setProcessChannelMode(QProcess::SeparateChannels);
-        process.setReadChannel(QProcess::StandardOutput);
-
-        QStringList stringList;
-        stringList << cmd;
-        process.start("where.exe", stringList);
-
-        if (process.waitForFinished(5000))
+        auto filepath = process.readAllStandardOutput();
+        filepath = filepath.simplified();
+        if (fileExists(filepath))
         {
-            auto filepath = process.readAllStandardOutput();
-            filepath = filepath.simplified();
-            if (fileExists(filepath))
-            {
-                ret = filepath;
-            }
+            ret = QFileInfo(filepath).absolutePath();
         }
     }
-#endif // Q_OS_WIN32
+
 
     if (ret.length() == 0)
     {
