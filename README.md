@@ -60,6 +60,8 @@ $ cocos gui
 
 * "Stop" button doesn't actually stop the compilation of Mac/iOS builds. The compilation keeps running as a background process. This bug, actually belongs to cocos.py
 * ".cocosproj" files are not associated with "cocos2d-cocos2d-gui" on Windows. But they are on Mac
+*  "Build -> clean" doesn't work since it is not supported on `cocos.py`
+*  The description of the templates is not finished yet
 
 
 ## How to add Chinese translations
@@ -69,3 +71,23 @@ $ cocos gui
 * ... and add the `cn` in `LANGUAGES`, right after `es`
 * Then copy `cc_console_gui_es.ts` to `cc_console_gui_cn.ts` and edit it with Linguist
 * Then send me a PR with those changes... done.
+
+
+## Features
+
+* Allows you to create new games based on 4 templates (it will use the wizard):
+  * Parkour (cpp game)
+  * cpp-empty (cpp game)
+  * lua-empty (lua game)
+  * js-empty (js game)
+* Allows you to open the created games in:
+  * Xcode (if in Mac)
+  * Android Studio (if in Mac or Windows)
+  * Visual Studio (if in Windows)
+* Allows you to compile the games withing the console
+  * Debug/Release supported
+  * Mac/iOS/Web/Android/Win32/Win81Universal/Win10 supported
+* Allows you to stop the compilation (press the stop button) 
+* Allows you to import old games (File -> Import old game)
+  * Allows you to open existing games by double clicking on the `.cocosproj` extension (Mac only)
+* Allows you to add SDKBOX libraries to the game
