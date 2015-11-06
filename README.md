@@ -76,7 +76,7 @@ $ cocos gui
 ## Features
 
 * Allows you to create new games based on 4 templates (it will use the wizard):
-  * Parkour (cpp game)
+  * Parkour (cpp game): tested on Android, iOS, Mac, Win8.1 Universal
   * cpp-empty (cpp game)
   * lua-empty (lua game)
   * js-empty (js game)
